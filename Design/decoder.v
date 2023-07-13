@@ -2,17 +2,19 @@
 `define DECODE
 
 module decoder(
-		clk, reset_n, read, dec_func, reg_sel_a, reg_sel_b, imm, instruct_ready, addr
+		clk, reset_n, read, opp, reg_sel_a, reg_sel_b, imm, instruct_ready, addr
 		);
 	
         parameter REG_WIDTH = `REG_WIDTH;
         parameter ADDR_WIDTH = `ADDR_WIDTH;
+        parameter OPP_WIDTH = `OPP_WIDTH;
+
 
         input clk, reset_n;
         input [REG_WIDTH - 1 : 0] read;
 
-        output reg [4:0] dec_func;
-        output [2:0] reg_sel_a, reg_sel_b;        
+        output reg [OPP_WIDTH - 1 : 0] opp;
+        output reg [2:0] reg_sel_a, reg_sel_b;        
         output reg [REG_WIDTH - 1 : 0] imm;
 
         output reg instruct_ready;
@@ -30,7 +32,7 @@ module decoder(
             //Operation
             instruct_ready = 1'b0;
             if (!reset_n) begin
-                dec_func = 0;
+                opp = 0;
                 reg_sel_a = 0;
                 reg_sel_b = 0;
                 imm = 0;
@@ -46,28 +48,28 @@ module decoder(
                 fetch_target = 0;
 
                 case(add_mode) //These are the basic addr mode, may need to be overwritten in some cases
-                    AM3_X_IND: begin 
-
+                    `AM3_X_IND: begin 
+                            
                     end	 
-	                AM3_ZPG	: begin 
+	                `AM3_ZPG	: begin 
 
                     end	
-	                AM3_IMM	: begin 
+	                `AM3_IMM	: begin 
 
                     end	
-	                AM3_ABS	: begin 
+	                `AM3_ABS	: begin 
 
                     end	
-	                AM3_IND_Y: begin 
+	                `AM3_IND_Y: begin 
 
                     end	
-	                AM3_ZPG_X: begin 
+	                `AM3_ZPG_X: begin 
 
                     end	
-	                AM3_ABS_Y: begin 
+	                `AM3_ABS_Y: begin 
 
                     end	
-	                AM3_ABS_X: begin 
+	                `AM3_ABS_X: begin 
 
                     end	
                 endcase
@@ -125,15 +127,15 @@ module decoder(
                         case(instruction[7:2])
 
                             default: begin
-                                $fatal("Illegal or unimplemented instruction encountered: %h", instruction);
+                                $fatal(1, "Illegal or unimplemented instruction encountered: %h", instruction);
                             end
                         endcase
                     end
                     `OPP_ILLEGAL: begin 
-                        $fatal("Illegal Instruction ecountered: %h", instruction);
+                        $fatal(1, "Illegal Instruction ecountered: %h", instruction);
                     end
                     default: begin 
-                        $fatal("Illegal or unimplemented instruction encountered: %h", instruction);
+                        $fatal(1, "Illegal or unimplemented instruction encountered: %h", instruction);
                     end
                 endcase
                 if (fetch_counter == fetch_target) instruct_ready = 1'b1;

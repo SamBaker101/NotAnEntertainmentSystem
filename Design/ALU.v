@@ -8,7 +8,7 @@ module ALU(
 		
 	input [`REG_WIDTH - 1 : 0] a, 
 	input [`REG_WIDTH - 1 : 0] b, 
-	input [4:0] func, 
+	input [`OPP_WIDTH - 1 : 0] func, 
 	input carry_in,
 	input dec_mode, 
 	

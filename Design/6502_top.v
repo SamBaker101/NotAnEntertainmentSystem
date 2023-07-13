@@ -53,7 +53,7 @@ module top(
 	assign phi1 = phi1_int;
 	assign phi2 = phi2_int;
 	
-	wire [4:0] func;
+	wire [`OPP_WIDTH - 1 : 0] opp;
 
 	wire we_pc, we_sp, we_add, we_x, we_y, we_stat;
 	wire [`REG_WIDTH - 1: 0] iPC, oPC;
@@ -77,7 +77,7 @@ module top(
 		.clk(phi1_int), 
 		.reset_n(reset_n), 
 		.read(read_in), 
-		.dec_func(func),
+		.opp(opp),
 		.reg_sel_a(selector_a),
 		.reg_sel_b(selector_b),
 		.imm(Imm)
@@ -102,7 +102,7 @@ module top(
 	ALU alu(.reset_n(reset_n), 
 			.phi1(phi1_int),
 			.phi2(phi2_int),
-			.func(func), 
+			.func(opp), 
 			.carry_in(carry_in),
 			.a(ialu_a), 
 			.b(ialu_b), 
