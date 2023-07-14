@@ -36,6 +36,9 @@
 	`define SELECTOR_X		2
 	`define SELECTOR_Y 		3
 	`define SELECTOR_IMM    4
+	`define SELECTOR_D	    5
+	`define SELECTOR_ALU    6
+	`define SELECTOR_FETCH  7
 
 	//STATUS REG Bit Definitions
 	`define CARRY       1
@@ -83,12 +86,14 @@
 	`define AM3_ABS_Y	3'b110
 	`define AM3_ABS_X	3'b111
 
+`include "Design/decoder.v"
+`include "Design/fetcher.v"
 `include "Design/mux831.v"
 `include "Design/fan138.v"
 `include "Design/register.v"
 `include "Design/clock_module.v"
 `include "Design/ALU.v"
 `include "Design/6502_top.v"
-`include "Design/decoder.v"
+
 
 `endif

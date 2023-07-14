@@ -2,6 +2,13 @@
 //07/2023
 //6502 top level module
 
+//The intention here is not to make a bit perfect version of the NES but
+//to try to dessign and implement my own version of the device which as closely
+//Matches the specs and behavior of the original as possible
+
+//Full disclosure, as this is still very much a work in progress things are a bit of a mess
+//I will be cleaning up, refactoring and adding tests as the project progresses
+
 `ifndef CPU
 `define CPU
 	
@@ -47,34 +54,70 @@ module cpu_top(
 
 	wire [`REG_WIDTH - 1: 0] ialu_a, ialu_b;
 
-	wire [`REG_WIDTH - 1: 0] read_in;	
+	wire [`REG_WIDTH - 1: 0] read_in, fetch_reg_in, fetch_reg_out;
+
+	wire [`REG_WIDTH - 1: 0] instruction;
+	wire instruction_ready;	
+
+	assign read_in = D;
+	assign A = imm_addr;
 
 	wire carry_in, carry_out;
+	wire get_next;
+
+	fetcher fetch(
+		.clk(phi1_int), 
+		.reset_n(reset_n), 
+		.get_next(get_next), 
+		.pc(oPC), 
+		.data_in(fetch_reg_in), 
+		.instruction_out(instruction), 
+		.pc_next(iPC), 
+		.we_pc(we_pc), 
+		.addr(A), 
+		.instruction_ready(instruction_ready),
+		.reg_out(fetch_reg_out),
+		.fetch_source_selector(fetch_selector)
+		);
 
 	decoder decode(
 		.clk(phi1_int), 
 		.reset_n(reset_n), 
-		.read(read_in), 
+		.instruction_in(instruction), 
 		.opp(opp),
 		.we(we),
 		.read_write(R_W_n),
-		.reg_sel_00(selector_00),
-		.reg_sel_01(selector_01),
-		.reg_sel_10(selector_10),
-		.reg_sel_11(selector_11),
-		.imm_addr(imm_addr)
+		.source_selector_0(source_selector_0),
+		.target_selector_0(target_selector_0),
+		.source_selector_1(source_selector_1),
+		.target_selector_1(target_selector_1),
+		.imm_addr(imm_addr),
+		.get_next(get_next),
+		.instruction_ready(instruction_ready)
 		);
-	
-	assign A = imm_addr;
 
 	//Selectors  --  Generalize these selectors and set up some defines
 	wire [`REG_WIDTH - 1: 0] reg_connect_0, reg_connect_1;
-	wire [2:0] selector_00, selector_01, selector_10, selector_11;
-	mux831 reg_mux0  (.clk(phi1_int), .in0(oPC), .in1(oADD), .in2(oX), .in3(oY), .in4(imm_addr), .in5(D), .selector(selector_00), .out(reg_connect_0));
-	fan138 reg_fan0  (.clk(phi1_int), .in(reg_connect_0), .out1(iADD), .out2(iX), .out3(iY), .out4(iPC), .out5(D), .out6(ialu_a),  .selector(selector_01));
+	wire [2:0] source_selector_0, target_selector_0, source_selector_1, target_selector_1, fetch_selector;
+	reg  [2:0] source_selector_01, target_selector_01;
+	
+	//make this a switch
+	always @(posedge phi2_int) begin
+		if (fetch_selector) begin
+			source_selector_01 = fetch_selector;
+			target_selector_01 = `SELECTOR_FETCH;
+		end
+		else begin
+			source_selector_01 = source_selector_0;
+			target_selector_01 = target_selector_0;
+		end
+	end
 
-	mux831 reg_mux1  (.clk(phi1_int), .in0(oPC), .in1(oADD), .in2(oX), .in3(oY), .in4(imm_addr), .in5(D), .selector(selector_10), .out(reg_connect_1));
-	fan138 reg_fan1  (.clk(phi1_int), .in(reg_connect_1), .out1(iADD), .out2(iX), .out3(iY), .out4(iPC), .out5(D), .out6(ialu_b), .selector(selector_11));
+	mux831 reg_mux0  (.clk(phi2_int), .in0(oPC), .in1(oADD), .in2(oX), .in3(oY), .in4(imm_addr), .in5(D), .in6(8'h00), .in7(fetch_reg_out), .selector(source_selector_01), .out(reg_connect_0));
+	fan138 reg_fan0  (.clk(phi2_int), .in(reg_connect_0), .out0(iPC), .out1(iADD), .out2(iX), .out3(iY), .out5(D), .out6(ialu_a), .out7(fetch_reg_in),  .selector(target_selector_01));
+
+	mux831 reg_mux1  (.clk(phi2_int), .in0(oPC), .in1(oADD), .in2(oX), .in3(oY), .in4(imm_addr), .in5(D), .in6(8'h00), .in7(fetch_reg_out), .selector(source_selector_1), .out(reg_connect_1));
+	fan138 reg_fan1  (.clk(phi2_int), .in(reg_connect_1), .out0(iPC), .out1(iADD), .out2(iX), .out3(iY), .out5(D), .out6(ialu_b), .out7(fetch_reg_in), .selector(target_selector_1));
 
 	//Regs
 	register PC(.clk(phi2_int), .reset_n(reset_n), .we(we_pc), .din(iPC), .dout(oPC));

@@ -34,10 +34,22 @@ module tb_6502_top;
         .A(A)
 		);
 
+
+    always @(*) begin
+        #5;
+        phi0 = ~phi0;
+    end
+
+
 	initial begin
 		$dumpfile("Out/6502_test_out.vcd");
 		$dumpvars(0, tb_6502_top);
-	end
+	
+        phi0 = 1'b1;
+
+
+    
+    end
 
 endmodule
 

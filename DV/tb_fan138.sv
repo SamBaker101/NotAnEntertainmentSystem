@@ -1,6 +1,6 @@
 //This is a testbench 
-`ifndef TB_831
-`define TB_831
+`ifndef TB_138
+`define TB_138
 
 `timescale 1ns/1ns
 `include "PKG/pkg.v"
@@ -8,33 +8,32 @@
 `define SEED   		33551
 `define CYCLES 		30
 
-module tb_mux831;
+module tb_fan138;
 
     reg [31:0] i, seed; 
-
-    reg [7:0] in;
+    reg in;
     reg phi0;
     reg [2:0] selector;
 
-    wire out;
+    wire [7:0] out;
 
 //Tests functionality with single bit inputs
-	mux831 #(.SIGNAL_WIDTH(1)) mux (
+	fan138 #(.SIGNAL_WIDTH(1)) fan (
             .clk(phi0), 
-            .in0(in[0]), 
-            .in1(in[1]), 
-            .in2(in[2]), 
-            .in3(in[3]), 
-            .in4(in[4]),
-            .in5(in[5]),
-            .in6(in[6]),
-            .in7(in[7]), 
+            .out0(out[0]), 
+            .out1(out[1]), 
+            .out2(out[2]), 
+            .out3(out[3]), 
+            .out4(out[4]),
+            .out5(out[5]),
+            .out6(out[6]),
+            .out7(out[7]), 
             .selector(selector), 
-            .out(out));
+            .in(in));
 
 	initial begin
-		$dumpfile("Out/mux831.vcd");
-		$dumpvars(0, tb_mux831);
+		$dumpfile("Out/fan138.vcd");
+		$dumpvars(0, tb_fan138);
         
         phi0 = 0;
         seed = `SEED;
@@ -47,7 +46,7 @@ module tb_mux831;
             phi0 = 1;
             #1;
         
-            if (out != in[selector]) 
+            if (out[selector] != in) 
                 $fatal(1, "Unexpected output: input_byte = %b, selector = %0d", in, selector);
 
             #5;

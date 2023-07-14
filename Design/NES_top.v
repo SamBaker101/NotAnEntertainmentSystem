@@ -2,6 +2,13 @@
 //07/2023
 //6502 NES top level module
 
+//The intention of this project is not to make a bit perfect version of the NES but
+//to try to dessign and implement my own version of the device which as closely
+//Matches the specs and behavior of the original as possible
+
+`ifndef TOP_NES
+`define TOP_NES
+
 //Not much here yet, here as a placeholder
 module top(
 		);
@@ -30,3 +37,5 @@ module top(
 		);
 
 endmodule
+
+`endif

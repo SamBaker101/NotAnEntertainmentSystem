@@ -6,7 +6,8 @@
 `define DECODE
 
 module decoder(
-		clk, reset_n, read, opp, we, read_write, reg_sel_00, reg_sel_01, reg_sel_10, reg_sel_11, imm_addr, instruct_ready, addr
+		clk, reset_n, instruction_in, opp, we, read_write, source_selector_0, target_selector_0, 
+        source_selector_1, target_selector_1, imm_addr, instruction_ready, addr, get_next
 		);
 	
         parameter REG_WIDTH = `REG_WIDTH;
@@ -14,16 +15,16 @@ module decoder(
         parameter OPP_WIDTH = `OPP_WIDTH;
 
         input clk, reset_n;
-        input [REG_WIDTH - 1 : 0] read;
+        input [REG_WIDTH - 1 : 0] instruction_in;
+        input instruction_ready;
 
         output reg [OPP_WIDTH - 1 : 0] opp;
-        output reg [2:0] reg_sel_00, reg_sel_01, reg_sel_10, reg_sel_11;        
+        output reg [2:0] source_selector_0, target_selector_0, source_selector_1, target_selector_1;        
         output reg [REG_WIDTH - 1 : 0] imm_addr;
 
-        output reg instruct_ready;
         output reg [ADDR_WIDTH - 1: 0] addr;
         output reg [`WE_WIDTH - 1 : 0] we;
-        output reg read_write; //write-low, read-high
+        output reg read_write, get_next; //get_next logic required
 
         /////////////////////////////
 
@@ -34,32 +35,23 @@ module decoder(
         reg [3:0] fetch_counter, fetch_target; 
         
         always @(posedge clk) begin
-            //Operation
-            instruct_ready = 1'b0;
             we = 0;
             read_write = 1'b1;
-            reg_sel_00 = 0;
-            reg_sel_01 = 0;
-            reg_sel_10 = 0;
-            reg_sel_11 = 0;
+            target_selector_0 = 0;
+            target_selector_1 = 0;
 
             if (!reset_n) begin
                 opp = 0;
-                reg_sel_00 = 0;
-                reg_sel_01 = 0;
-                reg_sel_10 = 0;
-                reg_sel_11 = 0;
+                target_selector_0 = 0;
+                target_selector_1 = 0;
                 imm_addr = 0;
-                fetch_counter = 0;
-                fetch_target = 0;
-                instruct_ready = 0;
                 we = 0;
                 read_write = 1'b1;
 
-            end else if (fetch_counter == fetch_target) begin
-                add_mode = read[4:2];
-                opp_code = {read[7:5], read[1:0]};
-                instruction = read;
+            end else begin
+                add_mode = instruction_in[4:2];
+                opp_code = {instruction_in[7:5], instruction_in[1:0]};
+                instruction = instruction_in;
                 fetch_counter = 0;
                 fetch_target = 0;
 
@@ -68,13 +60,22 @@ module decoder(
                             
                     end	 
 	                `AM3_ZPG	: begin 
-
+                        fetch_target = 1;
+                        if (instruction_ready) begin
+                            source_selector_0 = `SELECTOR_D;
+                        end
                     end	
 	                `AM3_IMM	: begin 
                         fetch_target = 1;
+                        if (instruction_ready) begin
+                            source_selector_0 = `SELECTOR_IMM;
+                        end
                     end	
 	                `AM3_ABS	: begin 
-
+                        fetch_target = 2;
+                        if (instruction_ready) begin
+                            source_selector_0 = `SELECTOR_D;
+                        end
                     end	
 	                `AM3_IND_Y: begin 
 
@@ -122,9 +123,9 @@ module decoder(
 
                     end	
 	                `OPP_LDA: begin  
-                        if (instruct_ready) begin
+                        if (instruction_ready) begin
                             we = `WE_ADD;
-
+                            target_selector_0 = `SELECTOR_ADD;
                         end
                     end	
 	                `OPP_LDX: begin  
@@ -157,14 +158,9 @@ module decoder(
                         $fatal(1, "Illegal or unimplemented instruction encountered: %h", instruction);
                     end
                 endcase
-                if (fetch_counter == fetch_target) instruct_ready = 1'b1;
 
-            end else begin
-                fetch_counter += 1;
-                if (fetch_counter == 1) addr[7:0] = read;
-                if (fetch_counter == 2) addr[15:8] = read;
-                if (fetch_counter == fetch_target) instruct_ready = 1'b1;
             end
+
 
         end
 
