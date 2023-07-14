@@ -41,6 +41,9 @@ module cpu_top(
 
 	wire [2:0] selector_a, selector_b;
 
+	wire [2:0] selector_PC, selector_SP, selector_ADD, selector_X, selector_Y, selector_STAT;
+	wire [2:0] selector_A, selector_D;
+
 	decoder decode(
 		.clk(phi1_int), 
 		.reset_n(reset_n), 
@@ -51,6 +54,19 @@ module cpu_top(
 		.imm(Imm)
 		);
 	
+	//Inputs to these muxes are not accurate
+	//REG MUXES
+	mux831 mux_PC  (.clk(phi1_int), .in0(oPC), .in1(oADD), .in2(oX), .in3(oY), .in4(Imm), .selector(selector_PC), .out(iPC));
+	mux831 mux_SP  (.clk(phi1_int), .in0(oPC), .in1(oADD), .in2(oX), .in3(oY), .in4(Imm), .selector(selector_SP), .out(iSP));
+	mux831 mux_ADD (.clk(phi1_int), .in0(oPC), .in1(oADD), .in2(oX), .in3(oY), .in4(Imm), .selector(selector_ADD), .out(iADD));
+	mux831 mux_X   (.clk(phi1_int), .in0(oPC), .in1(oADD), .in2(oX), .in3(oY), .in4(Imm), .selector(selector_X), .out(iX));
+	mux831 mux_Y   (.clk(phi1_int), .in0(oPC), .in1(oADD), .in2(oX), .in3(oY), .in4(Imm), .selector(selector_Y), .out(iY));
+	mux831 mux_STAT(.clk(phi1_int), .in0(oPC), .in1(oADD), .in2(oX), .in3(oY), .in4(Imm), .selector(selector_STAT), .out(iSTATUS));
+
+	//D and A muxes
+	mux831 #(.SIGNAL_WIDTH(16)) mux_A (.clk(phi1_int), .in0(16'h0000), .in1(16'hFFFF), .selector(selector_A), .out(A));
+	mux831 mux_D   (.clk(phi1_int), .in0(oPC), .in1(oADD), .in2(oX), .in3(oY), .in4(Imm), .selector(selector_D), .out(D));
+
 	register PC(.clk(phi2_int), .reset_n(reset_n), .we(we_pc), .din(iPC), .dout(oPC));
 	register SP(.clk(phi2_int), .reset_n(reset_n), .we(we_sp), .din(iSP), .dout(oSP));
 	register ADD(.clk(phi2_int), .reset_n(reset_n), .we(we_add), .din(iADD), .dout(oADD));
