@@ -1,4 +1,8 @@
+//Sam Baker
+//07/2023
+//6502 NES top level module
 
+//Not much here yet, here as a placeholder
 module top(
 		);
 

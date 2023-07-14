@@ -20,6 +20,16 @@
 	`define INSTRUCTION_WIDTH 8
 	`define ADDR_WIDTH 16
 
+	//REG Write Enables
+	`define WE_WIDTH 6
+
+	`define WE_PC 	1
+	`define WE_SP 	2
+	`define WE_ADD 	4
+	`define WE_X	8
+	`define WE_Y 	16
+	`define WE_STAT 32
+
 	//ALU MUX Reg Selectors
 	`define SELECTOR_PC 	0
 	`define SELECTOR_ADD 	1
@@ -74,6 +84,7 @@
 	`define AM3_ABS_X	3'b111
 
 `include "Design/mux831.v"
+`include "Design/fan138.v"
 `include "Design/register.v"
 `include "Design/clock_module.v"
 `include "Design/ALU.v"

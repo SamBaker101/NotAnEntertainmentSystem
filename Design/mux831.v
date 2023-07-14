@@ -1,3 +1,7 @@
+//Sam Baker
+//07/2023
+//Mux 8 to 1
+
 // Its an 831 mux... some time I will parameterize it... some time later
 `ifndef MUX
 `define MUX

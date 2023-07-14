@@ -1,24 +1,29 @@
+//Sam Baker
+//07/2023
+//6502 Decoder
+
 `ifndef DECODE
 `define DECODE
 
 module decoder(
-		clk, reset_n, read, opp, reg_sel_a, reg_sel_b, imm, instruct_ready, addr
+		clk, reset_n, read, opp, we, read_write, reg_sel_00, reg_sel_01, reg_sel_10, reg_sel_11, imm_addr, instruct_ready, addr
 		);
 	
         parameter REG_WIDTH = `REG_WIDTH;
         parameter ADDR_WIDTH = `ADDR_WIDTH;
         parameter OPP_WIDTH = `OPP_WIDTH;
 
-
         input clk, reset_n;
         input [REG_WIDTH - 1 : 0] read;
 
         output reg [OPP_WIDTH - 1 : 0] opp;
-        output reg [2:0] reg_sel_a, reg_sel_b;        
-        output reg [REG_WIDTH - 1 : 0] imm;
+        output reg [2:0] reg_sel_00, reg_sel_01, reg_sel_10, reg_sel_11;        
+        output reg [REG_WIDTH - 1 : 0] imm_addr;
 
         output reg instruct_ready;
         output reg [ADDR_WIDTH - 1: 0] addr;
+        output reg [`WE_WIDTH - 1 : 0] we;
+        output reg read_write; //write-low, read-high
 
         /////////////////////////////
 
@@ -31,15 +36,26 @@ module decoder(
         always @(posedge clk) begin
             //Operation
             instruct_ready = 1'b0;
+            we = 0;
+            read_write = 1'b1;
+            reg_sel_00 = 0;
+            reg_sel_01 = 0;
+            reg_sel_10 = 0;
+            reg_sel_11 = 0;
+
             if (!reset_n) begin
                 opp = 0;
-                reg_sel_a = 0;
-                reg_sel_b = 0;
-                imm = 0;
+                reg_sel_00 = 0;
+                reg_sel_01 = 0;
+                reg_sel_10 = 0;
+                reg_sel_11 = 0;
+                imm_addr = 0;
                 fetch_counter = 0;
                 fetch_target = 0;
                 instruct_ready = 0;
-            
+                we = 0;
+                read_write = 1'b1;
+
             end else if (fetch_counter == fetch_target) begin
                 add_mode = read[4:2];
                 opp_code = {read[7:5], read[1:0]};
@@ -55,7 +71,7 @@ module decoder(
 
                     end	
 	                `AM3_IMM	: begin 
-
+                        fetch_target = 1;
                     end	
 	                `AM3_ABS	: begin 
 
@@ -74,7 +90,7 @@ module decoder(
                     end	
                 endcase
 
-                case(opp_code)
+                case(opp_code) //This is gonna be a bit of a mess for a while
                 	`OPP_ORA: begin  
 
                     end 
@@ -106,7 +122,10 @@ module decoder(
 
                     end	
 	                `OPP_LDA: begin  
+                        if (instruct_ready) begin
+                            we = `WE_ADD;
 
+                        end
                     end	
 	                `OPP_LDX: begin  
 

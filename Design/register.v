@@ -1,3 +1,7 @@
+//Sam Baker
+//07/2023
+//6502 register module
+
 `ifndef REG
 `define REG
 

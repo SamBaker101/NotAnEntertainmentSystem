@@ -1,4 +1,6 @@
-//This is an ALU
+//Sam Baker
+//07/2023
+//6502 ALU module
 
 `ifndef ALU
 `define ALU

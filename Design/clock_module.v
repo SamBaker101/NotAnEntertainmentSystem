@@ -1,4 +1,7 @@
-// This is the top
+//Sam Baker
+//07/2023
+//6502 Clock module
+
 `ifndef CLK
 `define CLK
 

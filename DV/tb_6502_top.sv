@@ -1,7 +1,7 @@
 //This is a testbench 
 //This needs updating does not currently work
-`ifndef TB
-`define TB
+`ifndef TB_6502
+`define TB_6502
 
 `timescale 1ns/1ns
 `include "PKG/pkg.v"
