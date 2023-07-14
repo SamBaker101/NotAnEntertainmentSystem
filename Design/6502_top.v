@@ -4,50 +4,18 @@
 	
 `include "PKG/pkg.v"
 
-module top(
-		input phi0, reset_n,
-		input [`REG_WIDTH - 1: 0] tb_instruction,
-		input [3:0] tb_we, 
-		input [`REG_WIDTH - 1: 0] tb_iPC, 
-		input [`REG_WIDTH - 1: 0] tb_iX,
-		input [`REG_WIDTH - 1: 0] tb_iY,
-		input [1:0] tb_selector_a, tb_selector_b,
-		input tb_carry_in,
+module cpu_top(
+		input phi0, reset_n, rdy, irq_n, NMI_n, overflow_set_n,
+            
+		output phi1, phi2, sync, R_W_n,
 
-		output phi1, phi2,
-		output [`REG_WIDTH - 1: 0] tb_oPC,
-		output [`REG_WIDTH - 1: 0] tb_oSP,
-		output [`REG_WIDTH - 1: 0] tb_oADD,
-		output [`REG_WIDTH - 1: 0] tb_oSTATUS,
-		output tb_carry_out
+		inout [`REG_WIDTH - 1: 0] D,
+		inout [`ADDR_WIDTH - 1 : 0] A
 		);
-	
-/////////////////////////
-////TB specific stuff////
-/////////////////////////
-
-		assign  we_pc  = tb_we[0];
-		assign  we_x   = tb_we[2];
-		assign  we_y   = tb_we[3];
-		 
-		assign iPC  		= tb_iPC;
-		assign iX   		= tb_iX;
-		assign iY   		= tb_iY;
-		assign selector_a 	= tb_selector_a;
-		assign selector_b 	= tb_selector_b;
-		assign carry_in 	= tb_carry_in;
-		assign read_in  	= tb_instruction;
-
-		assign tb_oPC  		= oPC;
-		assign tb_oSP  		= oSP;
-		assign tb_oADD 		= oADD;
-		assign tb_oSTATUS 	= oSTATUS;
-		assign tb_carry_out = carry_out;
 
 ////////////////////////
 ////     Design     ////          
 ////////////////////////
-
 	wire phi1_int, phi2_int;
 	
 	assign phi1 = phi1_int;
