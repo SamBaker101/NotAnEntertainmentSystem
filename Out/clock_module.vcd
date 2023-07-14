@@ -1,0 +1,45 @@
+$date
+	Thu Jul 13 23:42:07 2023
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	1ns
+$end
+$scope module tb_clock_module $end
+$var wire 1 ! phi2 $end
+$var wire 1 " phi1 $end
+$var reg 1 # phi0 $end
+$var reg 1 $ reset_n $end
+$scope module cm $end
+$var wire 1 # phi0 $end
+$var wire 1 " phi1 $end
+$var wire 1 ! phi2 $end
+$var wire 1 $ reset_n $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+$comment Show the parameter values. $end
+$dumpall
+$end
+#0
+$dumpvars
+x$
+0#
+1"
+0!
+$end
+#5
+0"
+1!
+1#
+#11
+1"
+0!
+0#
+#17
+0"
+1!
+1#
+#18
