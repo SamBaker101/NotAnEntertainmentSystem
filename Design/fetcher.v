@@ -49,14 +49,19 @@ module fetcher(
                 if (get_next) fetch_counter = 1'b0;
                 else fetch_counter ++;
 
+                fetch_source_selector = `SELECTOR_D;
                 case(add_mode) //These are the basic addr mode, may need to be overwritten in some cases
                     `AM3_X_IND  : begin
                         if (fetch_counter == 0) instruction = data_in;
-                        if (fetch_counter == 1) begin
-
-                        end
                         if (fetch_counter == 1) addr = {16'h00, data_in};
-                        if (fetch_counter == 1) addr = {16'h00, data_in};                            
+                        if (fetch_counter == 2) addr[15:8] = data_in;
+                        if (fetch_counter == 3) begin
+                            fetch_source_selector = `SELECTOR_X;
+                        end
+                        if (fetch_counter == 4) begin
+                            addr[7:0] = (data_in + addr[7:0]);
+                            instruction_ready = 1'b1;
+                        end                            
                     end
                     `AM3_ZPG	: begin
                         if (fetch_counter == 0) instruction = data_in;
@@ -82,16 +87,54 @@ module fetcher(
                         end
                     end
                     `AM3_IND_Y  : begin
-
+                        if (fetch_counter == 0) instruction = data_in;
+                        if (fetch_counter == 1) addr = {16'h00, data_in};
+                        if (fetch_counter == 1) addr[15:8] = data_in;
+                        if (fetch_counter == 2) begin
+                            fetch_source_selector = `SELECTOR_Y;
+                        end
+                        if (fetch_counter == 3) begin
+                            reg_out = data_in
+                        end   
+                        if (fetch_counter == 4) begin
+                            reg_out = reg_out + data_in;
+                            instruction_ready = 1'b1;
+                        end
                     end
                     `AM3_ZPG_X  : begin
-
+                        if (fetch_counter == 0) instruction = data_in;
+                        if (fetch_counter == 1) addr = {16'h00, data_in};
+                        if (fetch_counter == 2) begin
+                            fetch_source_selector = `SELECTOR_X;
+                        end
+                        if (fetch_counter == 3) begin
+                            addr[7:0] = (data_in + addr[7:0]);
+                            instruction_ready = 1'b1;
+                        end      
                     end
                     `AM3_ABS_Y  : begin
-
+                        if (fetch_counter == 0) instruction = data_in;
+                        if (fetch_counter == 1) addr = {16'h00, data_in};
+                        if (fetch_counter == 2) addr[15:8] = data_in;
+                        if (fetch_counter == 3) begin
+                            fetch_source_selector = `SELECTOR_Y;
+                        end
+                        if (fetch_counter == 4) begin
+                            addr += data_in;
+                            instruction_ready = 1'b1;
+                        end    
                     end
                     `AM3_ABS_X  : begin
-
+                        if (fetch_counter == 0) instruction = data_in;
+                        if (fetch_counter == 1) addr = {16'h00, data_in};
+                        if (fetch_counter == 2) addr[15:8] = data_in;
+                        if (fetch_counter == 3) begin
+                            fetch_source_selector = `SELECTOR_X;
+                        end
+                        if (fetch_counter == 4) begin
+                            addr += data_in;
+                            instruction_ready = 1'b1;
+                        end    
                     end
                 endcase
             end
