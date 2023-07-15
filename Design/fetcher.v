@@ -143,7 +143,7 @@ module fetcher(
                             we_pc = 1'b1;
                         end
                         if (fetch_counter == 3) begin
-                            reg_out = data_in
+                            reg_out = data_in;
                         end   
                         if (fetch_counter == 4) begin
                             reg_out = reg_out + data_in;
