@@ -21,14 +21,15 @@
 	`define ADDR_WIDTH 16
 
 	//REG Write Enables
-	`define WE_WIDTH 6
+	`define WE_WIDTH 7
 
-	`define WE_PC 	1
-	`define WE_SP 	2
-	`define WE_ADD 	4
-	`define WE_X	8
-	`define WE_Y 	16
-	`define WE_STAT 32
+	`define WE_PC 	0
+	`define WE_SP 	1
+	`define WE_ADD 	2
+	`define WE_X	3
+	`define WE_Y 	4
+	`define WE_STAT 5
+	`define WE_DOUT 6
 
 	//ALU MUX Reg Selectors
 	`define SELECTOR_PC 	0
@@ -88,6 +89,7 @@
 
 `include "Design/decoder.v"
 `include "Design/fetcher.v"
+`include "Design/mem.v"
 `include "Design/mux831.v"
 `include "Design/fan138.v"
 `include "Design/register.v"

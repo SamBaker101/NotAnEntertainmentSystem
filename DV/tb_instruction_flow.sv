@@ -1,39 +1,45 @@
 //Sam Baker
 //07/2023
-//6502 top level module
+//Memory TB
 
-//The intention here is not to make a bit perfect version of the NES but
-//to try to dessign and implement my own version of the device which as closely
-//Matches the specs and behavior of the original as possible
+`ifndef TB_IFLOW
+`define TB_IFLOW
 
-//Full disclosure, as this is still very much a work in progress things are a bit of a mess
-//I will be cleaning up, refactoring and adding tests as the project progresses
-
-`ifndef CPU
-`define CPU
-	
+`timescale 1ns/1ns
 `include "PKG/pkg.v"
 
-module cpu_top(
-		input phi0, reset_n, rdy, irq_n, NMI_n, overflow_set_n,
-            
-		output phi1, phi2, sync, R_W_n,
+`define SEED   		        33551
+`define CYCLES 		        30
+`define MEM_DEPTH           32
+`define INSTRUCTION_BASE    16
 
-		inout [`REG_WIDTH - 1: 0] D,
-		inout [`ADDR_WIDTH - 1 : 0] A
-		);
+module tb_iflow;
 
-////////////////////////
-////  Declarations  ////          
-////////////////////////
+    ////////////////////////
+    ////       TB       ////
+    ////////////////////////
+    reg [31:0] i, seed; 
+    reg [`ADDR_WIDTH - 1 : 0] addr_in;
+    reg [`REG_WIDTH - 1 : 0] d_in;
 
-	wire phi1_int, phi2_int;
-	wire [`OPP_WIDTH - 1 : 0] opp;
-	wire [`REG_WIDTH - 1: 0] ialu_a, ialu_b;
+    /////////////////////////
+    ////  Top Level I/O  ////
+    /////////////////////////
+    //  IN
+    reg phi0, reset_n;
+    reg mem_write;
 
+    //  OUT
+    wire [`REG_WIDTH - 1 : 0] ialu_a, ialu_b;
+
+    ////////////////////////
+    ////    Internal    ////
+    ////////////////////////
+    wire phi1_int, phi2_int;
+
+    wire [`REG_WIDTH - 1 : 0] d_to_mem, d_from_mem;
     wire [`ADDR_WIDTH - 1 : 0] addr;
     wire [`REG_WIDTH - 1 : 0] d_to_fetch, d_from_fetch;
-    wire [`REG_WIDTH - 1 : 0] d_to_mem, d_from_mem;
 
     wire get_next;
     wire instruction_ready;
@@ -60,14 +66,6 @@ module cpu_top(
     ////////////////////////
     ////   TL Assigns   ////
     ////////////////////////
-
-	//Pin assignments
-	assign A = addr;
-	assign D = d_to_mem;
-	assign d_from_mem = D;
-	assign R_W_n = !we[6];
-
-	//Others
     assign we_pc 	= we[`WE_PC];
 	assign we_sp 	= we[`WE_SP];
 	assign we_add 	= we[`WE_ADD];
@@ -75,10 +73,10 @@ module cpu_top(
 	assign we_y 	= we[`WE_Y];
 	assign we_stat 	= we[`WE_STAT];
 
-	assign pc = oPC;
-	assign we[0] = (pc != pc_next) ? 1'b1 : 0;
-	assign iPC 	 = (pc != pc_next) ? pc_next : pc;
-	
+    //These probably need a switch
+    assign we[`WE_DOUT] = mem_write;
+    assign addr = addr_in;
+    assign d_to_mem = d_in;
 
 	always @(posedge phi2_int) begin
 		if (fetch_selector) begin
@@ -90,6 +88,20 @@ module cpu_top(
 			target_selector_01 = target_selector_0;
 		end
 	end
+
+	assign pc = oPC;
+	assign we[0] = (pc != pc_next) ? 1'b1 : 0;
+	assign iPC 	 = (pc != pc_next) ? pc_next : pc;
+
+//Tests functionality with single bit inputs
+    mem #(.DEPTH(`MEM_DEPTH)) mem_test(
+		.clk(phi0), 
+        .reset_n(reset_n), 
+        .we(we[6]), 
+        .addr(addr), 
+        .din(d_to_mem), 
+        .dout(d_from_mem)
+		);
 
 	fetcher fetch(
 		.clk(phi1_int), 
@@ -142,18 +154,59 @@ module cpu_top(
 			.phi2(phi2_int)
 			);
 	
-	ALU alu(.reset_n(reset_n), 
-			.phi1(phi1_int),
-			.phi2(phi2_int),
-			.func(opp), 
-			.carry_in(carry_in),
-			.a(ialu_a), 
-			.b(ialu_b), 
-			.add(iADD),
-			.wout(we_add),
-			.carry_out(carry_out)
-			);
-	
+
+    ///////////////////////
+    ////  Pin Wiggles  ////
+    ///////////////////////
+	initial begin : main_loop
+        reg [`REG_WIDTH - 1 : 0] mem_model [`MEM_DEPTH - 1 : 0];
+        reg [`REG_WIDTH - 1 : 0] mem_unit;
+        
+
+		$dumpfile("Out/iflow.vcd");
+		$dumpvars(0, tb_iflow);
+        
+        phi0 = 0;
+        seed = `SEED;
+        
+        //Load and check mem using random data
+        //Fill with rand data
+        for (i = 0; i < `INSTRUCTION_BASE; i++) begin
+            mem_unit = $urandom(seed);
+            mem_model[i] = mem_unit;    
+            
+            mem_write   = 1'b1;
+            addr_in     = i;
+            d_in    = mem_unit;
+
+            #5;
+            phi0 = 0;
+            #5;
+            phi0 = 1;
+        end
+
+        //Check that model matches mem
+        for (i = 0; i < `INSTRUCTION_BASE; i++) begin
+                mem_write   = 1'b0;
+                addr_in     = i;
+                mem_unit    = d_from_mem;
+
+                #5;
+                phi0 = 0;
+                #5;
+                phi0 = 1;
+
+                if (mem_unit != mem_model[i]) $fatal(1, "Error with mem write/read at addr %h", i);
+            end
+
+        for (i = 0; i < `CYCLES; i++) begin
+            //Add stimulus here!
+
+
+        end
+        
+    end
+
 endmodule
 
 `endif
