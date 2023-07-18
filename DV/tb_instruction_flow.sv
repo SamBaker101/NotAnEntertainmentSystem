@@ -160,8 +160,9 @@ module tb_iflow;
     ///////////////////////
 	initial begin : main_loop
         reg [`REG_WIDTH - 1 : 0] mem_model [`MEM_DEPTH - 1 : 0];
+        reg [`REG_WIDTH - 1 : 0] inst_list [`MEM_DEPTH - `INSTRUCTION_BASE - 1 : 0];
         reg [`REG_WIDTH - 1 : 0] mem_unit;
-        
+
 
 		$dumpfile("Out/iflow.vcd");
 		$dumpvars(0, tb_iflow);
@@ -199,12 +200,53 @@ module tb_iflow;
                 if (mem_unit != mem_model[i]) $fatal(1, "Error with mem write/read at addr %h", i);
             end
 
-        for (i = 0; i < `CYCLES; i++) begin
-            //Add stimulus here!
+        //ENTER SOME INSTRUCTIONS HERE;
+        inst_list[0]    = 8'h0;
+        inst_list[1]    = 8'h0;
+        inst_list[2]    = 8'h0;
+        inst_list[3]    = 8'h0;
+        inst_list[4]    = 8'h0;
+        inst_list[5]    = 8'h0;
+        inst_list[6]    = 8'h0;
+        inst_list[7]    = 8'h0;
+        inst_list[8]    = 8'h0;
+        inst_list[9]    = 8'h0;
+        inst_list[10]   = 8'h0;
+        inst_list[11]   = 8'h0;
+        inst_list[12]   = 8'h0;
+        inst_list[13]   = 8'h0;
+        inst_list[14]   = 8'h0;
+        inst_list[15]   = 8'h0;
 
-
-        end
         
+        //Load Program
+        for (i = 0; i < `MEM_DEPTH - `INSTRUCTION_BASE; i++) begin
+            mem_model[i + `INSTRUCTION_BASE] = inst_list[i];    
+            
+            mem_write   = 1'b1;
+            addr_in     = i;
+            d_in    = inst_list[i];
+
+            #5;
+            phi0 = 0;
+            #5;
+            phi0 = 1;
+        end
+
+        //Check Program
+        for (i = 0; i < `MEM_DEPTH - `INSTRUCTION_BASE; i++) begin
+                mem_write   = 1'b0;
+                addr_in     = i + `INSTRUCTION_BASE;
+                mem_unit    = d_from_mem;
+
+                #5;
+                phi0 = 0;
+                #5;
+                phi0 = 1;
+
+                if (mem_unit != inst_list[i]) $fatal(1, "Error with mem write/read at addr %h", i);
+            end
+
     end
 
 endmodule
