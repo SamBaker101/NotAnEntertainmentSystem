@@ -201,10 +201,10 @@ module tb_iflow;
             end
 
         //ENTER SOME INSTRUCTIONS HERE;
-        inst_list[0]    = 8'h0;
-        inst_list[1]    = 8'h0;
-        inst_list[2]    = 8'h0;
-        inst_list[3]    = 8'h0;
+        inst_list[0]    = 8'hA9;     //LDA #04
+        inst_list[1]    = 8'h04;
+        inst_list[2]    = 8'h85;    //STA ZPG 02 
+        inst_list[3]    = 8'h02;
         inst_list[4]    = 8'h0;
         inst_list[5]    = 8'h0;
         inst_list[6]    = 8'h0;
@@ -218,6 +218,9 @@ module tb_iflow;
         inst_list[14]   = 8'h0;
         inst_list[15]   = 8'h0;
 
+        //Modify mem_model
+        mem_unit = mem_model[16'h04];
+        mem_model[16'h02] = mem_unit;
         
         //Load Program
         for (i = 0; i < `MEM_DEPTH - `INSTRUCTION_BASE; i++) begin
@@ -245,7 +248,44 @@ module tb_iflow;
                 phi0 = 1;
 
                 if (mem_unit != inst_list[i]) $fatal(1, "Error with mem write/read at addr %h", i);
-            end
+        end
+
+        //Spin the clock
+        for (i = 0; i < `CYCLES; i++) begin
+                    #5;
+                    phi0 = 0;
+                    #5;
+                    phi0 = 1;
+        end
+
+        //Checks
+            //Check that model matches mem
+        for (i = 0; i < `INSTRUCTION_BASE; i++) begin
+                mem_write   = 1'b0;
+                addr_in     = i;
+                mem_unit    = d_from_mem;
+
+                #5;
+                phi0 = 0;
+                #5;
+                phi0 = 1;
+
+                if (mem_unit != mem_model[i]) $fatal(1, "Error: incorrect mem at addr %h", i);
+        end
+
+        //Mem dump
+        for (i = 0; i < `INSTRUCTION_BASE; i++) begin
+                mem_write   = 1'b0;
+                addr_in     = i;
+                mem_unit    = d_from_mem;
+
+                #5;
+                phi0 = 0;
+                #5;
+                phi0 = 1;
+
+                $display("addr: %h data: %h, mem_model: %h", i, mem_unit, mem_model[i]);
+        end
 
     end
 

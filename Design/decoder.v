@@ -83,15 +83,19 @@ module decoder(
 
                         end	
 	                    `OPP_STA: begin  
-
+                            we = `WE_DOUT;
+                            source_selector_0 = `SELECTOR_ADD;
+                            target_selector_0 = `SELECTOR_D;
+                            get_next = 1'b1;
                         end	
 	                    `OPP_STX: begin  
 
                         end	
 	                    `OPP_LDA: begin  
-                                we = `WE_ADD;
-                                target_selector_0 = `SELECTOR_ADD;
-                                source_selector_0 = `SELECTOR_D;
+                            we = `WE_ADD;
+                            target_selector_0 = `SELECTOR_ADD;
+                            source_selector_0 = `SELECTOR_D;
+                            get_next = 1'b1;
                         end	
 	                    `OPP_LDX: begin  
 
