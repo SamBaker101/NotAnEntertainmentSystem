@@ -10,6 +10,7 @@
 
 `define SEED   		33551
 `define CYCLES 		30
+`define MEM_DEPTH   32
 
 module tb_mem;
 
@@ -22,7 +23,8 @@ module tb_mem;
     wire [`REG_WIDTH - 1 : 0] dout;
 
 //Tests functionality with single bit inputs
-    mem mem_test(
+    mem #(.DEPTH(`MEM_DEPTH))
+    mem_test(
 		.clk(phi0), 
         .reset_n(reset_n), 
         .we(we), 
@@ -40,7 +42,7 @@ module tb_mem;
 
         for (i = 0; i < `CYCLES; i++) begin
             din = $urandom(seed);
-            addr = $urandom(seed);
+            addr = $urandom(seed) % `MEM_DEPTH;
             we = 1;
 
             #5;
@@ -56,6 +58,7 @@ module tb_mem;
             phi0 = 0;
 
             if (dout != din) $fatal(1, "Write/Read not completed as expected");
+            else $display("addr: %h  data: %h", i, dout);
         end
         
     end

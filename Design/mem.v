@@ -22,13 +22,14 @@ module mem(
         reg [WIDTH - 1 : 0] bank [DEPTH - 1 : 0];
         wire [ADDR_WIDTH - 1 : 0] local_addr;
 
-
         assign local_addr = addr - BASE;
         assign dout = !we ? bank[local_addr] : {WIDTH{1'bz}}; 
 
 	always @(posedge clk) begin
-        if (we)
+        if (we) begin
             bank[local_addr] = din;
+            //$display("WE addr: %h local_addr: %h, din %h, bank: %h", addr, local_addr, din, bank[local_addr]);
+        end
     end
 endmodule
 
