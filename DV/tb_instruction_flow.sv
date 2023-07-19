@@ -21,6 +21,7 @@ module tb_iflow;
     reg [31:0] i, seed; 
     reg [`ADDR_WIDTH - 1 : 0] addr_in;
     reg [`REG_WIDTH - 1 : 0] d_in;
+    reg manual_mem;
 
     /////////////////////////
     ////  Top Level I/O  ////
@@ -63,6 +64,10 @@ module tb_iflow;
     
     wire [`REG_WIDTH - 1: 0] pc, pc_next;
     wire [`REG_WIDTH - 1: 0] imm;
+
+    wire we_dout;
+    wire [`ADDR_WIDTH - 1 : 0] fetcher_addr;
+    wire [`REG_WIDTH - 1: 0] d_to_mem1;
     ////////////////////////
     ////   TL Assigns   ////
     ////////////////////////
@@ -74,9 +79,9 @@ module tb_iflow;
 	assign we_stat 	= we[`WE_STAT];
 
     //These probably need a switch
-    assign we[`WE_DOUT] = mem_write;
-    assign addr = addr_in;
-    assign d_to_mem = d_in;
+    assign we[`WE_DOUT] = manual_mem ? mem_write : we_dout;
+    assign addr         = manual_mem ? addr_in : fetcher_addr;
+    assign d_to_mem1    = manual_mem ? d_in : d_to_mem;
 
 	always @(posedge phi2_int) begin
 		if (fetch_selector) begin
@@ -97,9 +102,9 @@ module tb_iflow;
     mem #(.DEPTH(`MEM_DEPTH)) mem_test(
 		.clk(phi0), 
         .reset_n(reset_n), 
-        .we(we[6]), 
+        .we(we[`WE_DOUT]), 
         .addr(addr), 
-        .din(d_to_mem), 
+        .din(d_to_mem1), 
         .dout(d_from_mem)
 		);
 
@@ -111,7 +116,7 @@ module tb_iflow;
 		.data_in(d_to_fetch), 
 		.instruction_out(instruction), 
 		.pc_next(pc_next), 
-		.addr(addr), 
+		.addr(fetcher_addr), 
 		.instruction_ready(instruction_ready),
 		.reg_out(d_from_fetch),
 		.fetch_source_selector(fetch_selector)
@@ -123,7 +128,7 @@ module tb_iflow;
 		.instruction_in(instruction), 
 		.opp(),
 		.we(we),
-		.read_write(we[6]),
+		.read_write(we_dout),
 		.source_selector_0(source_selector_0),
 		.target_selector_0(target_selector_0),
 		.source_selector_1(source_selector_1),
@@ -169,7 +174,7 @@ module tb_iflow;
         
         phi0 = 0;
         seed = `SEED;
-        
+        manual_mem = 1'b1;
         //Load and check mem using random data
         //Fill with rand data
         for (i = 0; i < `INSTRUCTION_BASE; i++) begin
@@ -249,7 +254,9 @@ module tb_iflow;
 
                 if (mem_unit != inst_list[i]) $fatal(1, "Error with mem write/read at addr %h", i);
         end
-
+        
+        manual_mem = 1'b0;
+        
         //Spin the clock
         for (i = 0; i < `CYCLES; i++) begin
                     #5;
@@ -259,7 +266,7 @@ module tb_iflow;
         end
 
         //Checks
-            //Check that model matches mem
+        //Check that model matches mem
         for (i = 0; i < `INSTRUCTION_BASE; i++) begin
                 mem_write   = 1'b0;
                 addr_in     = i;

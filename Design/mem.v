@@ -28,7 +28,7 @@ module mem(
 	always @(posedge clk) begin
         if (we) begin
             bank[local_addr] = din;
-            //$display("WE addr: %h local_addr: %h, din %h, bank: %h", addr, local_addr, din, bank[local_addr]);
+            $display("WE addr: %h local_addr: %h, din %h, bank: %h", addr, local_addr, din, bank[local_addr]);
         end
     end
 endmodule
