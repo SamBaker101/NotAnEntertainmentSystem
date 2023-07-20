@@ -83,7 +83,7 @@ module decoder(
 
                         end	
 	                    `OPP_STA: begin  
-                            we = `WE_DOUT;
+                            we[`WE_DOUT] = 1'b1;
                             source_selector_0 = `SELECTOR_ADD;
                             target_selector_0 = `SELECTOR_D;
                             get_next = 1'b1;
@@ -92,7 +92,7 @@ module decoder(
 
                         end	
 	                    `OPP_LDA: begin  
-                            we = `WE_ADD;
+                            we[`WE_ADD] = 1'b1;
                             target_selector_0 = `SELECTOR_ADD;
                             source_selector_0 = `SELECTOR_D;
                             get_next = 1'b1;

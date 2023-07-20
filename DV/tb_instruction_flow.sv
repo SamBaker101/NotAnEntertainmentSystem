@@ -127,7 +127,7 @@ module tb_iflow;
 		.reset_n(reset_n), 
 		.instruction_in(instruction), 
 		.opp(),
-		.we(we),
+		.we({we_dout, we[5:0]}),    //dont ask, Ill fix this in a minute
 		.read_write(we_dout),
 		.source_selector_0(source_selector_0),
 		.target_selector_0(target_selector_0),
@@ -168,7 +168,6 @@ module tb_iflow;
         reg [`REG_WIDTH - 1 : 0] inst_list [`MEM_DEPTH - `INSTRUCTION_BASE - 1 : 0];
         reg [`REG_WIDTH - 1 : 0] mem_unit;
 
-
 		$dumpfile("Out/iflow.vcd");
 		$dumpvars(0, tb_iflow);
         
@@ -183,7 +182,7 @@ module tb_iflow;
             
             mem_write   = 1'b1;
             addr_in     = i;
-            d_in    = mem_unit;
+            d_in        = mem_unit;
 
             #5;
             phi0 = 0;
@@ -232,7 +231,7 @@ module tb_iflow;
             mem_model[i + `INSTRUCTION_BASE] = inst_list[i];    
             
             mem_write   = 1'b1;
-            addr_in     = i;
+            addr_in     = i + `INSTRUCTION_BASE;
             d_in    = inst_list[i];
 
             #5;
@@ -265,6 +264,7 @@ module tb_iflow;
                     phi0 = 1;
         end
 
+        manual_mem = 1'b1;
         //Checks
         //Check that model matches mem
         for (i = 0; i < `INSTRUCTION_BASE; i++) begin
