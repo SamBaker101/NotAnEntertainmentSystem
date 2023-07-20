@@ -6,7 +6,7 @@
 `define DECODE
 
 module decoder(
-		clk, reset_n, instruction_in, opp, we, read_write, source_selector_0, target_selector_0, 
+		clk, reset_n, instruction_in, opp, we, source_selector_0, target_selector_0, 
         source_selector_1, target_selector_1, imm_addr, instruction_ready, addr, get_next
 		);
 	
@@ -24,7 +24,7 @@ module decoder(
 
         output reg [ADDR_WIDTH - 1: 0] addr;
         output reg [`WE_WIDTH - 1 : 0] we;
-        output reg read_write, get_next; //get_next logic required
+        output reg get_next; //get_next logic required
 
         /////////////////////////////
 
@@ -36,7 +36,6 @@ module decoder(
         
         always @(posedge clk) begin
             we = 0;
-            read_write = 1'b1;
             target_selector_0 = 0;
             target_selector_1 = 0;
 
@@ -46,7 +45,6 @@ module decoder(
                 target_selector_1 = 0;
                 imm_addr = 0;
                 we = 0;
-                read_write = 1'b1;
 
             end else begin
                 if (instruction_ready) begin

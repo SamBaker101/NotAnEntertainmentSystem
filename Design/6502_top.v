@@ -111,7 +111,6 @@ module cpu_top(
 		.instruction_in(instruction), 
 		.opp(),
 		.we(we),
-		.read_write(we[6]),
 		.source_selector_0(source_selector_0),
 		.target_selector_0(target_selector_0),
 		.source_selector_1(source_selector_1),

@@ -29,6 +29,7 @@ module tb_iflow;
     //  IN
     reg phi0, reset_n;
     reg mem_write;
+    reg trigger_program;
 
     //  OUT
     wire [`REG_WIDTH - 1 : 0] ialu_a, ialu_b;
@@ -42,7 +43,7 @@ module tb_iflow;
     wire [`ADDR_WIDTH - 1 : 0] addr;
     wire [`REG_WIDTH - 1 : 0] d_to_fetch, d_from_fetch;
 
-    wire get_next;
+    wire get_next, ask_next;
     wire instruction_ready;
 
     wire [`WE_WIDTH - 1 : 0] we;
@@ -98,6 +99,7 @@ module tb_iflow;
 	assign we[0] = (pc != pc_next) ? 1'b1 : 0;
 	assign iPC 	 = (pc != pc_next) ? pc_next : pc;
 
+    assign get_next = trigger_program ? trigger_program : ask_next;
 //Tests functionality with single bit inputs
     mem #(.DEPTH(`MEM_DEPTH)) mem_test(
 		.clk(phi0), 
@@ -128,13 +130,12 @@ module tb_iflow;
 		.instruction_in(instruction), 
 		.opp(),
 		.we({we_dout, we[5:0]}),    //dont ask, Ill fix this in a minute
-		.read_write(we_dout),
 		.source_selector_0(source_selector_0),
 		.target_selector_0(target_selector_0),
 		.source_selector_1(source_selector_1),
 		.target_selector_1(target_selector_1),
 		.imm_addr(imm),
-		.get_next(get_next),
+		.get_next(ask_next),
 		.instruction_ready(instruction_ready)
 		);
 
@@ -179,29 +180,33 @@ module tb_iflow;
         for (i = 0; i < `INSTRUCTION_BASE; i++) begin
             mem_unit = $urandom(seed);
             mem_model[i] = mem_unit;    
-            
+            $display("mem_model[%d] = %h", i, mem_model[i]);
+
             mem_write   = 1'b1;
             addr_in     = i;
             d_in        = mem_unit;
 
             #5;
-            phi0 = 0;
-            #5;
             phi0 = 1;
+            #5;
+            phi0 = 0;
         end
 
         //Check that model matches mem
         for (i = 0; i < `INSTRUCTION_BASE; i++) begin
                 mem_write   = 1'b0;
                 addr_in     = i;
-                mem_unit    = d_from_mem;
-
+                
+                #5;
+                phi0 = 1;
                 #5;
                 phi0 = 0;
                 #5;
-                phi0 = 1;
 
-                if (mem_unit != mem_model[i]) $fatal(1, "Error with mem write/read at addr %h", i);
+                mem_unit    = d_from_mem;
+                
+                if (mem_unit != mem_model[i]) $fatal(1, "Error with mem write/read at addr %h, mem_unit = %h, mem_model[%0d] = %h", i, mem_unit, i, mem_model[i]);
+                else $display("Match at addr %0d value %h", i, mem_model[i]);
             end
 
         //ENTER SOME INSTRUCTIONS HERE;
@@ -223,8 +228,7 @@ module tb_iflow;
         inst_list[15]   = 8'h0;
 
         //Modify mem_model
-        mem_unit = mem_model[16'h04];
-        mem_model[16'h02] = mem_unit;
+        mem_model[16'h02] = 8'h04;
         
         //Load Program
         for (i = 0; i < `MEM_DEPTH - `INSTRUCTION_BASE; i++) begin
@@ -235,21 +239,29 @@ module tb_iflow;
             d_in    = inst_list[i];
 
             #5;
-            phi0 = 0;
-            #5;
             phi0 = 1;
+            #5;
+            phi0 = 0;
         end
+
+        trigger_program = 1'b1;
+        #5;
+        phi0 = 1;
+        #5;
+        phi0 = 0;
+        trigger_program = 1'b0;
 
         //Check Program
         for (i = 0; i < `MEM_DEPTH - `INSTRUCTION_BASE; i++) begin
                 mem_write   = 1'b0;
                 addr_in     = i + `INSTRUCTION_BASE;
-                mem_unit    = d_from_mem;
 
                 #5;
-                phi0 = 0;
-                #5;
                 phi0 = 1;
+                #5;
+                phi0 = 0;
+
+                mem_unit    = d_from_mem;
 
                 if (mem_unit != inst_list[i]) $fatal(1, "Error with mem write/read at addr %h", i);
         end
@@ -259,9 +271,9 @@ module tb_iflow;
         //Spin the clock
         for (i = 0; i < `CYCLES; i++) begin
                     #5;
-                    phi0 = 0;
-                    #5;
                     phi0 = 1;
+                    #5;
+                    phi0 = 0;
         end
 
         manual_mem = 1'b1;
@@ -270,12 +282,13 @@ module tb_iflow;
         for (i = 0; i < `INSTRUCTION_BASE; i++) begin
                 mem_write   = 1'b0;
                 addr_in     = i;
-                mem_unit    = d_from_mem;
 
                 #5;
-                phi0 = 0;
-                #5;
                 phi0 = 1;
+                #5;
+                phi0 = 0;
+
+                mem_unit    = d_from_mem;
 
                 if (mem_unit != mem_model[i]) $fatal(1, "Error: incorrect mem at addr %h", i);
         end
@@ -284,12 +297,13 @@ module tb_iflow;
         for (i = 0; i < `INSTRUCTION_BASE; i++) begin
                 mem_write   = 1'b0;
                 addr_in     = i;
-                mem_unit    = d_from_mem;
 
                 #5;
-                phi0 = 0;
-                #5;
                 phi0 = 1;
+                #5;
+                phi0 = 0;
+
+                mem_unit    = d_from_mem;
 
                 $display("addr: %h data: %h, mem_model: %h", i, mem_unit, mem_model[i]);
         end

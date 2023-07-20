@@ -1,5 +1,5 @@
 $date
-	Wed Jul 19 22:34:46 2023
+	Wed Jul 19 23:04:13 2023
 $end
 $version
 	Icarus Verilog
@@ -17,12 +17,12 @@ $var wire 8 & iY [7:0] $end
 $var wire 8 ' pc [7:0] $end
 $var wire 8 ( pc_next [7:0] $end
 $var wire 7 ) we [6:0] $end
-$var wire 1 * we_dout $end
-$var wire 1 + we_y $end
-$var wire 1 , we_x $end
-$var wire 1 - we_stat $end
-$var wire 1 . we_sp $end
-$var wire 1 / we_pc $end
+$var wire 1 * we_y $end
+$var wire 1 + we_x $end
+$var wire 1 , we_stat $end
+$var wire 1 - we_sp $end
+$var wire 1 . we_pc $end
+$var wire 1 / we_dout $end
 $var wire 1 0 we_add $end
 $var wire 3 1 target_selector_1 [2:0] $end
 $var wire 3 2 target_selector_0 [2:0] $end
@@ -51,235 +51,237 @@ $var wire 8 H d_to_mem1 [7:0] $end
 $var wire 8 I d_to_mem [7:0] $end
 $var wire 8 J d_from_mem [7:0] $end
 $var wire 8 K d_from_fetch [7:0] $end
-$var wire 16 L addr [15:0] $end
-$var reg 16 M addr_in [15:0] $end
-$var reg 8 N d_in [7:0] $end
-$var reg 32 O i [31:0] $end
-$var reg 1 P manual_mem $end
-$var reg 1 Q mem_write $end
-$var reg 1 R phi0 $end
-$var reg 1 S reset_n $end
-$var reg 32 T seed [31:0] $end
-$var reg 3 U source_selector_01 [2:0] $end
-$var reg 3 V target_selector_01 [2:0] $end
+$var wire 1 L ask_next $end
+$var wire 16 M addr [15:0] $end
+$var reg 16 N addr_in [15:0] $end
+$var reg 8 O d_in [7:0] $end
+$var reg 32 P i [31:0] $end
+$var reg 1 Q manual_mem $end
+$var reg 1 R mem_write $end
+$var reg 1 S phi0 $end
+$var reg 1 T reset_n $end
+$var reg 32 U seed [31:0] $end
+$var reg 3 V source_selector_01 [2:0] $end
+$var reg 3 W target_selector_01 [2:0] $end
+$var reg 1 X trigger_program $end
 $scope module ADD $end
-$var wire 8 W din [7:0] $end
-$var wire 1 S reset_n $end
-$var wire 1 X valid $end
+$var wire 8 Y din [7:0] $end
+$var wire 1 T reset_n $end
+$var wire 1 Z valid $end
 $var wire 1 0 we $end
 $var wire 1 7 clk $end
-$var parameter 32 Y REG_WIDTH $end
-$var reg 8 Z dout [7:0] $end
+$var parameter 32 [ REG_WIDTH $end
+$var reg 8 \ dout [7:0] $end
 $upscope $end
 $scope module PC $end
-$var wire 8 [ din [7:0] $end
-$var wire 1 S reset_n $end
-$var wire 1 \ valid $end
-$var wire 1 / we $end
-$var wire 1 7 clk $end
-$var parameter 32 ] REG_WIDTH $end
-$var reg 8 ^ dout [7:0] $end
-$upscope $end
-$scope module SP $end
-$var wire 8 _ din [7:0] $end
-$var wire 1 S reset_n $end
-$var wire 1 ` valid $end
+$var wire 8 ] din [7:0] $end
+$var wire 1 T reset_n $end
+$var wire 1 ^ valid $end
 $var wire 1 . we $end
 $var wire 1 7 clk $end
-$var parameter 32 a REG_WIDTH $end
-$var reg 8 b dout [7:0] $end
+$var parameter 32 _ REG_WIDTH $end
+$var reg 8 ` dout [7:0] $end
 $upscope $end
-$scope module STAT $end
-$var wire 8 c din [7:0] $end
-$var wire 1 S reset_n $end
-$var wire 1 d valid $end
+$scope module SP $end
+$var wire 8 a din [7:0] $end
+$var wire 1 T reset_n $end
+$var wire 1 b valid $end
 $var wire 1 - we $end
 $var wire 1 7 clk $end
-$var parameter 32 e REG_WIDTH $end
-$var reg 8 f dout [7:0] $end
+$var parameter 32 c REG_WIDTH $end
+$var reg 8 d dout [7:0] $end
 $upscope $end
-$scope module X $end
-$var wire 8 g din [7:0] $end
-$var wire 1 S reset_n $end
-$var wire 1 h valid $end
+$scope module STAT $end
+$var wire 8 e din [7:0] $end
+$var wire 1 T reset_n $end
+$var wire 1 f valid $end
 $var wire 1 , we $end
 $var wire 1 7 clk $end
-$var parameter 32 i REG_WIDTH $end
-$var reg 8 j dout [7:0] $end
+$var parameter 32 g REG_WIDTH $end
+$var reg 8 h dout [7:0] $end
 $upscope $end
-$scope module Y $end
-$var wire 8 k din [7:0] $end
-$var wire 1 S reset_n $end
-$var wire 1 l valid $end
+$scope module X $end
+$var wire 8 i din [7:0] $end
+$var wire 1 T reset_n $end
+$var wire 1 j valid $end
 $var wire 1 + we $end
 $var wire 1 7 clk $end
-$var parameter 32 m REG_WIDTH $end
-$var reg 8 n dout [7:0] $end
+$var parameter 32 k REG_WIDTH $end
+$var reg 8 l dout [7:0] $end
+$upscope $end
+$scope module Y $end
+$var wire 8 m din [7:0] $end
+$var wire 1 T reset_n $end
+$var wire 1 n valid $end
+$var wire 1 * we $end
+$var wire 1 7 clk $end
+$var parameter 32 o REG_WIDTH $end
+$var reg 8 p dout [7:0] $end
 $upscope $end
 $scope module clk_mod $end
-$var wire 1 R phi0 $end
+$var wire 1 S phi0 $end
 $var wire 1 8 phi1 $end
 $var wire 1 7 phi2 $end
-$var wire 1 o reset_n $end
+$var wire 1 q reset_n $end
 $upscope $end
 $scope module decode $end
 $var wire 1 8 clk $end
-$var wire 1 S reset_n $end
+$var wire 1 T reset_n $end
 $var wire 1 ? instruction_ready $end
-$var wire 8 p instruction_in [7:0] $end
-$var parameter 32 q ADDR_WIDTH $end
-$var parameter 32 r OPP_WIDTH $end
-$var parameter 32 s REG_WIDTH $end
-$var reg 3 t add_mode [2:0] $end
-$var reg 16 u addr [15:0] $end
-$var reg 4 v fetch_counter [3:0] $end
-$var reg 4 w fetch_target [3:0] $end
-$var reg 1 E get_next $end
-$var reg 8 x imm_addr [7:0] $end
-$var reg 8 y instruction [7:0] $end
-$var reg 8 z opp [7:0] $end
-$var reg 5 { opp_code [4:0] $end
-$var reg 1 | read_write $end
-$var reg 3 } source_selector_0 [2:0] $end
-$var reg 3 ~ source_selector_1 [2:0] $end
-$var reg 3 !" target_selector_0 [2:0] $end
-$var reg 3 "" target_selector_1 [2:0] $end
-$var reg 7 #" we [6:0] $end
+$var wire 8 r instruction_in [7:0] $end
+$var parameter 32 s ADDR_WIDTH $end
+$var parameter 32 t OPP_WIDTH $end
+$var parameter 32 u REG_WIDTH $end
+$var reg 3 v add_mode [2:0] $end
+$var reg 16 w addr [15:0] $end
+$var reg 4 x fetch_counter [3:0] $end
+$var reg 4 y fetch_target [3:0] $end
+$var reg 1 L get_next $end
+$var reg 8 z imm_addr [7:0] $end
+$var reg 8 { instruction [7:0] $end
+$var reg 8 | opp [7:0] $end
+$var reg 5 } opp_code [4:0] $end
+$var reg 3 ~ source_selector_0 [2:0] $end
+$var reg 3 !" source_selector_1 [2:0] $end
+$var reg 3 "" target_selector_0 [2:0] $end
+$var reg 3 #" target_selector_1 [2:0] $end
+$var reg 7 $" we [6:0] $end
 $upscope $end
 $scope module fetch $end
 $var wire 1 8 clk $end
-$var wire 8 $" data_in [7:0] $end
+$var wire 8 %" data_in [7:0] $end
 $var wire 1 E get_next $end
-$var wire 8 %" pc [7:0] $end
-$var wire 1 S reset_n $end
-$var parameter 32 &" ADDR_WIDTH $end
-$var parameter 32 '" OPP_WIDTH $end
-$var parameter 32 (" REG_WIDTH $end
-$var reg 3 )" add_mode [2:0] $end
-$var reg 16 *" addr [15:0] $end
-$var reg 3 +" fetch_counter [2:0] $end
-$var reg 3 ," fetch_source_selector [2:0] $end
-$var reg 8 -" instruction [7:0] $end
-$var reg 8 ." instruction_out [7:0] $end
+$var wire 8 &" pc [7:0] $end
+$var wire 1 T reset_n $end
+$var parameter 32 '" ADDR_WIDTH $end
+$var parameter 32 (" OPP_WIDTH $end
+$var parameter 32 )" REG_WIDTH $end
+$var reg 3 *" add_mode [2:0] $end
+$var reg 16 +" addr [15:0] $end
+$var reg 3 ," fetch_counter [2:0] $end
+$var reg 3 -" fetch_source_selector [2:0] $end
+$var reg 8 ." instruction [7:0] $end
+$var reg 8 /" instruction_out [7:0] $end
 $var reg 1 ? instruction_ready $end
-$var reg 8 /" pc_next [7:0] $end
-$var reg 8 0" reg_out [7:0] $end
+$var reg 8 0" pc_next [7:0] $end
+$var reg 8 1" reg_out [7:0] $end
 $upscope $end
 $scope module mem_test $end
-$var wire 16 1" addr [15:0] $end
-$var wire 1 R clk $end
-$var wire 8 2" din [7:0] $end
-$var wire 1 S reset_n $end
-$var wire 1 3" we $end
-$var wire 16 4" local_addr [15:0] $end
-$var wire 8 5" dout [7:0] $end
-$var parameter 32 6" ADDR_WIDTH $end
-$var parameter 32 7" BASE $end
-$var parameter 32 8" DEPTH $end
-$var parameter 32 9" WIDTH $end
+$var wire 16 2" addr [15:0] $end
+$var wire 1 S clk $end
+$var wire 8 3" din [7:0] $end
+$var wire 1 T reset_n $end
+$var wire 1 4" we $end
+$var wire 16 5" local_addr [15:0] $end
+$var wire 8 6" dout [7:0] $end
+$var parameter 32 7" ADDR_WIDTH $end
+$var parameter 32 8" BASE $end
+$var parameter 32 9" DEPTH $end
+$var parameter 32 :" WIDTH $end
 $upscope $end
 $scope module reg_fan0 $end
 $var wire 1 7 clk $end
-$var wire 3 :" selector [2:0] $end
-$var wire 8 ;" in [7:0] $end
-$var parameter 32 <" SIGNAL_WIDTH $end
-$var reg 8 =" out0 [7:0] $end
-$var reg 8 >" out1 [7:0] $end
-$var reg 8 ?" out2 [7:0] $end
-$var reg 8 @" out3 [7:0] $end
-$var reg 8 A" out4 [7:0] $end
-$var reg 8 B" out5 [7:0] $end
-$var reg 8 C" out6 [7:0] $end
-$var reg 8 D" out7 [7:0] $end
+$var wire 3 ;" selector [2:0] $end
+$var wire 8 <" in [7:0] $end
+$var parameter 32 =" SIGNAL_WIDTH $end
+$var reg 8 >" out0 [7:0] $end
+$var reg 8 ?" out1 [7:0] $end
+$var reg 8 @" out2 [7:0] $end
+$var reg 8 A" out3 [7:0] $end
+$var reg 8 B" out4 [7:0] $end
+$var reg 8 C" out5 [7:0] $end
+$var reg 8 D" out6 [7:0] $end
+$var reg 8 E" out7 [7:0] $end
 $upscope $end
 $scope module reg_fan1 $end
 $var wire 1 7 clk $end
-$var wire 3 E" selector [2:0] $end
-$var wire 8 F" in [7:0] $end
-$var parameter 32 G" SIGNAL_WIDTH $end
-$var reg 8 H" out0 [7:0] $end
-$var reg 8 I" out1 [7:0] $end
-$var reg 8 J" out2 [7:0] $end
-$var reg 8 K" out3 [7:0] $end
-$var reg 8 L" out4 [7:0] $end
-$var reg 8 M" out5 [7:0] $end
-$var reg 8 N" out6 [7:0] $end
-$var reg 8 O" out7 [7:0] $end
+$var wire 3 F" selector [2:0] $end
+$var wire 8 G" in [7:0] $end
+$var parameter 32 H" SIGNAL_WIDTH $end
+$var reg 8 I" out0 [7:0] $end
+$var reg 8 J" out1 [7:0] $end
+$var reg 8 K" out2 [7:0] $end
+$var reg 8 L" out3 [7:0] $end
+$var reg 8 M" out4 [7:0] $end
+$var reg 8 N" out5 [7:0] $end
+$var reg 8 O" out6 [7:0] $end
+$var reg 8 P" out7 [7:0] $end
 $upscope $end
 $scope module reg_mux0 $end
 $var wire 1 7 clk $end
-$var wire 8 P" in0 [7:0] $end
-$var wire 8 Q" in1 [7:0] $end
-$var wire 8 R" in2 [7:0] $end
-$var wire 8 S" in3 [7:0] $end
-$var wire 8 T" in4 [7:0] $end
-$var wire 8 U" in5 [7:0] $end
-$var wire 8 V" in6 [7:0] $end
-$var wire 8 W" in7 [7:0] $end
-$var wire 3 X" selector [2:0] $end
-$var parameter 32 Y" SIGNAL_WIDTH $end
-$var reg 8 Z" out [7:0] $end
+$var wire 8 Q" in0 [7:0] $end
+$var wire 8 R" in1 [7:0] $end
+$var wire 8 S" in2 [7:0] $end
+$var wire 8 T" in3 [7:0] $end
+$var wire 8 U" in4 [7:0] $end
+$var wire 8 V" in5 [7:0] $end
+$var wire 8 W" in6 [7:0] $end
+$var wire 8 X" in7 [7:0] $end
+$var wire 3 Y" selector [2:0] $end
+$var parameter 32 Z" SIGNAL_WIDTH $end
+$var reg 8 [" out [7:0] $end
 $upscope $end
 $scope module reg_mux1 $end
 $var wire 1 7 clk $end
-$var wire 8 [" in0 [7:0] $end
-$var wire 8 \" in1 [7:0] $end
-$var wire 8 ]" in2 [7:0] $end
-$var wire 8 ^" in3 [7:0] $end
-$var wire 8 _" in4 [7:0] $end
-$var wire 8 `" in5 [7:0] $end
-$var wire 8 a" in6 [7:0] $end
-$var wire 8 b" in7 [7:0] $end
-$var wire 3 c" selector [2:0] $end
-$var parameter 32 d" SIGNAL_WIDTH $end
-$var reg 8 e" out [7:0] $end
+$var wire 8 \" in0 [7:0] $end
+$var wire 8 ]" in1 [7:0] $end
+$var wire 8 ^" in2 [7:0] $end
+$var wire 8 _" in3 [7:0] $end
+$var wire 8 `" in4 [7:0] $end
+$var wire 8 a" in5 [7:0] $end
+$var wire 8 b" in6 [7:0] $end
+$var wire 8 c" in7 [7:0] $end
+$var wire 3 d" selector [2:0] $end
+$var parameter 32 e" SIGNAL_WIDTH $end
+$var reg 8 f" out [7:0] $end
 $upscope $end
 $scope begin main_loop $end
-$var reg 8 f" mem_unit [7:0] $end
+$var reg 8 g" mem_unit [7:0] $end
 $upscope $end
 $upscope $end
 $enddefinitions $end
 $comment Show the parameter values. $end
 $dumpall
-b1000 d"
-b1000 Y"
-b1000 G"
-b1000 <"
-b1000 9"
-b100000 8"
-b0 7"
-b10000 6"
+b1000 e"
+b1000 Z"
+b1000 H"
+b1000 ="
+b1000 :"
+b100000 9"
+b0 8"
+b10000 7"
+b1000 )"
 b1000 ("
-b1000 '"
-b10000 &"
-b1000 s
-b1000 r
-b10000 q
-b1000 m
-b1000 i
-b1000 e
-b1000 a
-b1000 ]
-b1000 Y
+b10000 '"
+b1000 u
+b1000 t
+b10000 s
+b1000 o
+b1000 k
+b1000 g
+b1000 c
+b1000 _
+b1000 [
 $end
 #0
 $dumpvars
-b10100 f"
-bx e"
+b10100 g"
+bx f"
+bx d"
 bx c"
-bx b"
-b0 a"
-bz `"
+b0 b"
+bz a"
+bx `"
 bx _"
 bx ^"
 bx ]"
 bx \"
 bx ["
-bx Z"
+bx Y"
 bx X"
-bx W"
-b0 V"
-bz U"
+b0 W"
+bz V"
+bx U"
 bx T"
 bx S"
 bx R"
@@ -292,9 +294,9 @@ bx L"
 bx K"
 bx J"
 bx I"
-bx H"
-bx F"
-b0 E"
+bx G"
+b0 F"
+bx E"
 bx D"
 bx C"
 bx B"
@@ -302,69 +304,69 @@ bx A"
 bx @"
 bx ?"
 bx >"
-bx ="
+bx <"
 bx ;"
-bx :"
-bz 5"
-b0 4"
-13"
-b10100 2"
-b0 1"
+bz 6"
+b0 5"
+14"
+b10100 3"
+b0 2"
+bx 1"
 bx 0"
 bx /"
 bx ."
-bx -"
-b101 ,"
+b101 -"
+bx ,"
 bx +"
 bx *"
-bx )"
+bx &"
 bx %"
-bx $"
+b0 $"
 b0 #"
 b0 ""
-b0 !"
+bx !"
 bx ~
 bx }
-1|
+bx |
 bx {
 bx z
 bx y
 bx x
 bx w
 bx v
-bx u
-bx t
+bx r
+zq
 bx p
-zo
-bx n
-zl
-bx k
-bx j
-zh
-bx g
-bx f
-zd
-bz c
-bx b
-z`
-bz _
-bx ^
-z\
-bx [
-bx Z
-zX
+zn
+bx m
+bx l
+zj
+bx i
+bx h
+zf
+bz e
+bx d
+zb
+bz a
+bx `
+z^
+bx ]
+bx \
+zZ
+bx Y
+xX
 bx W
 bx V
-bx U
-b10001010000111111011011000000100 T
-xS
-0R
+b10001010000111111011011000000100 U
+xT
+0S
+1R
 1Q
-1P
-b0 O
-b10100 N
+b0 P
+b10100 O
+b0 N
 b0 M
-b0 L
+xL
 bx K
 bz J
 bx I
@@ -393,12 +395,12 @@ bx 3
 b0 2
 b0 1
 00
-x/
-0.
+0/
+x.
 0-
 0,
 0+
-x*
+0*
 b100000x )
 bx (
 bx '
@@ -409,331 +411,1506 @@ bz #
 bx "
 bx !
 $end
-#10
-b1 4"
-b11011011 H
-b11011011 2"
-b1 L
-b1 1"
+#5
 bz 6
-bz ;"
-bz Z"
-b111 V
-b111 :"
-b101 U
-b101 X"
+bz <"
+bz ["
+b111 W
+b111 ;"
+b101 V
+b101 Y"
 08
-b11011011 N
+17
+1S
+#10
+b1 5"
+b11011011 H
+b11011011 3"
 b1 M
-b11011011 f"
-b11101101101001101111010100110101 T
-b1 O
-17
-1R
+b1 2"
+18
+b11011011 O
+b1 N
+b11011011 g"
+b11101101101001101111010100110101 U
+b1 P
+07
+0S
 #15
-18
-07
-0R
+bz E"
+08
+17
+1S
 #20
-b10 4"
+b10 5"
 b1111100 H
-b1111100 2"
-b10 L
-b10 1"
-bz D"
-08
-b1111100 N
+b1111100 3"
 b10 M
-b1111100 f"
-b10111110010110110000110001110010 T
-b10 O
-17
-1R
+b10 2"
+18
+b1111100 O
+b10 N
+b1111100 g"
+b10111110010110110000110001110010 U
+b10 P
+07
+0S
 #25
-18
-07
-0R
+08
+17
+1S
 #30
-b11 4"
+b11 5"
 b110101 H
-b110101 2"
-b11 L
-b11 1"
-08
-b110101 N
+b110101 3"
 b11 M
-b110101 f"
-b11010111111001100000101001011 T
-b11 O
-17
-1R
+b11 2"
+18
+b110101 O
+b11 N
+b110101 g"
+b11010111111001100000101001011 U
+b11 P
+07
+0S
 #35
-18
-07
-0R
+08
+17
+1S
 #40
-b100 4"
+b100 5"
 b1100111 H
-b1100111 2"
-b100 L
-b100 1"
-08
-b1100111 N
+b1100111 3"
 b100 M
-b1100111 f"
-b110011100000101001100000010000 T
-b100 O
-17
-1R
+b100 2"
+18
+b1100111 O
+b100 N
+b1100111 g"
+b110011100000101001100000010000 U
+b100 P
+07
+0S
 #45
-18
-07
-0R
+08
+17
+1S
 #50
-b101 4"
+b101 5"
 b11110010 H
-b11110010 2"
-b101 L
-b101 1"
-08
-b11110010 N
+b11110010 3"
 b101 M
-b11110010 f"
-b1111001010111001001010011010001 T
-b101 O
-17
-1R
+b101 2"
+18
+b11110010 O
+b101 N
+b11110010 g"
+b1111001010111001001010011010001 U
+b101 P
+07
+0S
 #55
-18
-07
-0R
+08
+17
+1S
 #60
-b110 4"
+b110 5"
 b11101111 H
-b11101111 2"
-b110 L
-b110 1"
-08
-b11101111 N
+b11101111 3"
 b110 M
-b11101111 f"
-b1110111100000101100100001011110 T
-b110 O
-17
-1R
+b110 2"
+18
+b11101111 O
+b110 N
+b11101111 g"
+b1110111100000101100100001011110 U
+b110 P
+07
+0S
 #65
-18
-07
-0R
+08
+17
+1S
 #70
-b111 4"
+b111 5"
 b1000000 H
-b1000000 2"
-b111 L
-b111 1"
-08
-b1000000 N
+b1000000 3"
 b111 M
-b1000000 f"
-b100000010001010011100101000111 T
-b111 O
-17
-1R
+b111 2"
+18
+b1000000 O
+b111 N
+b1000000 g"
+b100000010001010011100101000111 U
+b111 P
+07
+0S
 #75
-18
-07
-0R
+08
+17
+1S
 #80
-b1000 4"
+b1000 5"
 b101001 H
-b101001 2"
-b1000 L
-b1000 1"
-08
-b101001 N
+b101001 3"
 b1000 M
-b101001 f"
-b10010100100111100111100011011100 T
-b1000 O
-17
-1R
+b1000 2"
+18
+b101001 O
+b1000 N
+b101001 g"
+b10010100100111100111100011011100 U
+b1000 P
+07
+0S
 #85
-18
-07
-0R
+08
+17
+1S
 #90
-b1001 4"
+b1001 5"
 b1111 H
-b1111 2"
-b1001 L
-b1001 1"
-08
-b1111 N
+b1111 3"
 b1001 M
-b1111 f"
-b10000111111001011111010000101101 T
-b1001 O
-17
-1R
-#95
+b1001 2"
 18
-07
-0R
-#100
-b1010 4"
-b11101001 H
-b11101001 2"
-b1010 L
-b1010 1"
-08
-b11101001 N
-b1010 M
-b11101001 f"
-b1110100101101111101000100001010 T
-b1010 O
-17
-1R
-#105
-18
-07
-0R
-#110
-b1011 4"
-b111011 H
-b111011 2"
-b1011 L
-b1011 1"
-08
-b111011 N
-b1011 M
-b111011 f"
-b10011101110110011110011100000011 T
-b1011 O
-17
-1R
-#115
-18
-07
-0R
-#120
-b1100 4"
-b10111110 H
-b10111110 2"
-b1100 L
-b1100 1"
-08
-b10111110 N
-b1100 M
-b10111110 f"
-b1011111001111000010010001101000 T
-b1100 O
-17
-1R
-#125
-18
-07
-0R
-#130
-b1101 4"
-b11101010 H
-b11101010 2"
-b1101 L
-b1101 1"
-08
-b11101010 N
-b1101 M
-b11101010 f"
-b1110101011010100110111101001001 T
-b1101 O
-17
-1R
-#135
-18
-07
-0R
-#140
-b1110 4"
-b10111010 H
-b10111010 2"
-b1110 L
-b1110 1"
-08
-b10111010 N
-b1110 M
-b10111010 f"
-b11011101001010101101001001110110 T
-b1110 O
-17
-1R
-#145
-18
-07
-0R
-#150
-b1111 4"
-b110100 H
-b110100 2"
-b1111 L
-b1111 1"
-08
-b110100 N
-b1111 M
-b110100 f"
-b11010011100001000011001111111 T
 b1111 O
-17
-1R
-#155
-18
+b1001 N
+b1111 g"
+b10000111111001011111010000101101 U
+b1001 P
 07
-0R
+0S
+#95
+08
+17
+1S
+#100
+b1010 5"
+b11101001 H
+b11101001 3"
+b1010 M
+b1010 2"
+18
+b11101001 O
+b1010 N
+b11101001 g"
+b1110100101101111101000100001010 U
+b1010 P
+07
+0S
+#105
+08
+17
+1S
+#110
+b1011 5"
+b111011 H
+b111011 3"
+b1011 M
+b1011 2"
+18
+b111011 O
+b1011 N
+b111011 g"
+b10011101110110011110011100000011 U
+b1011 P
+07
+0S
+#115
+08
+17
+1S
+#120
+b1100 5"
+b10111110 H
+b10111110 3"
+b1100 M
+b1100 2"
+18
+b10111110 O
+b1100 N
+b10111110 g"
+b1011111001111000010010001101000 U
+b1100 P
+07
+0S
+#125
+08
+17
+1S
+#130
+b1101 5"
+b11101010 H
+b11101010 3"
+b1101 M
+b1101 2"
+18
+b11101010 O
+b1101 N
+b11101010 g"
+b1110101011010100110111101001001 U
+b1101 P
+07
+0S
+#135
+08
+17
+1S
+#140
+b1110 5"
+b10111010 H
+b10111010 3"
+b1110 M
+b1110 2"
+18
+b10111010 O
+b1110 N
+b10111010 g"
+b11011101001010101101001001110110 U
+b1110 P
+07
+0S
+#145
+08
+17
+1S
+#150
+b1111 5"
+b110100 H
+b110100 3"
+b1111 M
+b1111 2"
+18
+b110100 O
+b1111 N
+b110100 g"
+b11010011100001000011001111111 U
+b1111 P
+07
+0S
+#155
+08
+17
+1S
 #160
 b10100 J
-b10100 5"
-b10100 U"
-b10100 `"
-b0 4"
-03"
-b0 L
-b0 1"
-b0x )
-08
-bz f"
+b10100 6"
+b10100 V"
+b10100 a"
+b0 5"
+04"
 b0 M
-0Q
-b0 O
-17
-1R
+b0 2"
+b0x )
+18
+b0 N
+0R
+b0 P
+07
+0S
 #165
-18
-07
-0R
-#170
-b11011011 J
-b11011011 5"
-b11011011 U"
-b11011011 `"
-b1 4"
-b1 L
-b1 1"
 b10100 6
-b10100 ;"
-b10100 Z"
+b10100 <"
+b10100 ["
 08
-b10100 f"
-b1 M
-b1 O
 17
-1R
-#175
+1S
+#170
 18
 07
-0R
+0S
+#175
+b11011011 J
+b11011011 6"
+b11011011 V"
+b11011011 a"
+b1 5"
+b1 M
+b1 2"
+b1 N
+b1 P
+b10100 g"
 #180
-b11011011 D"
+b11011011 E"
 b11011011 6
-b11011011 ;"
-b11011011 Z"
+b11011011 <"
+b11011011 ["
 08
 17
+1S
+#185
+18
+07
+0S
+#190
+b1111100 J
+b1111100 6"
+b1111100 V"
+b1111100 a"
+b10 5"
+b10 M
+b10 2"
+b10 N
+b10 P
+b11011011 g"
+#195
+b1111100 6
+b1111100 <"
+b1111100 ["
+08
+17
+1S
+#200
+18
+07
+0S
+#205
+b110101 J
+b110101 6"
+b110101 V"
+b110101 a"
+b11 5"
+b11 M
+b11 2"
+b11 N
+b11 P
+b1111100 g"
+#210
+b110101 E"
+b110101 6
+b110101 <"
+b110101 ["
+08
+17
+1S
+#215
+18
+07
+0S
+#220
+b1100111 J
+b1100111 6"
+b1100111 V"
+b1100111 a"
+b100 5"
+b100 M
+b100 2"
+b100 N
+b100 P
+b110101 g"
+#225
+b1100111 6
+b1100111 <"
+b1100111 ["
+08
+17
+1S
+#230
+18
+07
+0S
+#235
+b11110010 J
+b11110010 6"
+b11110010 V"
+b11110010 a"
+b101 5"
+b101 M
+b101 2"
+b101 N
+b101 P
+b1100111 g"
+#240
+b11110010 E"
+b11110010 6
+b11110010 <"
+b11110010 ["
+08
+17
+1S
+#245
+18
+07
+0S
+#250
+b11101111 J
+b11101111 6"
+b11101111 V"
+b11101111 a"
+b110 5"
+b110 M
+b110 2"
+b110 N
+b110 P
+b11110010 g"
+#255
+b11101111 6
+b11101111 <"
+b11101111 ["
+08
+17
+1S
+#260
+18
+07
+0S
+#265
+b1000000 J
+b1000000 6"
+b1000000 V"
+b1000000 a"
+b111 5"
+b111 M
+b111 2"
+b111 N
+b111 P
+b11101111 g"
+#270
+b1000000 E"
+b1000000 6
+b1000000 <"
+b1000000 ["
+08
+17
+1S
+#275
+18
+07
+0S
+#280
+b101001 J
+b101001 6"
+b101001 V"
+b101001 a"
+b1000 5"
+b1000 M
+b1000 2"
+b1000 N
+b1000 P
+b1000000 g"
+#285
+b101001 6
+b101001 <"
+b101001 ["
+08
+17
+1S
+#290
+18
+07
+0S
+#295
+b1111 J
+b1111 6"
+b1111 V"
+b1111 a"
+b1001 5"
+b1001 M
+b1001 2"
+b1001 N
+b1001 P
+b101001 g"
+#300
+b1111 E"
+b1111 6
+b1111 <"
+b1111 ["
+08
+17
+1S
+#305
+18
+07
+0S
+#310
+b11101001 J
+b11101001 6"
+b11101001 V"
+b11101001 a"
+b1010 5"
+b1010 M
+b1010 2"
+b1010 N
+b1010 P
+b1111 g"
+#315
+b11101001 6
+b11101001 <"
+b11101001 ["
+08
+17
+1S
+#320
+18
+07
+0S
+#325
+b111011 J
+b111011 6"
+b111011 V"
+b111011 a"
+b1011 5"
+b1011 M
+b1011 2"
+b1011 N
+b1011 P
+b11101001 g"
+#330
+b111011 E"
+b111011 6
+b111011 <"
+b111011 ["
+08
+17
+1S
+#335
+18
+07
+0S
+#340
+b10111110 J
+b10111110 6"
+b10111110 V"
+b10111110 a"
+b1100 5"
+b1100 M
+b1100 2"
+b1100 N
+b1100 P
+b111011 g"
+#345
+b10111110 6
+b10111110 <"
+b10111110 ["
+08
+17
+1S
+#350
+18
+07
+0S
+#355
+b11101010 J
+b11101010 6"
+b11101010 V"
+b11101010 a"
+b1101 5"
+b1101 M
+b1101 2"
+b1101 N
+b1101 P
+b10111110 g"
+#360
+b11101010 E"
+b11101010 6
+b11101010 <"
+b11101010 ["
+08
+17
+1S
+#365
+18
+07
+0S
+#370
+b10111010 J
+b10111010 6"
+b10111010 V"
+b10111010 a"
+b1110 5"
+b1110 M
+b1110 2"
+b1110 N
+b1110 P
+b11101010 g"
+#375
+b10111010 6
+b10111010 <"
+b10111010 ["
+08
+17
+1S
+#380
+18
+07
+0S
+#385
+b110100 J
+b110100 6"
+b110100 V"
+b110100 a"
+b1111 5"
+b1111 M
+b1111 2"
+b1111 N
+b1111 P
+b10111010 g"
+#390
+b110100 E"
+b110100 6
+b110100 <"
+b110100 ["
+08
+17
+1S
+#395
+18
+07
+0S
+#400
+bz J
+bz 6"
+bz V"
+bz a"
+b10000 5"
+14"
+b10101001 H
+b10101001 3"
+b10000 M
+b10000 2"
+b100000x )
+b10101001 O
+b10000 N
 1R
+b0 P
+b110100 g"
+#405
+bz 6
+bz <"
+bz ["
+08
+17
+1S
+#410
+b10001 5"
+b100 H
+b100 3"
+b10001 M
+b10001 2"
+18
+b100 O
+b10001 N
+b1 P
+07
+0S
+#415
+bz E"
+08
+17
+1S
+#420
+b10010 5"
+b10000101 H
+b10000101 3"
+b10010 M
+b10010 2"
+18
+b10000101 O
+b10010 N
+b10 P
+07
+0S
+#425
+08
+17
+1S
+#430
+b10011 5"
+b10 H
+b10 3"
+b10011 M
+b10011 2"
+18
+b10 O
+b10011 N
+b11 P
+07
+0S
+#435
+08
+17
+1S
+#440
+b10100 5"
+b0 H
+b0 3"
+b10100 M
+b10100 2"
+18
+b0 O
+b10100 N
+b100 P
+07
+0S
+#445
+08
+17
+1S
+#450
+b10101 5"
+b10101 M
+b10101 2"
+18
+b10101 N
+b101 P
+07
+0S
+#455
+08
+17
+1S
+#460
+b10110 5"
+b10110 M
+b10110 2"
+18
+b10110 N
+b110 P
+07
+0S
+#465
+08
+17
+1S
+#470
+b10111 5"
+b10111 M
+b10111 2"
+18
+b10111 N
+b111 P
+07
+0S
+#475
+08
+17
+1S
+#480
+b11000 5"
+b11000 M
+b11000 2"
+18
+b11000 N
+b1000 P
+07
+0S
+#485
+08
+17
+1S
+#490
+b11001 5"
+b11001 M
+b11001 2"
+18
+b11001 N
+b1001 P
+07
+0S
+#495
+08
+17
+1S
+#500
+b11010 5"
+b11010 M
+b11010 2"
+18
+b11010 N
+b1010 P
+07
+0S
+#505
+08
+17
+1S
+#510
+b11011 5"
+b11011 M
+b11011 2"
+18
+b11011 N
+b1011 P
+07
+0S
+#515
+08
+17
+1S
+#520
+b11100 5"
+b11100 M
+b11100 2"
+18
+b11100 N
+b1100 P
+07
+0S
+#525
+08
+17
+1S
+#530
+b11101 5"
+b11101 M
+b11101 2"
+18
+b11101 N
+b1101 P
+07
+0S
+#535
+08
+17
+1S
+#540
+b11110 5"
+b11110 M
+b11110 2"
+18
+b11110 N
+b1110 P
+07
+0S
+#545
+08
+17
+1S
+#550
+b11111 5"
+b11111 M
+b11111 2"
+18
+b11111 N
+b1111 P
+07
+0S
+#555
+08
+17
+1S
+#560
+b0 ,"
+1E
+18
+1X
+b10000 P
+07
+0S
+#565
+08
+17
+1S
+#570
+b10101001 J
+b10101001 6"
+b10101001 V"
+b10101001 a"
+b10000 5"
+04"
+b10000 M
+b10000 2"
+b0x )
+xE
+18
+b10000 N
+0R
+b0 P
+0X
+07
+0S
+#575
+b10101001 E"
+b10101001 6
+b10101001 <"
+b10101001 ["
+08
+17
+1S
+#580
+b100 J
+b100 6"
+b100 V"
+b100 a"
+b10001 5"
+b10001 M
+b10001 2"
+18
+b10001 N
+b1 P
+b10101001 g"
+07
+0S
+#585
+b100 6
+b100 <"
+b100 ["
+08
+17
+1S
+#590
+b10000101 J
+b10000101 6"
+b10000101 V"
+b10000101 a"
+b10010 5"
+b10010 M
+b10010 2"
+18
+b10010 N
+b10 P
+b100 g"
+07
+0S
+#595
+b10000101 E"
+b10000101 6
+b10000101 <"
+b10000101 ["
+08
+17
+1S
+#600
+b10 J
+b10 6"
+b10 V"
+b10 a"
+b10011 5"
+b10011 M
+b10011 2"
+18
+b10011 N
+b11 P
+b10000101 g"
+07
+0S
+#605
+b10 6
+b10 <"
+b10 ["
+08
+17
+1S
+#610
+b0 J
+b0 6"
+b0 V"
+b0 a"
+b10100 5"
+b10100 M
+b10100 2"
+18
+b10100 N
+b100 P
+b10 g"
+07
+0S
+#615
+b0 E"
+b0 6
+b0 <"
+b0 ["
+08
+17
+1S
+#620
+b10101 5"
+b10101 M
+b10101 2"
+18
+b10101 N
+b101 P
+b0 g"
+07
+0S
+#625
+08
+17
+1S
+#630
+b10110 5"
+b10110 M
+b10110 2"
+18
+b10110 N
+b110 P
+07
+0S
+#635
+08
+17
+1S
+#640
+b10111 5"
+b10111 M
+b10111 2"
+18
+b10111 N
+b111 P
+07
+0S
+#645
+08
+17
+1S
+#650
+b11000 5"
+b11000 M
+b11000 2"
+18
+b11000 N
+b1000 P
+07
+0S
+#655
+08
+17
+1S
+#660
+b11001 5"
+b11001 M
+b11001 2"
+18
+b11001 N
+b1001 P
+07
+0S
+#665
+08
+17
+1S
+#670
+b11010 5"
+b11010 M
+b11010 2"
+18
+b11010 N
+b1010 P
+07
+0S
+#675
+08
+17
+1S
+#680
+b11011 5"
+b11011 M
+b11011 2"
+18
+b11011 N
+b1011 P
+07
+0S
+#685
+08
+17
+1S
+#690
+b11100 5"
+b11100 M
+b11100 2"
+18
+b11100 N
+b1100 P
+07
+0S
+#695
+08
+17
+1S
+#700
+b11101 5"
+b11101 M
+b11101 2"
+18
+b11101 N
+b1101 P
+07
+0S
+#705
+08
+17
+1S
+#710
+b11110 5"
+b11110 M
+b11110 2"
+18
+b11110 N
+b1110 P
+07
+0S
+#715
+08
+17
+1S
+#720
+b11111 5"
+b11111 M
+b11111 2"
+18
+b11111 N
+b1111 P
+07
+0S
+#725
+08
+17
+1S
+#730
+bx J
+bx 6"
+bx V"
+bx a"
+bx 5"
+bx M
+bx 2"
+bx H
+bx 3"
+18
+0Q
+b0 P
+07
+0S
+#735
+bx E"
+bx 6
+bx <"
+bx ["
+08
+17
+1S
+#740
+18
+b1 P
+07
+0S
+#745
+08
+17
+1S
+#750
+18
+b10 P
+07
+0S
+#755
+08
+17
+1S
+#760
+18
+b11 P
+07
+0S
+#765
+08
+17
+1S
+#770
+18
+b100 P
+07
+0S
+#775
+08
+17
+1S
+#780
+18
+b101 P
+07
+0S
+#785
+08
+17
+1S
+#790
+18
+b110 P
+07
+0S
+#795
+08
+17
+1S
+#800
+18
+b111 P
+07
+0S
+#805
+08
+17
+1S
+#810
+18
+b1000 P
+07
+0S
+#815
+08
+17
+1S
+#820
+18
+b1001 P
+07
+0S
+#825
+08
+17
+1S
+#830
+18
+b1010 P
+07
+0S
+#835
+08
+17
+1S
+#840
+18
+b1011 P
+07
+0S
+#845
+08
+17
+1S
+#850
+18
+b1100 P
+07
+0S
+#855
+08
+17
+1S
+#860
+18
+b1101 P
+07
+0S
+#865
+08
+17
+1S
+#870
+18
+b1110 P
+07
+0S
+#875
+08
+17
+1S
+#880
+18
+b1111 P
+07
+0S
+#885
+08
+17
+1S
+#890
+18
+b10000 P
+07
+0S
+#895
+08
+17
+1S
+#900
+18
+b10001 P
+07
+0S
+#905
+08
+17
+1S
+#910
+18
+b10010 P
+07
+0S
+#915
+08
+17
+1S
+#920
+18
+b10011 P
+07
+0S
+#925
+08
+17
+1S
+#930
+18
+b10100 P
+07
+0S
+#935
+08
+17
+1S
+#940
+18
+b10101 P
+07
+0S
+#945
+08
+17
+1S
+#950
+18
+b10110 P
+07
+0S
+#955
+08
+17
+1S
+#960
+18
+b10111 P
+07
+0S
+#965
+08
+17
+1S
+#970
+18
+b11000 P
+07
+0S
+#975
+08
+17
+1S
+#980
+18
+b11001 P
+07
+0S
+#985
+08
+17
+1S
+#990
+18
+b11010 P
+07
+0S
+#995
+08
+17
+1S
+#1000
+18
+b11011 P
+07
+0S
+#1005
+08
+17
+1S
+#1010
+18
+b11100 P
+07
+0S
+#1015
+08
+17
+1S
+#1020
+18
+b11101 P
+07
+0S
+#1025
+08
+17
+1S
+#1030
+b10100 J
+b10100 6"
+b10100 V"
+b10100 a"
+b0 5"
+b0 M
+b0 2"
+b0 H
+b0 3"
+18
+b0 N
+1Q
+b0 P
+07
+0S
+#1035
+b10100 E"
+b10100 6
+b10100 <"
+b10100 ["
+08
+17
+1S
+#1040
+b11011011 J
+b11011011 6"
+b11011011 V"
+b11011011 a"
+b1 5"
+b1 M
+b1 2"
+18
+b1 N
+b1 P
+b10100 g"
+07
+0S
+#1045
+b11011011 6
+b11011011 <"
+b11011011 ["
+08
+17
+1S
+#1050
+b1111100 J
+b1111100 6"
+b1111100 V"
+b1111100 a"
+b10 5"
+b10 M
+b10 2"
+18
+b10 N
+b10 P
+b11011011 g"
+07
+0S
+#1055
+b1111100 E"
+b1111100 6
+b1111100 <"
+b1111100 ["
+08
+17
+1S
+#1060
+18
+b1111100 g"
+07
+0S
