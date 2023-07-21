@@ -11,7 +11,7 @@
 `define SEED   		        33551
 `define CYCLES 		        30
 `define MEM_DEPTH           32
-`define INSTRUCTION_BASE    16
+
 
 module tb_iflow;
 
@@ -175,6 +175,22 @@ module tb_iflow;
         phi0 = 0;
         seed = `SEED;
         manual_mem = 1'b1;
+        phi0 = 0;
+
+        reset_n = 1'b1;
+        #5;
+        phi0 = 1;
+        #5;
+        phi0 = 0;
+
+        reset_n = 1'b0;
+        #5;
+        phi0 = 1;
+        #5;
+        phi0 = 0;
+
+
+        reset_n = 1'b1;
         //Load and check mem using random data
         //Fill with rand data
         for (i = 0; i < `INSTRUCTION_BASE; i++) begin
@@ -193,6 +209,7 @@ module tb_iflow;
         end
 
         //Check that model matches mem
+        $display("Checking random data loaded to memory");
         for (i = 0; i < `INSTRUCTION_BASE; i++) begin
                 mem_write   = 1'b0;
                 addr_in     = i;
@@ -249,6 +266,10 @@ module tb_iflow;
         phi0 = 1;
         #5;
         phi0 = 0;
+        #5;
+        phi0 = 1;
+        #5;
+        phi0 = 0;
         trigger_program = 1'b0;
 
         //Check Program
@@ -263,12 +284,14 @@ module tb_iflow;
 
                 mem_unit    = d_from_mem;
 
-                if (mem_unit != inst_list[i]) $fatal(1, "Error with mem write/read at addr %h", i);
+                if (mem_unit != inst_list[i]) $fatal(1, "Error with mem write/read at addr %h", i + `INSTRUCTION_BASE);
+                else $display("Match at instruct addr %0d value %h", i + `INSTRUCTION_BASE, inst_list[i]);
         end
         
         manual_mem = 1'b0;
         
         //Spin the clock
+        $display("Spinning the clock");
         for (i = 0; i < `CYCLES; i++) begin
                     #5;
                     phi0 = 1;
@@ -294,6 +317,7 @@ module tb_iflow;
         end
 
         //Mem dump
+        $display("Mem Dump");
         for (i = 0; i < `INSTRUCTION_BASE; i++) begin
                 mem_write   = 1'b0;
                 addr_in     = i;

@@ -38,14 +38,18 @@ module fetcher(
             if (!reset_n) begin
                 fetch_counter = 0;
                 instruction_ready = 0;
-                pc_next = 0;             //This is not the right reset_vector, left here for testing
+                pc_next = `INSTRUCTION_BASE;             //This is not the right reset_vector, left here for testing
 
             end else begin 
       //This logic is a mess, try again          
 
                 instruction_out = instruction;
-                if (get_next) fetch_counter = 1'b0;
-                else if (!instruction_ready) fetch_counter ++;
+                if (get_next) begin 
+                    fetch_counter = 1'b0;
+                    add_mode = data_in[4:2];
+                end
+                else if (!instruction_ready) begin
+                if (fetch_counter == 0) add_mode = data_in[4:2]; 
 
                 fetch_source_selector = `SELECTOR_D;
                 //This logic is a big mess, many of these need to be rewritten
@@ -189,6 +193,8 @@ module fetcher(
                         end    
                     end
                 endcase
+                fetch_counter++; 
+                end
             end
         end 
 

@@ -1,9 +1,12 @@
 `ifndef PKG
 `define PKG
 	
+
+	`define INSTRUCTION_BASE    16
+	
 	//Operations
 	`define OPP_WIDTH 8
-
+	
 	`define NO_OPP 	0
 	`define FETCH   1
 	`define LOAD 	2
