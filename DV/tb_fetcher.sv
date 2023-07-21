@@ -1,4 +1,8 @@
-//This is a testbench 
+//Sam Baker
+//07/2023
+// Fetcher is covered by instruction flow testbench so I have not
+// completed this one yet
+
 `ifndef TB_FETCH
 `define TB_FETCH
 

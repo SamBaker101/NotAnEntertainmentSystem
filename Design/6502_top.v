@@ -79,6 +79,14 @@ module cpu_top(
 	assign we[0] = (pc != pc_next) ? 1'b1 : 0;
 	assign iPC 	 = (pc != pc_next) ? pc_next : pc;
 	
+	switch #(SIGNAL_WIDTH(1)) selector_switch0(
+		.in0(source_selector_0), .in1(fetch_selector), .out0(source_selector_01),
+		.in_select(fetch_selector), .out_select(1'b0));
+
+	switch #(SIGNAL_WIDTH(1)) selector_switch0(
+		.in0(target_selector_0), .in1(`SELECTOR_FETCH), .out0(target_selector_01),
+		.in_select(fetch_selector), .out_select(1'b0));
+
 
 	always @(posedge phi2_int) begin
 		if (fetch_selector) begin

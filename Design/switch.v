@@ -5,7 +5,7 @@
 `ifndef FAN
 `define FAN
 
-module fan138(in0, in1, out0, out1, in_select, out_select
+module switch(in0, in1, out0, out1, in_select, out_select
 		);
 	
 		parameter SIGNAL_WIDTH = `REG_WIDTH;
