@@ -32,14 +32,14 @@
 	`define WE_DOUT 6
 
 	//ALU MUX Reg Selectors
-	`define SELECTOR_PC 	0
-	`define SELECTOR_ADD 	1
-	`define SELECTOR_X		2
-	`define SELECTOR_Y 		3
-	`define SELECTOR_IMM    4
-	`define SELECTOR_D	    5
-	`define SELECTOR_ALU    6
-	`define SELECTOR_FETCH  7
+	`define SELECTOR_PC 	3'd0
+	`define SELECTOR_ADD 	3'd1
+	`define SELECTOR_X		3'd2
+	`define SELECTOR_Y 		3'd3
+	`define SELECTOR_IMM    3'd4
+	`define SELECTOR_D	    3'd5
+	`define SELECTOR_ALU    3'd6
+	`define SELECTOR_FETCH  3'd7
 
 	//STATUS REG Bit Definitions
 	`define CARRY       1

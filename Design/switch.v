@@ -2,16 +2,16 @@
 //07/2023
 // 2 to 2 async switch
 
-`ifndef FAN
-`define FAN
+`ifndef SW
+`define SW
 
 module switch(in0, in1, out0, out1, in_select, out_select
 		);
 	
 		parameter SIGNAL_WIDTH = `REG_WIDTH;
 		
-		input [SIGNAL_WIDTH - 1 : 0] in1, in2;
-		input in_selector, out_selector;
+		input [SIGNAL_WIDTH - 1 : 0] in0, in1;
+		input in_select, out_select;
 		output [SIGNAL_WIDTH - 1 : 0] out0, out1;
  
         wire [SIGNAL_WIDTH - 1 : 0] connect;
