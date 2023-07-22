@@ -104,6 +104,7 @@ module cpu_top(
 	decoder decode(
 		.clk(phi1_int), 
 		.reset_n(reset_n), 
+		.address_in(addr),
 		.instruction_in(instruction), 
 		.opp(),
 		.we(we),
@@ -120,7 +121,7 @@ module cpu_top(
 	fan138 reg_fan0  (.clk(phi2_int), .in(reg_connect_0), .out0(pc_next), .out1(iADD), .out2(iX), .out3(iY), .out5(d_to_mem), .out6(ialu_a), .out7(d_to_fetch),  .selector(target_selector_01));
 
 	mux831 reg_mux1  (.clk(phi2_int), .in0(oPC), .in1(oADD), .in2(oX), .in3(oY), .in4(imm), .in5(d_from_mem), .in6(8'h00), .in7(d_from_fetch), .selector(source_selector_1), .out(reg_connect_1));
-	fan138 reg_fan1  (.clk(phi2_int), .in(reg_connect_1), .out0(pc_next), .out1(iADD), .out2(iX), .out3(iY), .out6(ialu_b), .out7(d_to_fetch), .selector(target_selector_1));
+	fan138 reg_fan1  (.clk(phi2_int), .in(reg_connect_1), .out0(pc_next), .out1(iADD), .out2(iX), .out3(iY), .out6(ialu_b), .out7(), .selector(target_selector_1));
 
 	//Regs
 	register PC(.clk(phi2_int), .reset_n(reset_n), .we(we_pc), .din(iPC), .dout(oPC));

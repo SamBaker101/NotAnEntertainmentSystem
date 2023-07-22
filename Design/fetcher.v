@@ -36,8 +36,8 @@ module fetcher(
   
 
             if (!reset_n) begin
-                fetch_counter = 0;
-                instruction_ready = 0;
+                fetch_counter = 1;
+                instruction_ready = 1'b1;
                 pc_next = `INSTRUCTION_BASE;             //This is not the right reset_vector, left here for testing
 
             end else begin 
@@ -46,31 +46,31 @@ module fetcher(
                 instruction_out = instruction;
                 if (get_next) begin 
                     fetch_counter = 1'b0;
-                    add_mode = data_in[4:2];
-                end
-                else if (!instruction_ready) begin
-                if (fetch_counter == 0) add_mode = data_in[4:2]; 
-
-                fetch_source_selector = `SELECTOR_D;
+                    instruction_ready = 1'b0;
+                    fetch_source_selector = `SELECTOR_D;
+                end else if (!instruction_ready) begin
+                    fetch_source_selector = 0;
+                    if (fetch_counter == 0) add_mode = data_in[4:2]; 
+                    
                 //This logic is a big mess, many of these need to be rewritten
                 case(add_mode) //These are the basic addr mode, may need to be overwritten in some cases
                     `AM3_X_IND  : begin 
                         if (fetch_counter == 0) begin 
                             pc_next = pc + 1;
                             instruction = data_in;
+                            fetch_source_selector = `SELECTOR_D;
                         end 
                         if (fetch_counter == 1) begin
                             addr = {16'h00, data_in};
                             pc_next = pc + 1;
+                            fetch_source_selector = `SELECTOR_D;
                         end
                         if (fetch_counter == 2) begin
                             addr[15:8] = data_in;
                             pc_next = pc + 1;
-                        end
-                        if (fetch_counter == 3) begin
                             fetch_source_selector = `SELECTOR_X;
                         end
-                        if (fetch_counter == 4) begin
+                        if (fetch_counter == 3) begin
                             addr[7:0] = (data_in + addr[7:0]);
                             instruction_ready = 1'b1;
                         end                            
@@ -79,6 +79,7 @@ module fetcher(
                         if (fetch_counter == 0) begin 
                             pc_next = pc + 1;
                             instruction = data_in;
+                            fetch_source_selector = `SELECTOR_D;
                         end 
                         if (fetch_counter == 1) begin
                             addr = {16'h00, data_in};
@@ -90,6 +91,7 @@ module fetcher(
                         if (fetch_counter == 0) begin 
                             pc_next = pc + 1;
                             instruction = data_in;
+                            fetch_source_selector = `SELECTOR_D;
                         end 
                         if (fetch_counter == 1) begin
                             addr = {16'h00, data_in};
@@ -101,10 +103,12 @@ module fetcher(
                         if (fetch_counter == 0) begin 
                             pc_next = pc + 1;
                             instruction = data_in;
+                            fetch_source_selector = `SELECTOR_D;
                         end 
                         if (fetch_counter == 1) begin
                             addr = {16'h00, data_in};
                             pc_next = pc + 1;
+                            fetch_source_selector = `SELECTOR_D;
                         end
                         if (fetch_counter == 2) begin 
                             addr[15:8] = data_in;
@@ -116,21 +120,20 @@ module fetcher(
                         if (fetch_counter == 0) begin 
                             pc_next = pc + 1;
                             instruction = data_in;
+                            fetch_source_selector = `SELECTOR_D;
                         end 
                         if (fetch_counter == 1) begin
                             addr = {16'h00, data_in};
                             pc_next = pc + 1;
+                            fetch_source_selector = `SELECTOR_D;
                         end
-                        if (fetch_counter == 1) addr[15:8] = data_in;
-                        if (fetch_counter == 2) begin
+                        if (fetch_counter == 1) begin 
+                            addr[15:8] = data_in;
                             fetch_source_selector = `SELECTOR_Y;
                             pc_next = pc + 1;
                         end
-                        if (fetch_counter == 3) begin
-                            reg_out = data_in;
-                        end   
                         if (fetch_counter == 4) begin
-                            reg_out = reg_out + data_in;
+                            addr = addr + data_in;
                             instruction_ready = 1'b1;
                         end
                     end
@@ -138,16 +141,14 @@ module fetcher(
                         if (fetch_counter == 0) begin 
                             pc_next = pc + 1;
                             instruction = data_in;
+                            fetch_source_selector = `SELECTOR_D;
                         end 
                         if (fetch_counter == 1) begin
                             addr = {16'h00, data_in};
                             pc_next = pc + 1;
+                            fetch_source_selector = `SELECTOR_X;
                         end
                         if (fetch_counter == 2) begin
-                            fetch_source_selector = `SELECTOR_X;
-                            pc_next = pc + 1;
-                        end
-                        if (fetch_counter == 3) begin
                             addr[7:0] = (data_in + addr[7:0]);
                             instruction_ready = 1'b1;
                         end      
@@ -156,19 +157,19 @@ module fetcher(
                         if (fetch_counter == 0) begin 
                             pc_next = pc + 1;
                             instruction = data_in;
+                            fetch_source_selector = `SELECTOR_D;
                         end 
                         if (fetch_counter == 1) begin
                             addr = {16'h00, data_in};
                             pc_next = pc + 1;
+                            fetch_source_selector = `SELECTOR_D;
                         end
                         if (fetch_counter == 2) begin
                             addr[15:8] = data_in;
                             pc_next = pc + 1;
-                        end
-                        if (fetch_counter == 3) begin
                             fetch_source_selector = `SELECTOR_Y;
                         end
-                        if (fetch_counter == 4) begin
+                        if (fetch_counter == 3) begin
                             addr += data_in;
                             instruction_ready = 1'b1;
                         end    
@@ -177,10 +178,12 @@ module fetcher(
                         if (fetch_counter == 0) begin 
                             pc_next = pc + 1;
                             instruction = data_in;
+                            fetch_source_selector = `SELECTOR_D;
                         end 
                         if (fetch_counter == 1) begin
                             addr = {16'h00, data_in};
                             pc_next = pc + 1;
+                            fetch_source_selector = `SELECTOR_D;
                         end
                         if (fetch_counter == 2) begin 
                             addr[15:8] = data_in;

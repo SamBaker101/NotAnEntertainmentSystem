@@ -1,6 +1,13 @@
 //Sam Baker
 //07/2023
-//Memory TB
+//Instruction flow test bench
+//This test bench loads a dummy mem with random data and user program
+//Connects mem to fetcher and decoder logic
+//Includes necessary mem, reg, switch, mux and fan modules
+
+//FIXMEs
+// Remove get_next signal between decoder and fetcher (use instruction_ready toggling)
+// Set up logic such that mem can be filled with data (outside of chip logic) while chip is in reset
 
 `ifndef TB_IFLOW
 `define TB_IFLOW
@@ -61,7 +68,7 @@ module tb_iflow;
 	wire [2:0] source_selector_0, target_selector_0;
     wire [2:0] source_selector_1, target_selector_1;
     wire [2:0] fetch_selector;
-	reg  [2:0] source_selector_01, target_selector_01;
+	wire  [2:0] source_selector_01, target_selector_01;
     
     wire [`REG_WIDTH - 1: 0] pc, pc_next;
     wire [`REG_WIDTH - 1: 0] imm;
@@ -84,22 +91,21 @@ module tb_iflow;
     assign addr         = manual_mem ? addr_in : fetcher_addr;
     assign d_to_mem1    = manual_mem ? d_in : d_to_mem;
 
-	always @(posedge phi2_int) begin
-		if (fetch_selector) begin
-			source_selector_01 = fetch_selector;
-			target_selector_01 = `SELECTOR_FETCH;
-		end
-		else begin
-			source_selector_01 = source_selector_0;
-			target_selector_01 = target_selector_0;
-		end
-	end
-
 	assign pc = oPC;
 	assign we[0] = (pc != pc_next) ? 1'b1 : 0;
 	assign iPC 	 = (pc != pc_next) ? pc_next : pc;
 
     assign get_next = trigger_program ? trigger_program : ask_next;
+    
+	switch #(.SIGNAL_WIDTH(3)) selector_switch0(
+		.in0(source_selector_0), .in1(fetch_selector), .out0(source_selector_01),
+		.in_select(fetch_selector != 0), .out_select(1'b0));
+
+	switch #(.SIGNAL_WIDTH(3)) selector_switch1(
+		.in0(target_selector_0), .in1(`SELECTOR_FETCH), .out0(target_selector_01),
+		.in_select(fetch_selector != 0), .out_select(1'b0));
+
+
 //Tests functionality with single bit inputs
     mem #(.DEPTH(`MEM_DEPTH)) mem_test(
 		.clk(phi0), 
@@ -127,6 +133,7 @@ module tb_iflow;
 	decoder decode(
 		.clk(phi1_int), 
 		.reset_n(reset_n), 
+        .address_in(fetcher_addr),
 		.instruction_in(instruction), 
 		.opp(),
 		.we({we_dout, we[5:0]}),    //dont ask, Ill fix this in a minute
@@ -143,7 +150,7 @@ module tb_iflow;
 	fan138 reg_fan0  (.clk(phi2_int), .in(reg_connect_0), .out0(pc_next), .out1(iADD), .out2(iX), .out3(iY), .out5(d_to_mem), .out6(ialu_a), .out7(d_to_fetch),  .selector(target_selector_01));
 
 	mux831 reg_mux1  (.clk(phi2_int), .in0(oPC), .in1(oADD), .in2(oX), .in3(oY), .in4(imm), .in5(d_from_mem), .in6(8'h00), .in7(d_from_fetch), .selector(source_selector_1), .out(reg_connect_1));
-	fan138 reg_fan1  (.clk(phi2_int), .in(reg_connect_1), .out0(pc_next), .out1(iADD), .out2(iX), .out3(iY), .out6(ialu_b), .out7(d_to_fetch), .selector(target_selector_1));
+	fan138 reg_fan1  (.clk(phi2_int), .in(reg_connect_1), .out0(pc_next), .out1(iADD), .out2(iX), .out3(iY), .out6(ialu_b), .out7(), .selector(target_selector_1));
 
 	//Regs
 	register PC(.clk(phi2_int), .reset_n(reset_n), .we(we_pc), .din(iPC), .dout(oPC));
@@ -227,7 +234,7 @@ module tb_iflow;
             end
 
         //ENTER SOME INSTRUCTIONS HERE;
-        inst_list[0]    = 8'hA9;     //LDA #04
+        inst_list[0]    = 8'hA9;     //LDA #04 - 101_010_11
         inst_list[1]    = 8'h04;
         inst_list[2]    = 8'h85;    //STA ZPG 02 
         inst_list[3]    = 8'h02;
@@ -267,9 +274,6 @@ module tb_iflow;
         #5;
         phi0 = 0;
         #5;
-        phi0 = 1;
-        #5;
-        phi0 = 0;
         trigger_program = 1'b0;
 
         //Check Program

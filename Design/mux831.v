@@ -23,18 +23,16 @@ module mux831(clk, in0, in1, in2, in3,  in4, in5, in6, in7, selector, out
 
 		input [2:0] selector;
 
-		output reg [SIGNAL_WIDTH - 1 : 0] out;
+		output [SIGNAL_WIDTH - 1 : 0] out;
 
-		always @(posedge clk) begin
-			if (selector == 3'b000) out = in0;
-			if (selector == 3'b001) out = in1;
-			if (selector == 3'b010) out = in2;
-			if (selector == 3'b011) out = in3;
-			if (selector == 3'b100) out = in4;
-			if (selector == 3'b101) out = in5;
-			if (selector == 3'b110) out = in6;
-			if (selector == 3'b111) out = in7;
-		end
+		assign out = (selector == 3'b000) ? in0:
+					 (selector == 3'b001) ? in1:
+					 (selector == 3'b010) ? in2:
+					 (selector == 3'b011) ? in3:
+					 (selector == 3'b100) ? in4:
+					 (selector == 3'b101) ? in5:
+					 (selector == 3'b110) ? in6:
+					 in7;
 
 endmodule
 

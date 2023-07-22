@@ -6,7 +6,7 @@
 `define DECODE
 
 module decoder(
-		clk, reset_n, instruction_in, opp, we, source_selector_0, target_selector_0, 
+		clk, reset_n, address_in, instruction_in, opp, we, source_selector_0, target_selector_0, 
         source_selector_1, target_selector_1, imm_addr, instruction_ready, addr, get_next
 		);
 	
@@ -15,6 +15,7 @@ module decoder(
         parameter OPP_WIDTH = `OPP_WIDTH;
 
         input clk, reset_n;
+        input [ADDR_WIDTH - 1 : 0] address_in;
         input [REG_WIDTH - 1 : 0] instruction_in;
         input instruction_ready;
 
@@ -45,8 +46,10 @@ module decoder(
                 target_selector_1 = 0;
                 imm_addr = 0;
                 we = 0;
+                get_next = 1'b0;
 
             end else begin
+                get_next = 1'b0;
                 if (instruction_ready) begin
                     add_mode = instruction_in[4:2];
                     opp_code = {instruction_in[7:5], instruction_in[1:0]};
@@ -56,7 +59,9 @@ module decoder(
 
 
                     case(opp_code) //This is gonna be a bit of a mess for a while
-                    	`OPP_ORA: begin  
+                    	5'bXXXXX: ; //FIXME workaround while mem is being loaded
+                        
+                        `OPP_ORA: begin  
 
                         end 
 	                    `OPP_ASL: begin  
@@ -90,9 +95,10 @@ module decoder(
 
                         end	
 	                    `OPP_LDA: begin  
+                            imm_addr = address_in[7:0];
                             we[`WE_ADD] = 1'b1;
                             target_selector_0 = `SELECTOR_ADD;
-                            source_selector_0 = `SELECTOR_D;
+                            source_selector_0 = `SELECTOR_IMM;
                             get_next = 1'b1;
                         end	
 	                    `OPP_LDX: begin  
