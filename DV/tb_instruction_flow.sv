@@ -229,8 +229,12 @@ module tb_iflow;
 
                 mem_unit    = d_from_mem;
                 
-                if (mem_unit != mem_model[i]) $fatal(1, "Error with mem write/read at addr %h, mem_unit = %h, mem_model[%0d] = %h", i, mem_unit, i, mem_model[i]);
-                else $display("Match at addr %0d value %h", i, mem_model[i]);
+                if (mem_unit != mem_model[i]) begin
+    
+                    
+                    $fatal(1, "Error with mem write/read at addr %h, mem_unit = %h, mem_model[%0d] = %h", i, mem_unit, i, mem_model[i]);
+                end
+                    else $display("Match at addr %0d value %h", i, mem_model[i]);
             end
 
         //ENTER SOME INSTRUCTIONS HERE;
@@ -268,14 +272,6 @@ module tb_iflow;
             phi0 = 0;
         end
 
-        trigger_program = 1'b1;
-        #5;
-        phi0 = 1;
-        #5;
-        phi0 = 0;
-        #5;
-        trigger_program = 1'b0;
-
         //Check Program
         for (i = 0; i < `MEM_DEPTH - `INSTRUCTION_BASE; i++) begin
                 mem_write   = 1'b0;
@@ -294,6 +290,14 @@ module tb_iflow;
         
         manual_mem = 1'b0;
         
+        trigger_program = 1'b1;
+        #5;
+        phi0 = 1;
+        #5;
+        phi0 = 0;
+        #5;
+        trigger_program = 1'b0;
+
         //Spin the clock
         $display("Spinning the clock");
         for (i = 0; i < `CYCLES; i++) begin
@@ -304,6 +308,22 @@ module tb_iflow;
         end
 
         manual_mem = 1'b1;
+
+        $display("Mem Dump");
+        for (i = 0; i < `INSTRUCTION_BASE; i++) begin
+                mem_write   = 1'b0;
+                addr_in     = i;
+
+                #5;
+                phi0 = 1;
+                #5;
+                phi0 = 0;
+
+                mem_unit    = d_from_mem;
+
+                $display("addr: %h data: %h, mem_model: %h", i, mem_unit, mem_model[i]);
+        end
+
         //Checks
         //Check that model matches mem
         for (i = 0; i < `INSTRUCTION_BASE; i++) begin
