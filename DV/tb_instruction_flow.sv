@@ -88,7 +88,11 @@ module tb_iflow;
 
     //These probably need a switch
     assign we[`WE_DOUT] = manual_mem ? mem_write : we_dout;
-    assign addr         = manual_mem ? addr_in : fetcher_addr;
+    
+    assign addr         = manual_mem        ? addr_in : 
+                          instruction_ready ? fetcher_addr      : 
+                          pc;
+
     assign d_to_mem1    = manual_mem ? d_in : d_to_mem;
 
 	assign pc = oPC;
@@ -197,7 +201,7 @@ module tb_iflow;
         phi0 = 0;
 
 
-        reset_n = 1'b1;
+        
         //Load and check mem using random data
         //Fill with rand data
         for (i = 0; i < `INSTRUCTION_BASE; i++) begin
@@ -289,7 +293,8 @@ module tb_iflow;
         end
         
         manual_mem = 1'b0;
-        
+        reset_n = 1'b1;
+
         trigger_program = 1'b1;
         #5;
         phi0 = 1;

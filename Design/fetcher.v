@@ -43,15 +43,18 @@ module fetcher(
             end else begin 
       //This logic is a mess, try again          
 
-                instruction_out = instruction;
+                
                 if (get_next) begin 
                     fetch_counter = 1'b0;
                     instruction_ready = 1'b0;
                     fetch_source_selector = `SELECTOR_D;
                 end else if (!instruction_ready) begin
                     fetch_source_selector = 0;
-                    if (fetch_counter == 0) add_mode = data_in[4:2]; 
-                    
+                    if (fetch_counter == 0) begin
+                        add_mode = data_in[4:2]; 
+                        instruction_out = data_in;
+                    end 
+
                 //This logic is a big mess, many of these need to be rewritten
                 case(add_mode) //These are the basic addr mode, may need to be overwritten in some cases
                     `AM3_X_IND  : begin 
@@ -90,7 +93,6 @@ module fetcher(
                     `AM3_IMM	: begin        
                         if (fetch_counter == 0) begin 
                             pc_next = pc + 1;
-                            instruction = data_in;
                             fetch_source_selector = `SELECTOR_D;
                         end 
                         if (fetch_counter == 1) begin
