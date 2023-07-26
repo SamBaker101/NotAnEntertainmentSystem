@@ -89,6 +89,7 @@ module cpu_top(
 
 	fetcher fetch(
 		.clk(phi1_int), 
+		.phi2(phi2_int),
 		.reset_n(reset_n), 
 		.get_next(get_next), 
 		.pc(pc), 
@@ -96,6 +97,7 @@ module cpu_top(
 		.instruction_out(instruction), 
 		.pc_next(pc_next), 
 		.addr(addr), 
+		.imm(imm),
 		.instruction_ready(instruction_ready),
 		.reg_out(d_from_fetch),
 		.fetch_source_selector(fetch_selector)
@@ -112,8 +114,6 @@ module cpu_top(
 		.target_selector_0(target_selector_0),
 		.source_selector_1(source_selector_1),
 		.target_selector_1(target_selector_1),
-		.imm_addr(imm),
-		.get_next(get_next),
 		.instruction_ready(instruction_ready)
 		);
 

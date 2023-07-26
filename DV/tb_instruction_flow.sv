@@ -50,7 +50,7 @@ module tb_iflow;
     wire [`ADDR_WIDTH - 1 : 0] addr;
     wire [`REG_WIDTH - 1 : 0] d_to_fetch, d_from_fetch;
 
-    wire get_next, ask_next;
+    wire get_next, ask_next, instruction_done;
     wire instruction_ready;
 
     wire [`WE_WIDTH - 1 : 0] we;
@@ -112,12 +112,11 @@ module tb_iflow;
 		.in0(target_selector_0), .in1(`SELECTOR_FETCH), .out0(target_selector_01),
 		.in_select(fetch_selector != 0), .out_select(1'b0));
 
-    always@(posedge phi2_int)
-        pc = pc_next;
+    always @(*) pc = pc_next;
 
 //Tests functionality with single bit inputs
     mem #(.DEPTH(`MEM_DEPTH)) mem_test(
-		.clk(phi0), 
+		.clk(phi2_int), 
         .reset_n(reset_n), 
         .we(we[`WE_DOUT]), 
         .addr(addr), 
@@ -126,7 +125,8 @@ module tb_iflow;
 		);
 
 	fetcher fetch(
-		.clk(phi1_int), 
+		.clk(phi1_int),
+        .phi2(phi2_int), 
 		.reset_n(reset_n), 
 		.get_next(get_next), 
 		.pc(pc), 
@@ -135,6 +135,7 @@ module tb_iflow;
 		.pc_next(pc_next), 
 		.addr(fetcher_addr), 
 		.instruction_ready(instruction_ready),
+        .instruction_done(instruction_done),
 		.reg_out(d_from_fetch),
         .imm(imm),
 		.fetch_source_selector(fetch_selector)
@@ -151,9 +152,9 @@ module tb_iflow;
 		.target_selector_0(target_selector_0),
 		.source_selector_1(source_selector_1),
 		.target_selector_1(target_selector_1),
-		.get_next(ask_next),
-		.instruction_ready(instruction_ready)
-		);
+		.instruction_ready(instruction_ready),
+		.instruction_done(instruction_done)
+        );
 
 	mux831 reg_mux0  (.clk(phi2_int), .in0(/*oPC*/), .in1(oADD), .in2(oX), .in3(oY), .in4(imm), .in5(d_from_mem), .in6(8'h00), .in7(d_from_fetch), .selector(source_selector_01), .out(reg_connect_0));
 	fan138 reg_fan0  (.clk(phi2_int), .in(reg_connect_0), .out0(/*pc_next*/), .out1(iADD), .out2(iX), .out3(iY), .out5(d_to_mem), .out6(ialu_a), .out7(d_to_fetch),  .selector(target_selector_01));

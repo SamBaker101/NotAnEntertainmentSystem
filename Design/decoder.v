@@ -7,7 +7,7 @@
 
 module decoder(
 		clk, reset_n, address_in, instruction_in, opp, we, source_selector_0, target_selector_0, 
-        source_selector_1, target_selector_1, imm_addr, instruction_ready, addr, get_next
+        source_selector_1, target_selector_1, instruction_ready, addr, instruction_done
 		);
 	
         parameter REG_WIDTH = `REG_WIDTH;
@@ -21,7 +21,7 @@ module decoder(
 
         output reg [OPP_WIDTH - 1 : 0] opp;
         output reg [2:0] source_selector_0, target_selector_0, source_selector_1, target_selector_1;        
-        output reg [REG_WIDTH - 1 : 0] imm_addr;
+        output reg instruction_done;
 
         output reg [ADDR_WIDTH - 1: 0] addr;
         output reg [`WE_WIDTH - 1 : 0] we;
@@ -29,35 +29,41 @@ module decoder(
 
         /////////////////////////////
 
+
+        
         reg [2:0] add_mode;
         reg [4:0] opp_code;
         reg [REG_WIDTH - 1 : 0] instruction;
 
+        reg [REG_WIDTH - 1 : 0] decode_counter;
+
         reg [3:0] fetch_counter, fetch_target; 
         
+        always @(posedge instruction_ready) begin
+            add_mode = instruction_in[4:2];
+            opp_code = {instruction_in[7:5], instruction_in[1:0]};
+            instruction = instruction_in;
+            instruction_done = 1'b0;
+            decode_counter = 0;
+        end
+
         always @(posedge clk) begin
             we = 0;
             target_selector_0 = 0;
             target_selector_1 = 0;
+            
 
             if (!reset_n) begin
                 opp = 0;
                 target_selector_0 = 0;
                 target_selector_1 = 0;
-                imm_addr = 0;
                 we = 0;
-                get_next = 1'b0;
+                decode_counter = 0;
 
             end else begin
-                get_next = 1'b0;
+                we = 0;
                 if (instruction_ready) begin
-                    add_mode = instruction_in[4:2];
-                    opp_code = {instruction_in[7:5], instruction_in[1:0]};
-                    instruction = instruction_in;
-                    fetch_counter = 0;
-                    fetch_target = 0;
-
-
+                    
                     case(opp_code) //This is gonna be a bit of a mess for a while
                     	5'bXXXXX: ; //FIXME workaround while mem is being loaded
                         
@@ -87,19 +93,22 @@ module decoder(
                         end	
 	                    `OPP_STA: begin  
                             we[`WE_DOUT] = 1'b1;
-                            source_selector_0 = `SELECTOR_ADD;
-                            target_selector_0 = `SELECTOR_D;
-                            get_next = 1'b1;
+                            source_selector_1 = `SELECTOR_ADD;
+                            target_selector_1 = `SELECTOR_D;
                         end	
 	                    `OPP_STX: begin  
 
                         end	
 	                    `OPP_LDA: begin  
-                            imm_addr = address_in[7:0];
-                            we[`WE_ADD] = 1'b1;
-                            target_selector_0 = `SELECTOR_ADD;
-                            source_selector_0 = `SELECTOR_IMM;
-                            get_next = 1'b1;
+                            if (decode_counter == 0) begin
+                                we[`WE_ADD] = 1'b1;
+                                target_selector_1 = `SELECTOR_ADD;
+                                source_selector_1 = `SELECTOR_IMM;
+                            end else if (decode_counter == 1) begin
+                                we = 0;
+                                opp_code = 0;
+                                instruction_done = 1'b1;
+                            end
                         end	
 	                    `OPP_LDX: begin  
 
@@ -131,6 +140,7 @@ module decoder(
                           $fatal(1, "Illegal or unimplemented instruction encountered: %h", instruction);
                       end
                   endcase
+                  decode_counter ++;
                 end
             end
         end
