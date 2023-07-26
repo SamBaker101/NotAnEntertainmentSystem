@@ -92,9 +92,15 @@ module decoder(
 
                         end	
 	                    `OPP_STA: begin  
-                            we[`WE_DOUT] = 1'b1;
-                            source_selector_1 = `SELECTOR_ADD;
-                            target_selector_1 = `SELECTOR_D;
+                            if (decode_counter == 0) begin
+                                we[`WE_DOUT] = 1'b1;
+                                source_selector_1 = `SELECTOR_ADD;
+                                target_selector_1 = `SELECTOR_D;
+                            end else if (decode_counter == 1) begin
+                                we = 0;
+                                opp_code = 0;
+                                instruction_done = 1'b1;
+                            end
                         end	
 	                    `OPP_STX: begin  
 
@@ -129,15 +135,15 @@ module decoder(
                             case(instruction[7:2])
 
                                 default: begin
-                                $fatal(1, "Illegal or unimplemented instruction encountered: %h", instruction);
-                            end
+                                    //$fatal(1, "Illegal or unimplemented instruction encountered: %h", instruction);
+                                end
                             endcase
                       end
                       `OPP_ILLEGAL: begin 
                           $fatal(1, "Illegal Instruction ecountered: %h", instruction);
                       end
                       default: begin 
-                          $fatal(1, "Illegal or unimplemented instruction encountered: %h", instruction);
+                          //$error(1, "Illegal or unimplemented instruction encountered: %h", instruction);
                       end
                   endcase
                   decode_counter ++;

@@ -6,7 +6,7 @@
 `define FETCHER
 
 module fetcher(
-		clk, phi2, reset_n, get_next, pc, data_in, instruction_out, 
+		phi1, phi2, reset_n, get_next, pc, data_in, instruction_out, 
         pc_next, addr, imm, instruction_ready, reg_out, 
         fetch_source_selector, instruction_done
 		);
@@ -16,7 +16,7 @@ module fetcher(
         parameter OPP_WIDTH = `OPP_WIDTH;
 
         input instruction_done;
-        input clk, phi2, reset_n, get_next;  
+        input phi1, phi2, reset_n, get_next;  
         input [ADDR_WIDTH - 1 : 0] pc; 
         input [REG_WIDTH - 1 : 0] data_in;
 
@@ -46,7 +46,7 @@ module fetcher(
                 pc_next = pc + 1;
         end
 
-        always @(posedge clk) begin
+        always @(posedge phi1) begin
             //Operation
             
   
@@ -97,7 +97,6 @@ module fetcher(
                         end
                         `AM3_ZPG	: begin     
                             if (fetch_counter == 0) begin 
-                                instruction = data_in;
                                 fetch_source_selector = `SELECTOR_D;
                             end 
                             if (fetch_counter == 1) begin

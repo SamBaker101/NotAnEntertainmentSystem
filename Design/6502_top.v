@@ -88,7 +88,7 @@ module cpu_top(
 		.in_select(fetch_selector != 0), .out_select(1'b0));
 
 	fetcher fetch(
-		.clk(phi1_int), 
+		.phi1(phi1_int), 
 		.phi2(phi2_int),
 		.reset_n(reset_n), 
 		.get_next(get_next), 
