@@ -7,7 +7,7 @@
 
 module fetcher(
 		clk, reset_n, get_next, pc, data_in, instruction_out, 
-        pc_next, addr, instruction_ready, reg_out, 
+        pc_next, addr, imm, instruction_ready, reg_out, 
         fetch_source_selector
 		);
 	
@@ -15,12 +15,14 @@ module fetcher(
         parameter ADDR_WIDTH = `ADDR_WIDTH;
         parameter OPP_WIDTH = `OPP_WIDTH;
 
-        input clk, reset_n, get_next;
-        input [REG_WIDTH - 1 : 0] pc, data_in;
+        input clk, reset_n, get_next;  
+        input [ADDR_WIDTH - 1 : 0] pc; 
+        input [REG_WIDTH - 1 : 0] data_in;
 
         output reg instruction_ready;
-        output reg [ADDR_WIDTH - 1: 0] addr;
-        output reg [`REG_WIDTH - 1 : 0] instruction_out, pc_next, reg_out;
+        output reg [ADDR_WIDTH - 1: 0] addr, pc_next;
+        output reg [REG_WIDTH - 1 : 0] imm;
+        output reg [`REG_WIDTH - 1 : 0] instruction_out, reg_out;
         output reg [2:0] fetch_source_selector;
         /////////////////////////////
 
@@ -96,7 +98,7 @@ module fetcher(
                             fetch_source_selector = `SELECTOR_D;
                         end 
                         if (fetch_counter == 1) begin
-                            addr = {16'h00, data_in};
+                            imm = data_in;
                             pc_next = pc + 1;
                             instruction_ready = 1'b1;
                         end

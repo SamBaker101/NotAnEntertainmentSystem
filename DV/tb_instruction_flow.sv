@@ -70,12 +70,14 @@ module tb_iflow;
     wire [2:0] fetch_selector;
 	wire  [2:0] source_selector_01, target_selector_01;
     
-    wire [`REG_WIDTH - 1: 0] pc, pc_next;
+    wire [`ADDR_WIDTH - 1: 0] /*pc,*/ pc_next;
     wire [`REG_WIDTH - 1: 0] imm;
 
     wire we_dout;
     wire [`ADDR_WIDTH - 1 : 0] fetcher_addr;
     wire [`REG_WIDTH - 1: 0] d_to_mem1;
+
+    reg [`ADDR_WIDTH - 1 : 0] pc;
     ////////////////////////
     ////   TL Assigns   ////
     ////////////////////////
@@ -90,15 +92,16 @@ module tb_iflow;
     assign we[`WE_DOUT] = manual_mem ? mem_write : we_dout;
     
     assign addr         = manual_mem        ? addr_in : 
-                          instruction_ready ? fetcher_addr      : 
-                          pc;
+                          /*instruction_ready ?*/ fetcher_addr  /*    : 
+                          pc*/;
 
     assign d_to_mem1    = manual_mem ? d_in : d_to_mem;
 
-	assign pc = oPC;
+	/*
+    assign pc = oPC;
 	assign we[0] = (pc != pc_next) ? 1'b1 : 0;
 	assign iPC 	 = (pc != pc_next) ? pc_next : pc;
-
+*/
     assign get_next = trigger_program ? trigger_program : ask_next;
     
 	switch #(.SIGNAL_WIDTH(3)) selector_switch0(
@@ -109,6 +112,8 @@ module tb_iflow;
 		.in0(target_selector_0), .in1(`SELECTOR_FETCH), .out0(target_selector_01),
 		.in_select(fetch_selector != 0), .out_select(1'b0));
 
+    always@(posedge phi2_int)
+        pc = pc_next;
 
 //Tests functionality with single bit inputs
     mem #(.DEPTH(`MEM_DEPTH)) mem_test(
@@ -131,6 +136,7 @@ module tb_iflow;
 		.addr(fetcher_addr), 
 		.instruction_ready(instruction_ready),
 		.reg_out(d_from_fetch),
+        .imm(imm),
 		.fetch_source_selector(fetch_selector)
 		);
 
@@ -145,19 +151,18 @@ module tb_iflow;
 		.target_selector_0(target_selector_0),
 		.source_selector_1(source_selector_1),
 		.target_selector_1(target_selector_1),
-		.imm_addr(imm),
 		.get_next(ask_next),
 		.instruction_ready(instruction_ready)
 		);
 
-	mux831 reg_mux0  (.clk(phi2_int), .in0(oPC), .in1(oADD), .in2(oX), .in3(oY), .in4(imm), .in5(d_from_mem), .in6(8'h00), .in7(d_from_fetch), .selector(source_selector_01), .out(reg_connect_0));
-	fan138 reg_fan0  (.clk(phi2_int), .in(reg_connect_0), .out0(pc_next), .out1(iADD), .out2(iX), .out3(iY), .out5(d_to_mem), .out6(ialu_a), .out7(d_to_fetch),  .selector(target_selector_01));
+	mux831 reg_mux0  (.clk(phi2_int), .in0(/*oPC*/), .in1(oADD), .in2(oX), .in3(oY), .in4(imm), .in5(d_from_mem), .in6(8'h00), .in7(d_from_fetch), .selector(source_selector_01), .out(reg_connect_0));
+	fan138 reg_fan0  (.clk(phi2_int), .in(reg_connect_0), .out0(/*pc_next*/), .out1(iADD), .out2(iX), .out3(iY), .out5(d_to_mem), .out6(ialu_a), .out7(d_to_fetch),  .selector(target_selector_01));
 
-	mux831 reg_mux1  (.clk(phi2_int), .in0(oPC), .in1(oADD), .in2(oX), .in3(oY), .in4(imm), .in5(d_from_mem), .in6(8'h00), .in7(d_from_fetch), .selector(source_selector_1), .out(reg_connect_1));
-	fan138 reg_fan1  (.clk(phi2_int), .in(reg_connect_1), .out0(pc_next), .out1(iADD), .out2(iX), .out3(iY), .out6(ialu_b), .out7(), .selector(target_selector_1));
+	mux831 reg_mux1  (.clk(phi2_int), .in0(/*oPC*/), .in1(oADD), .in2(oX), .in3(oY), .in4(imm), .in5(d_from_mem), .in6(8'h00), .in7(d_from_fetch), .selector(source_selector_1), .out(reg_connect_1));
+	fan138 reg_fan1  (.clk(phi2_int), .in(reg_connect_1), .out0(/*pc_next*/), .out1(iADD), .out2(iX), .out3(iY), .out6(ialu_b), .out7(), .selector(target_selector_1));
 
 	//Regs
-	register PC(.clk(phi2_int), .reset_n(reset_n), .we(we_pc), .din(iPC), .dout(oPC));
+	//register PC(.clk(phi2_int), .reset_n(reset_n), .we(we_pc), .din(iPC), .dout(oPC));
 	register SP(.clk(phi2_int), .reset_n(reset_n), .we(we_sp), .din(iSP), .dout(oSP));
 	register ADD(.clk(phi2_int), .reset_n(reset_n), .we(we_add), .din(iADD), .dout(oADD));
 	register X(.clk(phi2_int), .reset_n(reset_n), .we(we_x), .din(iX), .dout(oX));
