@@ -16,7 +16,7 @@
 `include "PKG/pkg.v"
 
 `define SEED   		        33551
-`define CYCLES 		        30
+`define CYCLES 		        150
 `define MEM_DEPTH           32
 
 
@@ -252,22 +252,25 @@ module tb_iflow;
         inst_list[1]    = 8'h04;
         inst_list[2]    = 8'h85;    //STA ZPG 02 
         inst_list[3]    = 8'h02;
-        inst_list[4]    = 8'h0;
-        inst_list[5]    = 8'h0;
-        inst_list[6]    = 8'h0;
-        inst_list[7]    = 8'h0;
-        inst_list[8]    = 8'h0;
-        inst_list[9]    = 8'h0;
-        inst_list[10]   = 8'h0;
-        inst_list[11]   = 8'h0;
-        inst_list[12]   = 8'h0;
-        inst_list[13]   = 8'h0;
-        inst_list[14]   = 8'h0;
-        inst_list[15]   = 8'h0;
+        inst_list[4]    = 8'hA9;
+        inst_list[5]    = 8'h10;
+        inst_list[6]    = 8'hA9;
+        inst_list[7]    = 8'hFF;
+        inst_list[8]    = 8'h85;
+        inst_list[9]    = 8'h0C;
+        inst_list[10]   = 8'hA9;
+        inst_list[11]   = 8'h03;
+        inst_list[12]   = 8'h85;
+        inst_list[13]   = 8'h04;
+        inst_list[14]   = 8'h85;
+        inst_list[15]   = 8'h06;
 
         //Modify mem_model
         mem_model[16'h02] = 8'h04;
-        
+        mem_model[16'h0C] = 8'hFF;
+        mem_model[16'h04] = 8'h03;
+        mem_model[16'h06] = 8'h03;
+
         //Load Program
         for (i = 0; i < `MEM_DEPTH - `INSTRUCTION_BASE; i++) begin
             mem_model[i + `INSTRUCTION_BASE] = inst_list[i];    
