@@ -6,31 +6,42 @@
 `define DECODE
 
 module decoder(
-		clk, reset_n, address_in, instruction_in, opp, we, source_selector_0, target_selector_0, 
-        source_selector_1, target_selector_1, instruction_ready, addr, instruction_done
-		);
+		clk, reset_n, addr_in, instruction_in, opp, we,
+        instruction_ready, addr, instruction_done, 
+        
+        pc_selector,  
+        sp_selector, add_selector,  x_selector,  y_selector, stat_selector, mem_selector, 
+        decode_selector,  alu0_selector,  alu1_selector    
+        );
 	
         parameter REG_WIDTH = `REG_WIDTH;
         parameter ADDR_WIDTH = `ADDR_WIDTH;
         parameter OPP_WIDTH = `OPP_WIDTH;
 
         input clk, reset_n;
-        input [ADDR_WIDTH - 1 : 0] address_in;
+        input [ADDR_WIDTH - 1 : 0] addr_in;
         input [REG_WIDTH - 1 : 0] instruction_in;
         input instruction_ready;
 
-        output reg [OPP_WIDTH - 1 : 0] opp;
-        output reg [2:0] source_selector_0, target_selector_0, source_selector_1, target_selector_1;        
+        output reg [OPP_WIDTH - 1 : 0] opp;       
         output reg instruction_done;
 
         output reg [ADDR_WIDTH - 1: 0] addr;
         output reg [`WE_WIDTH - 1 : 0] we;
-        output reg get_next; //get_next logic required
+
+        output reg [3:0] pc_selector; 
+        output reg [3:0] sp_selector; 
+        output reg [3:0] add_selector; 
+        output reg [3:0] x_selector; 
+        output reg [3:0] y_selector; 
+        output reg [3:0] stat_selector;    
+        output reg [3:0] mem_selector; 
+        output reg [3:0] decode_selector; 
+        output reg [3:0] alu0_selector; 
+        output reg [3:0] alu1_selector;      
 
         /////////////////////////////
 
-
-        
         reg [2:0] add_mode;
         reg [4:0] opp_code;
         reg [REG_WIDTH - 1 : 0] instruction;
@@ -49,14 +60,10 @@ module decoder(
 
         always @(posedge clk) begin
             we = 0;
-            target_selector_0 = 0;
-            target_selector_1 = 0;
             
 
             if (!reset_n) begin
                 opp = 0;
-                target_selector_0 = 0;
-                target_selector_1 = 0;
                 we = 0;
                 decode_counter = 0;
 
@@ -94,8 +101,7 @@ module decoder(
 	                    `OPP_STA: begin  
                             if (decode_counter == 0) begin
                                 we[`WE_DOUT] = 1'b1;
-                                source_selector_1 = `SELECTOR_ADD;
-                                target_selector_1 = `SELECTOR_D;
+                                mem_selector = `SELECTOR_ADD;
                             end else if (decode_counter == 1) begin
                                 we = 0;
                                 opp_code = 0;
@@ -108,8 +114,7 @@ module decoder(
 	                    `OPP_LDA: begin  
                             if (decode_counter == 0) begin
                                 we[`WE_ADD] = 1'b1;
-                                target_selector_1 = `SELECTOR_ADD;
-                                source_selector_1 = (add_mode == `AM3_IMM) ? `SELECTOR_IMM:
+                                add_selector = (add_mode == `AM3_IMM) ? `SELECTOR_IMM:
                                                     0;
                             end else if (decode_counter == 1) begin
                                 we = 0;

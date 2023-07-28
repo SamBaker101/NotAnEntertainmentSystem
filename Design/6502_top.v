@@ -48,12 +48,6 @@ module cpu_top(
 	wire [`REG_WIDTH - 1: 0] iY, oY;
 	wire [`REG_WIDTH - 1: 0] iSTATUS, oSTATUS;
     wire [`REG_WIDTH - 1: 0] instruction;
-
-    wire [`REG_WIDTH - 1: 0] reg_connect_0, reg_connect_1;
-	wire [2:0] source_selector_0, target_selector_0;
-    wire [2:0] source_selector_1, target_selector_1;
-    wire [2:0] fetch_selector;
-	wire  [2:0] source_selector_01, target_selector_01;
     
     wire [`ADDR_WIDTH - 1: 0] pc, pc_next;
     wire [`REG_WIDTH - 1: 0] imm;
@@ -116,12 +110,6 @@ module cpu_top(
 		.target_selector_1(target_selector_1),
 		.instruction_ready(instruction_ready)
 		);
-
-	mux831 reg_mux0  (.clk(phi2_int), .in0(/*oPC*/), .in1(oADD), .in2(oX), .in3(oY), .in4(imm), .in5(d_from_mem), .in6(8'h00), .in7(d_from_fetch), .selector(source_selector_01), .out(reg_connect_0));
-	fan138 reg_fan0  (.clk(phi2_int), .in(reg_connect_0), .out0(/*pc_next*/), .out1(iADD), .out2(iX), .out3(iY), .out5(d_to_mem), .out6(ialu_a), .out7(d_to_fetch),  .selector(target_selector_01));
-
-	mux831 reg_mux1  (.clk(phi2_int), .in0(/*oPC*/), .in1(oADD), .in2(oX), .in3(oY), .in4(imm), .in5(d_from_mem), .in6(8'h00), .in7(d_from_fetch), .selector(source_selector_1), .out(reg_connect_1));
-	fan138 reg_fan1  (.clk(phi2_int), .in(reg_connect_1), .out0(/*pc_next*/), .out1(iADD), .out2(iX), .out3(iY), .out6(ialu_b), .out7(), .selector(target_selector_1));
 
 	//Regs
 	register PC(.clk(phi2_int), .reset_n(reset_n), .we(we_pc), .din(iPC), .dout(oPC));

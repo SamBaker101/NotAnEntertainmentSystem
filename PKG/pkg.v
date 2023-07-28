@@ -22,6 +22,7 @@
 	`define REG_WIDTH 8
 	`define INSTRUCTION_WIDTH 8
 	`define ADDR_WIDTH 16
+	`define SELECTOR_WIDTH = 4
 
 	//REG Write Enables
 	`define WE_WIDTH 7
@@ -35,19 +36,19 @@
 	`define WE_DOUT 6
 
 	//ALU MUX Reg Selectors
-	`define SELECTOR_ZERO 	3'd0
-	`define SELECTOR_PC 	3'd1
-	`define SELECTOR_SP		3'd2
-	`define SELECTOR_ADD 	3'd3
-	`define SELECTOR_X	    3'd4
-	`define SELECTOR_Y	    3'd5
-	`define SELECTOR_STAT   3'd6
-	`define SELECTOR_MEM  	3'd7
-	`define SELECTOR_IMM    3'd8
-	`define SELECTOR_FETCH  3'd9
-	`define SELECTOR_DECODE 3'd10
-	`define SELECTOR_ALU_0	3'd11
-	`define SELECTOR_ALU_1	3'd12
+	`define SELECTOR_ZERO 	4'd0
+	`define SELECTOR_PC 	4'd1
+	`define SELECTOR_SP		4'd2
+	`define SELECTOR_ADD 	4'd3
+	`define SELECTOR_X	    4'd4
+	`define SELECTOR_Y	    4'd5
+	`define SELECTOR_STAT   4'd6
+	`define SELECTOR_MEM  	4'd7
+	`define SELECTOR_IMM    4'd8
+	`define SELECTOR_FETCH  4'd9
+	`define SELECTOR_DECODE 4'd10
+	`define SELECTOR_ALU_0	4'd11
+	`define SELECTOR_ALU_1	4'd12
 
 	//STATUS REG Bit Definitions
 	`define CARRY       1
@@ -95,6 +96,7 @@
 	`define AM3_ABS_Y	3'b110
 	`define AM3_ABS_X	3'b111
 
+`include "Design/data_bus.v"
 `include "Design/decoder.v"
 `include "Design/fetcher.v"
 `include "Design/mem.v"

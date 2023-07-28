@@ -26,7 +26,7 @@
                     .in14(8'hzz),           \
                     .in15(8'hzz)     
 
-module fan138(
+module data_bus(
         //IN
         clk, reset_n,
         pc_in, sp_in, add_in, x_in, y_in, stat_in,      //Regs
@@ -40,7 +40,7 @@ module fan138(
 		);
 	
 		parameter SIGNAL_WIDTH = `REG_WIDTH;
-		parameter SELECTOR_WIDTH = 4
+		parameter SELECTOR_WIDTH = 4;
 
         //IN
         input [SIGNAL_WIDTH - 1 : 0] pc_in; 
