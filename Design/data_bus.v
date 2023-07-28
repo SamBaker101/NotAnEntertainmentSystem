@@ -83,17 +83,17 @@ module data_bus(
         output [SIGNAL_WIDTH - 1 : 0] alu0_out; 
         output [SIGNAL_WIDTH - 1 : 0] alu1_out;
 
-        mux831 pc_mux(.clk(clk), .out(pc_out), `INPUT_BUS); 
-        mux831 sp_mux(.clk(clk), .out(sp_out), `INPUT_BUS);  
-        mux831 add_mux(.clk(clk), .out(add_out), `INPUT_BUS); 
-        mux831 x_mux(.clk(clk), .out(x_out), `INPUT_BUS);  
-        mux831 y_mux(.clk(clk), .out(y_out), `INPUT_BUS);  
-        mux831 stat_mux(.clk(clk), .out(stat_out), `INPUT_BUS);  
-        mux831 mem_mux(.clk(clk), .out(mem_out), `INPUT_BUS); 
-        mux831 fetch_mux(.clk(clk), .out(fetch_out), `INPUT_BUS);  
-        mux831 decode_mux(.clk(clk), .out(decode_out), `INPUT_BUS);  
-        mux831 alu0_mux(.clk(clk), .out(alu0_out), `INPUT_BUS);  
-        mux831 alu1_mux(.clk(clk), .out(alu1_out), `INPUT_BUS); 
+        mux831 pc_mux(.clk(clk), .out(pc_out), .selector(pc_selector), `INPUT_BUS); 
+        mux831 sp_mux(.clk(clk), .out(sp_out), .selector(sp_selector), `INPUT_BUS);  
+        mux831 add_mux(.clk(clk), .out(add_out), .selector(add_selector), `INPUT_BUS); 
+        mux831 x_mux(.clk(clk), .out(x_out), .selector(x_selector), `INPUT_BUS);  
+        mux831 y_mux(.clk(clk), .out(y_out), .selector(y_selector), `INPUT_BUS);  
+        mux831 stat_mux(.clk(clk), .out(stat_out), .selector(stat_selector), `INPUT_BUS);  
+        mux831 mem_mux(.clk(clk), .out(mem_out), .selector(mem_selector), `INPUT_BUS); 
+        mux831 fetch_mux(.clk(clk), .out(fetch_out), .selector(fetch_selector), `INPUT_BUS);  
+        mux831 decode_mux(.clk(clk), .out(decode_out), .selector(decode_selector), `INPUT_BUS);  
+        mux831 alu0_mux(.clk(clk), .out(alu0_out), .selector(alu0_selector), `INPUT_BUS);  
+        mux831 alu1_mux(.clk(clk), .out(alu1_out), .selector(alu1_selector), `INPUT_BUS); 
 
 endmodule
 
