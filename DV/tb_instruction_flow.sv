@@ -92,18 +92,14 @@ module tb_iflow;
     assign we[`WE_DOUT] = manual_mem ? mem_write : we_dout;
     
     assign addr         = manual_mem        ? addr_in : 
-                          /*instruction_ready ?*/ fetcher_addr  /*    : 
-                          pc*/;
+                          fetcher_addr;
 
     assign d_to_mem1    = manual_mem ? d_in : d_to_mem;
 
-	/*
-    assign pc = oPC;
-	assign we[0] = (pc != pc_next) ? 1'b1 : 0;
-	assign iPC 	 = (pc != pc_next) ? pc_next : pc;
-*/
-    assign get_next = trigger_program ? trigger_program : ask_next;
+    assign get_next = trigger_program;
     
+    always @(*) pc = pc_next;
+
 	switch #(.SIGNAL_WIDTH(3)) selector_switch0(
 		.in0(source_selector_0), .in1(fetch_selector), .out0(source_selector_01),
 		.in_select(fetch_selector != 0), .out_select(1'b0));
@@ -112,7 +108,7 @@ module tb_iflow;
 		.in0(target_selector_0), .in1(`SELECTOR_FETCH), .out0(target_selector_01),
 		.in_select(fetch_selector != 0), .out_select(1'b0));
 
-    always @(*) pc = pc_next;
+    
 
 //Tests functionality with single bit inputs
     mem #(.DEPTH(`MEM_DEPTH)) mem_test(

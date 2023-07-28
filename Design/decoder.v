@@ -109,7 +109,8 @@ module decoder(
                             if (decode_counter == 0) begin
                                 we[`WE_ADD] = 1'b1;
                                 target_selector_1 = `SELECTOR_ADD;
-                                source_selector_1 = `SELECTOR_IMM;
+                                source_selector_1 = (add_mode == `AM3_IMM) ? `SELECTOR_IMM:
+                                                    0;
                             end else if (decode_counter == 1) begin
                                 we = 0;
                                 opp_code = 0;

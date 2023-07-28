@@ -10,7 +10,8 @@ module mux831(clk, in0, in1, in2, in3,  in4, in5, in6, in7, selector, out
 		);
 	
 		parameter SIGNAL_WIDTH = `REG_WIDTH;
-		
+		parameter SELECTOR_WIDTH = 4;
+
 		input clk;
 		input [SIGNAL_WIDTH - 1 : 0] in0;
 		input [SIGNAL_WIDTH - 1 : 0] in1;
@@ -20,19 +21,35 @@ module mux831(clk, in0, in1, in2, in3,  in4, in5, in6, in7, selector, out
 		input [SIGNAL_WIDTH - 1 : 0] in5;
 		input [SIGNAL_WIDTH - 1 : 0] in6;
 		input [SIGNAL_WIDTH - 1 : 0] in7;
+		input [SIGNAL_WIDTH - 1 : 0] in8;
+		input [SIGNAL_WIDTH - 1 : 0] in9;
+		input [SIGNAL_WIDTH - 1 : 0] in10;
+		input [SIGNAL_WIDTH - 1 : 0] in11;
+		input [SIGNAL_WIDTH - 1 : 0] in12;
+		input [SIGNAL_WIDTH - 1 : 0] in13;
+		input [SIGNAL_WIDTH - 1 : 0] in14;
+		input [SIGNAL_WIDTH - 1 : 0] in15;
 
-		input [2:0] selector;
+		input [SELECTOR_WIDTH - 1 : 0] selector;
 
 		output [SIGNAL_WIDTH - 1 : 0] out;
 
-		assign out = (selector == 3'b000) ? in0:
-					 (selector == 3'b001) ? in1:
-					 (selector == 3'b010) ? in2:
-					 (selector == 3'b011) ? in3:
-					 (selector == 3'b100) ? in4:
-					 (selector == 3'b101) ? in5:
-					 (selector == 3'b110) ? in6:
-					 in7;
+		assign out = (selector == 3'b0000) ? in0:
+					 (selector == 3'b0001) ? in1:
+					 (selector == 3'b0010) ? in2:
+					 (selector == 3'b0011) ? in3:
+					 (selector == 3'b0100) ? in4:
+					 (selector == 3'b0101) ? in5:
+					 (selector == 3'b0110) ? in6:
+					 (selector == 3'b0111) ? in7:
+					 (selector == 3'b1000) ? in8:
+					 (selector == 3'b1001) ? in9:
+					 (selector == 3'b1010) ? in10:
+					 (selector == 3'b1011) ? in11:
+					 (selector == 3'b1100) ? in12:
+					 (selector == 3'b1101) ? in13:
+					 (selector == 3'b1110) ? in14:
+					 in15;
 
 endmodule
 
