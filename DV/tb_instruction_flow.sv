@@ -100,8 +100,8 @@ module tb_iflow;
     assign addr         = manual_mem        ? addr_in : 
                           fetcher_addr;
 
+    //For loading me (TB only)  
     assign d_to_mem1    = manual_mem ? d_in : d_to_mem;
-
     assign get_next = trigger_program;
     
     always @(*) pc = pc_next;
@@ -182,7 +182,18 @@ module tb_iflow;
 		.opp(),
 		.we({we_dout, we[5:0]}),    //dont ask, Ill fix this in a minute
 		.instruction_ready(instruction_ready),
-		.instruction_done(instruction_done)
+		.instruction_done(instruction_done),
+        //Selectors
+        .pc_selector(pc_selector),  
+        .sp_selector(sp_selector), 
+        .add_selector(add_selector),  
+        .x_selector(x_selector),  
+        .y_selector(y_selector), 
+        .stat_selector(stat_selector), 
+        .mem_selector(mem_selector), 
+        .decode_selector(decode_selector),  
+        .alu0_selector(alu0_selector),  
+        .alu1_selector(alu1_selector)    
         );
 
 	//Regs
@@ -193,14 +204,12 @@ module tb_iflow;
 	register Y(.clk(phi2_int), .reset_n(reset_n), .we(we_y), .din(iY), .dout(oY));
 	register STAT(.clk(phi2_int), .reset_n(reset_n), .we(we_stat), .din(iSTATUS), .dout(oSTATUS));	
 
-
 	clock_module clk_mod(
 			.phi0(phi0),
 			.phi1(phi1_int),
 			.phi2(phi2_int)
 			);
 	
-
     ///////////////////////
     ////  Pin Wiggles  ////
     ///////////////////////
