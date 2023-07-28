@@ -84,6 +84,7 @@ module tb_iflow;
     wire [`REG_WIDTH - 1: 0] d_to_mem1;
 
     reg [`ADDR_WIDTH - 1 : 0] pc;
+
     ////////////////////////
     ////   TL Assigns   ////
     ////////////////////////
@@ -97,14 +98,22 @@ module tb_iflow;
     //These probably need a switch
     assign we[`WE_DOUT] = manual_mem ? mem_write : we_dout;
     
-    assign addr         = manual_mem        ? addr_in : 
-                          fetcher_addr;
+
 
     //For loading me (TB only)  
-    assign d_to_mem1    = manual_mem ? d_in : d_to_mem;
+
+    ////////////////////////
+    ////   TB Assigns   ////
+    ////////////////////////
+    assign d_to_mem1    = manual_mem ? d_in       : d_to_mem;
+    assign addr         = manual_mem ? addr_in    : fetcher_addr;
     assign get_next = trigger_program;
     
     always @(*) pc = pc_next;
+
+    ///////////////////////
+    ////    Modules    ////
+    ///////////////////////
 
     data_bus bus(
         //IN
@@ -280,28 +289,28 @@ module tb_iflow;
             end
 
         //ENTER SOME INSTRUCTIONS HERE;
-        inst_list[0]    = 8'hA9;     //LDA #04 - 101_010_11
+        inst_list[0]    = 8'hA5;     //LDA #04 - 101_010_11
         inst_list[1]    = 8'h04;
         inst_list[2]    = 8'h85;    //STA ZPG 02 
         inst_list[3]    = 8'h02;
-        inst_list[4]    = 8'hA9;
+        inst_list[4]    = 8'hA9;  
         inst_list[5]    = 8'h10;
         inst_list[6]    = 8'hA9;
         inst_list[7]    = 8'hFF;
         inst_list[8]    = 8'h85;
         inst_list[9]    = 8'h0C;
-        inst_list[10]   = 8'hA9;
-        inst_list[11]   = 8'h03;
+        inst_list[10]   = 8'hA5;    //LDA ZPG 02   101_001_01
+        inst_list[11]   = 8'h02;
         inst_list[12]   = 8'h85;
-        inst_list[13]   = 8'h04;
+        inst_list[13]   = 8'h08;
         inst_list[14]   = 8'h85;
         inst_list[15]   = 8'h06;
 
         //Modify mem_model
-        mem_model[16'h02] = 8'h04;
+        mem_model[16'h02] = mem_model[16'h04];
         mem_model[16'h0C] = 8'hFF;
-        mem_model[16'h04] = 8'h03;
-        mem_model[16'h06] = 8'h03;
+        mem_model[16'h08] = mem_model[16'h02];
+        mem_model[16'h06] = mem_model[16'h02];
 
         //Load Program
         for (i = 0; i < `MEM_DEPTH - `INSTRUCTION_BASE; i++) begin
