@@ -2,7 +2,7 @@
 `define PKG
 	
 
-	`define INSTRUCTION_BASE    16
+
 	
 	//Operations
 	`define OPP_WIDTH 8
@@ -74,7 +74,7 @@
 	`define OPP_STA		5'b100_01
 	`define OPP_STX		5'b100_10
 	`define OPP_LDA		5'b101_01
-	`define OPP_LDX		5'b101_10
+	`define OPP_LDX		5'b101_10    
 	`define OPP_CMP		5'b110_01
 	`define OPP_DEC		5'b110_10
 	`define OPP_SBC		5'b111_01

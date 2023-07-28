@@ -20,7 +20,7 @@ module fetcher(
         input [ADDR_WIDTH - 1 : 0] pc; 
         input [REG_WIDTH - 1 : 0] data_in;
 
-        output reg instruction_ready;
+        output reg instruction_ready, pc_wait;
         output reg [ADDR_WIDTH - 1: 0] addr, pc_next;
         output reg [REG_WIDTH - 1 : 0] imm;
         output reg [`REG_WIDTH - 1 : 0] instruction_out, reg_out;
@@ -31,7 +31,6 @@ module fetcher(
 
         reg [2:0] add_mode;
         reg [4:0] opp_code;
-        reg [REG_WIDTH - 1 : 0] instruction;
         reg [ADDR_WIDTH - 1: 0] addr_reg;
 
         reg [2:0] fetch_counter; 
@@ -41,10 +40,11 @@ module fetcher(
             instruction_ready = 1'b0;
             fetch_selector = `SELECTOR_MEM;
             addr = pc;
+            pc_wait = 1'b0;
             end
 
         always @(posedge phi2) begin
-            if (!instruction_ready)
+            if ((!instruction_ready) & (!pc_wait))
                 pc_next = pc + 1;
         end
 
@@ -80,8 +80,6 @@ module fetcher(
                     case(add_mode) //These are the basic addr mode, may need to be overwritten in some cases
                         `AM3_X_IND  : begin 
                             if (fetch_counter == 0) begin 
-                                
-                                instruction = data_in;
                                 fetch_selector = `SELECTOR_MEM;
                             end 
                             if (fetch_counter == 1) begin
@@ -117,7 +115,6 @@ module fetcher(
                         end
                         `AM3_ABS	: begin
                             if (fetch_counter == 0) begin 
-                                instruction = data_in;
                                 fetch_selector = `SELECTOR_MEM;
                             end 
                             if (fetch_counter == 1) begin
@@ -131,7 +128,6 @@ module fetcher(
                         end
                         `AM3_IND_Y  : begin
                             if (fetch_counter == 0) begin 
-                                instruction = data_in;
                                 fetch_selector = `SELECTOR_MEM;
                             end 
                             if (fetch_counter == 1) begin
@@ -149,21 +145,20 @@ module fetcher(
                         end
                         `AM3_ZPG_X  : begin
                             if (fetch_counter == 0) begin 
-                                instruction = data_in;
                                 fetch_selector = `SELECTOR_MEM;
                             end 
                             if (fetch_counter == 1) begin
-                                addr = {16'h00, data_in};
+                                addr_reg = {16'h00, data_in};
                                 fetch_selector = `SELECTOR_X;
+                                pc_wait = 1'b1;
                             end
                             if (fetch_counter == 2) begin
-                                addr[7:0] = (data_in + addr[7:0]);
+                                addr[7:0] = (data_in + addr_reg[7:0]);
                                 instruction_ready = 1'b1;
                             end      
                         end
                         `AM3_ABS_Y  : begin   
                             if (fetch_counter == 0) begin 
-                                instruction = data_in;
                                 fetch_selector = `SELECTOR_MEM;
                             end 
                             if (fetch_counter == 1) begin
@@ -181,7 +176,6 @@ module fetcher(
                         end
                         `AM3_ABS_X  : begin   
                             if (fetch_counter == 0) begin 
-                                instruction = data_in;
                                 fetch_selector = `SELECTOR_MEM;
                             end 
                             if (fetch_counter == 1) begin

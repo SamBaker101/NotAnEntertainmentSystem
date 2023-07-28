@@ -13,13 +13,16 @@
 `define TB_IFLOW
 
 `timescale 1ns/1ns
-`include "PKG/pkg.v"
 `include "PKG/test_program_macros.v"
+`include "PKG/pkg.v"
+
 
 `define SEED   		        33551
 `define CYCLES 		        150
-`define MEM_DEPTH           32
 
+//Test selection (Only one of these should be uncommented at a time)
+//`define SELECT_TEST `TEST_NOOPP
+`define SELECT_TEST `TEST_LDAZPG
 
 module tb_iflow;
 
@@ -304,7 +307,7 @@ module tb_iflow;
         end
 
         //PREPARE TEST
-        `TEST_LDAZPG
+        `SELECT_TEST
 
         //Load Program
         for (i = 0; i < `MEM_DEPTH - `INSTRUCTION_BASE; i++) begin
@@ -388,23 +391,6 @@ module tb_iflow;
 
                 if (mem_unit !== mem_model[i]) $fatal(1, "Error: incorrect mem at addr %h", i);
         end
-
-        //Mem dump
-        $display("Mem Dump");
-        for (i = 0; i < `INSTRUCTION_BASE; i++) begin
-                mem_write   = 1'b0;
-                addr_in     = i;
-
-                #5;
-                phi0 = 1;
-                #5;
-                phi0 = 0;
-
-                mem_unit    = d_from_mem;
-
-                $display("addr: %h data: %h, mem_model: %h", i, mem_unit, mem_model[i]);
-        end
-
     end
 
 endmodule

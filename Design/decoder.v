@@ -5,6 +5,11 @@
 `ifndef DECODE
 `define DECODE
 
+`define ADDR_MODE_SELECTOR  (add_mode == `AM3_IMM)   ? `SELECTOR_IMM:   \
+                            (add_mode == `AM3_ZPG)   ? `SELECTOR_MEM:   \
+                            (add_mode == `AM3_ZPG_X) ? `SELECTOR_MEM:   \
+                            {ADDR_WIDTH{1'bz}};
+
 module decoder(
 		clk, reset_n, addr_in, instruction_in, opp, we,
         instruction_ready, addr, instruction_done, 
@@ -114,10 +119,7 @@ module decoder(
 	                    `OPP_LDA: begin  
                             if (decode_counter == 0) begin
                                 we[`WE_ADD] = 1'b1;
-                                add_selector =  (add_mode == `AM3_IMM)   ? `SELECTOR_IMM:
-                                                (add_mode == `AM3_ZPG)   ? `SELECTOR_MEM:
-                                                (add_mode == `AM3_ZPG_X) ? `SELECTOR_MEM:
-                                                {ADDR_WIDTH{1'bz}};
+                                add_selector =  `ADDR_MODE_SELECTOR
                             end else if (decode_counter == 1) begin
                                 we = 0;
                                 opp_code = 0;
@@ -125,7 +127,14 @@ module decoder(
                             end
                         end	
 	                    `OPP_LDX: begin  
-
+                            if (decode_counter == 0) begin
+                                we[`WE_X] = 1'b1;
+                                x_selector =  `ADDR_MODE_SELECTOR
+                            end else if (decode_counter == 1) begin
+                                we = 0;
+                                opp_code = 0;
+                                instruction_done = 1'b1;
+                            end
                         end	
 	                    `OPP_CMP: begin  
 
