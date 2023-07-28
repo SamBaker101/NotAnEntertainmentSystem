@@ -43,6 +43,8 @@ module data_bus(
 		parameter SELECTOR_WIDTH = 4;
 
         //IN
+        input clk, reset_n;
+
         input [SIGNAL_WIDTH - 1 : 0] pc_in; 
         input [SIGNAL_WIDTH - 1 : 0] sp_in; 
         input [SIGNAL_WIDTH - 1 : 0] add_in; 
@@ -69,19 +71,17 @@ module data_bus(
         input [SELECTOR_WIDTH - 1 : 0] alu1_selector;       
         
         //OUT
-        output reg [SIGNAL_WIDTH - 1 : 0] pc_out; 
-        output reg [SIGNAL_WIDTH - 1 : 0] sp_out; 
-        output reg [SIGNAL_WIDTH - 1 : 0] add_out; 
-        output reg [SIGNAL_WIDTH - 1 : 0] x_out; 
-        output reg [SIGNAL_WIDTH - 1 : 0] y_out; 
-        output reg [SIGNAL_WIDTH - 1 : 0] stat_out; 
-        output reg [SIGNAL_WIDTH - 1 : 0] mem_out;
-        output reg [SIGNAL_WIDTH - 1 : 0] fetch_out; 
-        output reg [SIGNAL_WIDTH - 1 : 0] decode_out; 
-        output reg [SIGNAL_WIDTH - 1 : 0] alu0_out; 
-        output reg [SIGNAL_WIDTH - 1 : 0] alu1_out;
-
-        mux831 reg_mux0  (.clk(phi2_int), .in0(/*oPC*/), .in1(oADD), .in2(oX), .in3(oY), .in4(imm), .in5(d_from_mem), .in6(8'h00), .in7(d_from_fetch), .selector(source_selector_01), .out(reg_connect_0));
+        output [SIGNAL_WIDTH - 1 : 0] pc_out; 
+        output [SIGNAL_WIDTH - 1 : 0] sp_out; 
+        output [SIGNAL_WIDTH - 1 : 0] add_out; 
+        output [SIGNAL_WIDTH - 1 : 0] x_out; 
+        output [SIGNAL_WIDTH - 1 : 0] y_out; 
+        output [SIGNAL_WIDTH - 1 : 0] stat_out; 
+        output [SIGNAL_WIDTH - 1 : 0] mem_out;
+        output [SIGNAL_WIDTH - 1 : 0] fetch_out; 
+        output [SIGNAL_WIDTH - 1 : 0] decode_out; 
+        output [SIGNAL_WIDTH - 1 : 0] alu0_out; 
+        output [SIGNAL_WIDTH - 1 : 0] alu1_out;
 
         mux831 pc_mux(.clk(clk), .out(pc_out), `INPUT_BUS); 
         mux831 sp_mux(.clk(clk), .out(sp_out), `INPUT_BUS);  

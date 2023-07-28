@@ -68,7 +68,7 @@ module fetcher(
                     addr = pc;
                 end
                 if (!instruction_ready) begin
-                    fetch_source_selector = 0;
+                    fetch_selector = 0;
                     addr = pc;
                     fetch_selector = `SELECTOR_MEM;
                     if (fetch_counter == 0) begin

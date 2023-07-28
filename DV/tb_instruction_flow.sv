@@ -64,17 +64,17 @@ module tb_iflow;
 	wire [`REG_WIDTH - 1: 0] iSTATUS, oSTATUS;
     wire [`REG_WIDTH - 1: 0] instruction;
 
-    wire [SELECTOR_WIDTH - 1 : 0] pc_selector; 
-    wire [SELECTOR_WIDTH - 1 : 0] sp_selector; 
-    wire [SELECTOR_WIDTH - 1 : 0] add_selector; 
-    wire [SELECTOR_WIDTH - 1 : 0] x_selector; 
-    wire [SELECTOR_WIDTH - 1 : 0] y_selector; 
-    wire [SELECTOR_WIDTH - 1 : 0] stat_selector;    
-    wire [SELECTOR_WIDTH - 1 : 0] mem_selector; 
-    wire [SELECTOR_WIDTH - 1 : 0] fetch_selector;
-    wire [SELECTOR_WIDTH - 1 : 0] decode_selector; 
-    wire [SELECTOR_WIDTH - 1 : 0] alu0_selector; 
-    wire [SELECTOR_WIDTH - 1 : 0] alu1_selector;   
+    wire [3 : 0] pc_selector; 
+    wire [3 : 0] sp_selector; 
+    wire [3 : 0] add_selector; 
+    wire [3 : 0] x_selector; 
+    wire [3 : 0] y_selector; 
+    wire [3 : 0] stat_selector;    
+    wire [3 : 0] mem_selector; 
+    wire [3 : 0] fetch_selector;
+    wire [3 : 0] decode_selector; 
+    wire [3 : 0] alu0_selector; 
+    wire [3 : 0] alu1_selector;   
     
     wire [`ADDR_WIDTH - 1: 0] /*pc,*/ pc_next;
     wire [`REG_WIDTH - 1: 0] imm;

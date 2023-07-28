@@ -72,15 +72,12 @@ module cpu_top(
 	assign pc = oPC;
 	assign we[0] = (pc != pc_next) ? 1'b1 : 0;
 	assign iPC 	 = (pc != pc_next) ? pc_next : pc;
-	
-	switch #(.SIGNAL_WIDTH(3)) selector_switch0(
-		.in0(source_selector_0), .in1(fetch_selector), .out0(source_selector_01),
-		.in_select(fetch_selector != 0), .out_select(1'b0));
 
-	switch #(.SIGNAL_WIDTH(3)) selector_switch1(
-		.in0(target_selector_0), .in1(`SELECTOR_FETCH), .out0(target_selector_01),
-		.in_select(fetch_selector != 0), .out_select(1'b0));
 
+//This module needs updating to use the data bus, 
+//will do so once tb_instruction_flow is passing again
+
+/*
 	fetcher fetch(
 		.phi1(phi1_int), 
 		.phi2(phi2_int),
@@ -137,7 +134,7 @@ module cpu_top(
 			.wout(we_add),
 			.carry_out(carry_out)
 			);
-	
+	*/
 endmodule
 
 `endif
