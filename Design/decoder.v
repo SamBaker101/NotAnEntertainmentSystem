@@ -114,9 +114,10 @@ module decoder(
 	                    `OPP_LDA: begin  
                             if (decode_counter == 0) begin
                                 we[`WE_ADD] = 1'b1;
-                                add_selector = (add_mode == `AM3_IMM) ? `SELECTOR_IMM:
-                                               (add_mode == `AM3_ZPG) ? `SELECTOR_MEM:
-                                                    0;
+                                add_selector =  (add_mode == `AM3_IMM)   ? `SELECTOR_IMM:
+                                                (add_mode == `AM3_ZPG)   ? `SELECTOR_MEM:
+                                                (add_mode == `AM3_ZPG_X) ? `SELECTOR_MEM:
+                                                {ADDR_WIDTH{1'bz}};
                             end else if (decode_counter == 1) begin
                                 we = 0;
                                 opp_code = 0;

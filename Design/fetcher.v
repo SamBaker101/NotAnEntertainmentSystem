@@ -61,7 +61,7 @@ module fetcher(
             end else begin 
       //This logic is a mess, try again          
 
-                if (get_next) begin 
+                if (get_next) begin                     //FIXME: This is TB specific and should be removed
                     fetch_counter = 1'b0;
                     instruction_ready = 1'b0;
                     fetch_selector = `SELECTOR_MEM;
@@ -154,7 +154,7 @@ module fetcher(
                             end 
                             if (fetch_counter == 1) begin
                                 addr = {16'h00, data_in};
-                                fetch_selector = `SELECTOR_MEM;
+                                fetch_selector = `SELECTOR_X;
                             end
                             if (fetch_counter == 2) begin
                                 addr[7:0] = (data_in + addr[7:0]);

@@ -14,6 +14,7 @@
 
 `timescale 1ns/1ns
 `include "PKG/pkg.v"
+`include "PKG/test_program_macros.v"
 
 `define SEED   		        33551
 `define CYCLES 		        150
@@ -288,29 +289,22 @@ module tb_iflow;
                     else $display("Match at addr %0d value %h", i, mem_model[i]);
             end
 
-        //ENTER SOME INSTRUCTIONS HERE;
-        inst_list[0]    = 8'hA5;     //LDA #04 - 101_010_11
-        inst_list[1]    = 8'h04;
-        inst_list[2]    = 8'h85;    //STA ZPG 02 
-        inst_list[3]    = 8'h02;
-        inst_list[4]    = 8'hA9;  
-        inst_list[5]    = 8'h10;
-        inst_list[6]    = 8'hA9;
-        inst_list[7]    = 8'hFF;
-        inst_list[8]    = 8'h85;
-        inst_list[9]    = 8'h0C;
-        inst_list[10]   = 8'hA5;    //LDA ZPG 02   101_001_01
-        inst_list[11]   = 8'h02;
-        inst_list[12]   = 8'h85;
-        inst_list[13]   = 8'h08;
-        inst_list[14]   = 8'h85;
-        inst_list[15]   = 8'h06;
+        $display("Zero-ing instructions");
+        for (i = 0; i < `MEM_DEPTH - `INSTRUCTION_BASE; i++) begin
+            mem_model[i + `INSTRUCTION_BASE] = 8'h00;    
+            
+            mem_write   = 1'b1;
+            addr_in     = i + `INSTRUCTION_BASE;
+            d_in    = inst_list[i];
 
-        //Modify mem_model
-        mem_model[16'h02] = mem_model[16'h04];
-        mem_model[16'h0C] = 8'hFF;
-        mem_model[16'h08] = mem_model[16'h02];
-        mem_model[16'h06] = mem_model[16'h02];
+            #5;
+            phi0 = 1;
+            #5;
+            phi0 = 0;
+        end
+
+        //PREPARE TEST
+        `TEST_LDAZPG
 
         //Load Program
         for (i = 0; i < `MEM_DEPTH - `INSTRUCTION_BASE; i++) begin
