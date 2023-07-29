@@ -72,7 +72,7 @@
 	`define OPP_ADC		5'b011_01
 	`define OPP_ROR		5'b011_10
 	`define OPP_STA		5'b100_01
-	`define OPP_STX		5'b100_10
+	`define OPP_STX		5'b100_10    // 1000 1010
 	`define OPP_LDA		5'b101_01
 	`define OPP_LDX		5'b101_10    
 	`define OPP_CMP		5'b110_01
@@ -89,7 +89,7 @@
 	//Address Modes
 	`define AM3_X_IND	3'b000 
 	`define AM3_ZPG		3'b001
-	`define AM3_IMM		3'b010
+	`define AM3_IMM		3'b010  
 	`define AM3_ABS		3'b011
 	`define AM3_IND_Y	3'b100
 	`define AM3_ZPG_X	3'b101

@@ -155,6 +155,7 @@ module fetcher(
                             if (fetch_counter == 2) begin
                                 addr[7:0] = (data_in + addr_reg[7:0]);
                                 instruction_ready = 1'b1;
+                                pc_wait = 1'b0;
                             end      
                         end
                         `AM3_ABS_Y  : begin   

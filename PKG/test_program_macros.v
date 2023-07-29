@@ -44,19 +44,19 @@
                             inst_list[5]    = 8'h0A;        \   //  x0A
                             inst_list[6]    = 8'h85;        \   //  STA ZPG
                             inst_list[7]    = 8'h04;        \   //  x04
-                            inst_list[8]    = 8'hAA;        \   //  LDX IMM
+                            inst_list[8]    = 8'hAA;        \   //  LDA IMM
                             inst_list[9]    = 8'h01;        \   //  x01
                             inst_list[10]   = 8'hB5;        \   //  LDA ZPG_X 
                             inst_list[11]   = 8'h05;        \   //  x05
                             inst_list[12]   = 8'h85;        \   //  STA ZPG
                             inst_list[13]   = 8'h08;        \   //  x08
-                            inst_list[14]   = 8'h85;        \   //  STA ZPG_X
+                            inst_list[14]   = 8'h86;        \   //  STX ZPG
                             inst_list[15]   = 8'h0A;        \   //  x0A
                                                             \
                             mem_model[16'h02] = 8'h04;      \
                             mem_model[16'h04] = mem_model[16'h0A];      \
                             mem_model[16'h08] = mem_model[16'h06];      \
-                            mem_model[16'h0A] = mem_model[16'h06];
+                            mem_model[16'h0A] = 8'h01;
 
 
 

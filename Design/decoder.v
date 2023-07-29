@@ -114,7 +114,14 @@ module decoder(
                             end
                         end	
 	                    `OPP_STX: begin  
-
+                            if (decode_counter == 0) begin
+                                we[`WE_DOUT] = 1'b1;
+                                mem_selector = `SELECTOR_X;
+                            end else if (decode_counter == 1) begin
+                                we = 0;
+                                opp_code = 0;
+                                instruction_done = 1'b1;
+                            end
                         end	
 	                    `OPP_LDA: begin  
                             if (decode_counter == 0) begin
