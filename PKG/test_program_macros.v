@@ -7,8 +7,8 @@
 `ifndef INST_MACROS
 `define INST_MACROS
 
-`define MEM_DEPTH           'h01FF 
-`define INSTRUCTION_BASE    'h0150
+`define MEM_DEPTH           'h001F 
+`define INSTRUCTION_BASE    'h0010
 
 //Blank test for checking build
 `define TEST_NOOPP          inst_list[0]    = 8'h00;        \     
@@ -79,6 +79,12 @@
                             mem_model[16'h0141] = mem_model[16'h014f];      \
                             mem_model[16'h0144] = mem_model[16'h0145];
 
+`define TEST_LDYSTY         inst_list[0]    = 8'hA8;        \   //  LDY #   
+                            inst_list[1]    = 8'hFF;        \   //  xFF
+                            inst_list[2]    = 8'h84;        \   //  STY ZPG
+                            inst_list[3]    = 8'h0A;        \   //  x0A
+                                                            \
+                            mem_model[16'h000A] = 8'hff;    
 
 
 

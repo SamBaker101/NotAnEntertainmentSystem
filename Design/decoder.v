@@ -114,7 +114,17 @@ module decoder(
                                 opp_code = 0;
                                 instruction_done = 1'b1;
                             end
-                        end	
+                        end
+                        `OPP_STY: begin  
+                            if (decode_counter == 0) begin
+                                we[`WE_DOUT] = 1'b1;
+                                mem_selector = `SELECTOR_Y;
+                            end else if (decode_counter == 1) begin
+                                we = 0;
+                                opp_code = 0;
+                                instruction_done = 1'b1;
+                            end
+                        end		
 	                    `OPP_STX: begin  
                             if (decode_counter == 0) begin
                                 we[`WE_DOUT] = 1'b1;
@@ -134,6 +144,16 @@ module decoder(
                                 opp_code = 0;
                                 instruction_done = 1'b1;
                             end
+                        end	
+                        `OPP_LDY: begin  
+                            if (decode_counter == 0) begin
+                                we[`WE_Y] = 1'b1;
+                                y_selector =  `ADDR_MODE_SELECTOR
+                            end else if (decode_counter == 1) begin
+                                we = 0;
+                                opp_code = 0;
+                                instruction_done = 1'b1;
+                            end  
                         end	
 	                    `OPP_LDX: begin  
                             if (decode_counter == 0) begin
@@ -157,17 +177,10 @@ module decoder(
 	                    `OPP_INC: begin  
 
                         end	
-                        `OPP_SPECIAL: begin
-                            case(instruction[7:2])
-
-                                default: begin
-                                    //$fatal(1, "Illegal or unimplemented instruction encountered: %h", instruction);
-                                end
-                            endcase
-                      end
-                      `OPP_ILLEGAL: begin 
-                          $fatal(1, "Illegal Instruction ecountered: %h", instruction);
-                      end
+            
+                        `OPP_ILLEGAL: begin 
+                            $fatal(1, "Illegal Instruction ecountered: %h", instruction);
+                        end
                       default: begin 
                           //$error(1, "Illegal or unimplemented instruction encountered: %h", instruction);
                       end
