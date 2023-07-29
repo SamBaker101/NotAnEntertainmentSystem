@@ -57,7 +57,7 @@ module fetcher(
                 fetch_counter = 0;
                 instruction_ready = 1'b1;
                 pc_next = `INSTRUCTION_BASE;             //This is not the right reset_vector, left here for testing
-
+                pc_wait = 1'b1;
             end else begin 
       //This logic is a mess, try again          
 
@@ -66,6 +66,7 @@ module fetcher(
                     instruction_ready = 1'b0;
                     fetch_selector = `SELECTOR_MEM;
                     addr = pc;
+                    pc_wait = 1'b0;
                 end
                 if (!instruction_ready) begin
                     fetch_selector = 0;
@@ -74,6 +75,7 @@ module fetcher(
                     if (fetch_counter == 0) begin
                         add_mode = data_in[4:2]; 
                         instruction_out = data_in;
+                        pc_wait = 1'b0;
                     end 
 
                     //This logic is a big mess, many of these need to be rewritten
@@ -118,11 +120,12 @@ module fetcher(
                                 fetch_selector = `SELECTOR_MEM;
                             end 
                             if (fetch_counter == 1) begin
-                                addr = {16'h00, data_in};
+                                addr_reg[15:8] = data_in;
                                 fetch_selector = `SELECTOR_MEM;
                             end
                             if (fetch_counter == 2) begin 
-                                addr[15:8] = data_in;
+                                addr_reg[7:0] = data_in;
+                                addr = addr_reg;
                                 instruction_ready = 1'b1;
                             end
                         end
@@ -153,7 +156,8 @@ module fetcher(
                                 pc_wait = 1'b1;
                             end
                             if (fetch_counter == 2) begin
-                                addr[7:0] = (data_in + addr_reg[7:0]);
+                                addr_reg = (data_in + addr_reg);
+                                addr = addr_reg[7:0];
                                 instruction_ready = 1'b1;
                                 pc_wait = 1'b0;
                             end      

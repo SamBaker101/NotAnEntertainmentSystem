@@ -7,8 +7,8 @@
 `ifndef INST_MACROS
 `define INST_MACROS
 
-`define MEM_DEPTH           32
-`define INSTRUCTION_BASE    16
+`define MEM_DEPTH           'h01FF 
+`define INSTRUCTION_BASE    'h0150
 
 //Blank test for checking build
 `define TEST_NOOPP          inst_list[0]    = 8'h00;        \     
@@ -57,6 +57,17 @@
                             mem_model[16'h04] = mem_model[16'h0A];      \
                             mem_model[16'h08] = mem_model[16'h06];      \
                             mem_model[16'h0A] = 8'h01;
+
+// Test ABS LDA and STA, Note MEM must be at least 'h015f for this test
+`define TEST_LDAABS         inst_list[0]    = 8'hAD;        \   //  LDA ABS   
+                            inst_list[1]    = 8'h01;        \   //  x01
+                            inst_list[2]    = 8'h4f;        \   //  x4f
+                            inst_list[3]    = 8'h8D;        \   //  STA ABS
+                            inst_list[4]    = 8'h01;        \   //  x01
+                            inst_list[5]    = 8'h41;        \   //  x41
+                                                            \
+                            mem_model[16'h0141] = mem_model[16'h014f];
+
 
 
 

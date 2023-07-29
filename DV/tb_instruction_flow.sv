@@ -21,8 +21,10 @@
 `define CYCLES 		        150
 
 //Test selection (Only one of these should be uncommented at a time)
+
 //`define SELECT_TEST `TEST_NOOPP
-`define SELECT_TEST `TEST_LDAZPG
+//`define SELECT_TEST `TEST_LDAZPG
+`define SELECT_TEST `TEST_LDAABS
 
 module tb_iflow;
 
@@ -99,21 +101,16 @@ module tb_iflow;
 	assign we_y 	= we[`WE_Y];
 	assign we_stat 	= we[`WE_STAT];
 
-    //These probably need a switch
-    assign we[`WE_DOUT] = manual_mem ? mem_write : we_dout;
-    
-
-
-    //For loading me (TB only)  
-
     ////////////////////////
     ////   TB Assigns   ////
     ////////////////////////
     assign d_to_mem1    = manual_mem ? d_in       : d_to_mem;
     assign addr         = manual_mem ? addr_in    : fetcher_addr;
-    assign get_next = trigger_program;
+    assign we[`WE_DOUT] = manual_mem ? mem_write : we_dout;
+
+    assign get_next     = trigger_program;
     
-    always @(*) pc = pc_next;
+    always @(*) pc      = pc_next;
 
     ///////////////////////
     ////    Modules    ////
@@ -258,7 +255,7 @@ module tb_iflow;
         for (i = 0; i < `INSTRUCTION_BASE; i++) begin
             mem_unit = $urandom(seed);
             mem_model[i] = mem_unit;    
-            $display("mem_model[%d] = %h", i, mem_model[i]);
+            //$display("mem_model[%d] = %h", i, mem_model[i]);
 
             mem_write   = 1'b1;
             addr_in     = i;
@@ -289,7 +286,7 @@ module tb_iflow;
                     
                     $fatal(1, "Error with mem write/read at addr %h, mem_unit = %h, mem_model[%0d] = %h", i, mem_unit, i, mem_model[i]);
                 end
-                    else $display("Match at addr %0d value %h", i, mem_model[i]);
+                    //else $display("Match at addr %0d value %h", i, mem_model[i]);
             end
 
         $display("Zero-ing instructions");
@@ -336,7 +333,7 @@ module tb_iflow;
                 mem_unit    = d_from_mem;
 
                 if (mem_unit != inst_list[i]) $fatal(1, "Error with mem write/read at addr %h", i + `INSTRUCTION_BASE);
-                else $display("Match at instruct addr %0d value %h", i + `INSTRUCTION_BASE, inst_list[i]);
+                //else $display("Match at instruct addr %0d value %h", i + `INSTRUCTION_BASE, inst_list[i]);
         end
         
         manual_mem = 1'b0;
@@ -373,9 +370,12 @@ module tb_iflow;
 
                 mem_unit    = d_from_mem;
 
-                $display("addr: %h data: %h, mem_model: %h", i, mem_unit, mem_model[i]);
+                $write("| %h:%h = %h | ", i, mem_unit, mem_model[i]);
+                if (i % 8 == 0) $display("");
         end
-
+        
+        $display("");
+        
         //Checks
         //Check that model matches mem
         for (i = 0; i < `INSTRUCTION_BASE; i++) begin
