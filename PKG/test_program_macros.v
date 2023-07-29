@@ -69,18 +69,30 @@
                             inst_list[4]    = 8'h41;        \   //  x41
                             inst_list[5]    = 8'h01;        \   //  x01
                             inst_list[6]    = 8'hAA;        \   //  LDX #
-                            inst_list[7]    = 8'h05;        \   //  x05
+                            inst_list[7]    = 8'h0A;        \   //  x0A
                             inst_list[8]    = 8'hBD;        \   //  LDA ABS_X 
-                            inst_list[9]    = 8'h40;        \   //  x40
-                            inst_list[10]   = 8'h01;        \   //  x01      //     x0145
+                            inst_list[9]    = 8'hFF;        \   //  x40
+                            inst_list[10]   = 8'h00;        \   //  x01      //     x0145
                             inst_list[11]   = 8'hAA;        \   //  LDX #
                             inst_list[12]   = 8'h03;        \   //  x03
                             inst_list[13]   = 8'h9D;        \   //  STA ABS_X
                             inst_list[14]   = 8'h41;        \   //  x41
                             inst_list[15]   = 8'h01;        \   //  x01      //     x0144
                                                             \
+                            inst_list[16]   = 8'hA8;        \   //  LDY #
+                            inst_list[17]   = 8'h02;        \   //  x0A
+                            inst_list[18]   = 8'hB9;        \   //  LDA ABS_Y 
+                            inst_list[19]   = 8'hFF;        \   //  xFF
+                            inst_list[20]   = 8'h00;        \   //  x00      //     x0145
+                            inst_list[21]   = 8'hA8;        \   //  LDY #
+                            inst_list[22]   = 8'h03;        \   //  x03
+                            inst_list[23]   = 8'h99;        \   //  STA ABS_Y
+                            inst_list[24]   = 8'hFF;        \   //  xFF
+                            inst_list[25]   = 8'h00;        \   //  x00      //     x0144
+                                                            \
                             mem_model[16'h0141] = mem_model[16'h014f];      \
-                            mem_model[16'h0144] = mem_model[16'h0145];
+                            mem_model[16'h0144] = mem_model[16'h0109];      \
+                            mem_model[16'h0102] = mem_model[16'h0101];
 
 `define TEST_LDYSTY         inst_list[0]    = 8'hA8;        \   //  LDY #   
                             inst_list[1]    = 8'hFF;        \   //  xFF
