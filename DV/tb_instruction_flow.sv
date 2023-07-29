@@ -24,8 +24,8 @@
 
 //`define SELECT_TEST `TEST_NOOPP
 //`define SELECT_TEST `TEST_LDAZPG
-//`define SELECT_TEST `TEST_LDAABS
-`define SELECT_TEST `TEST_LDYSTY
+`define SELECT_TEST `TEST_LDAABS
+//`define SELECT_TEST `TEST_LDYSTY
 
 module tb_iflow;
 
