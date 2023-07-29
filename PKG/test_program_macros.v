@@ -65,8 +65,19 @@
                             inst_list[3]    = 8'h8D;        \   //  STA ABS
                             inst_list[4]    = 8'h01;        \   //  x01
                             inst_list[5]    = 8'h41;        \   //  x41
+                            inst_list[6]    = 8'hAA;        \   //  LDX #
+                            inst_list[7]    = 8'h05;        \   //  x05
+                            inst_list[8]    = 8'hBD;        \   //  LDA ABS_X 
+                            inst_list[9]    = 8'h01;        \   //  x01
+                            inst_list[10]   = 8'h40;        \   //  x40      //     x0145
+                            inst_list[11]   = 8'hAA;        \   //  LDX #
+                            inst_list[12]   = 8'h03;        \   //  x03
+                            inst_list[13]   = 8'h9D;        \   //  STA ABS_X
+                            inst_list[14]   = 8'h01;        \   //  x01
+                            inst_list[15]   = 8'h41;        \   //  x41      //     x0144
                                                             \
-                            mem_model[16'h0141] = mem_model[16'h014f];
+                            mem_model[16'h0141] = mem_model[16'h014f];      \
+                            mem_model[16'h0144] = mem_model[16'h0145];
 
 
 

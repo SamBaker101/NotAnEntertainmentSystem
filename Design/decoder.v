@@ -9,6 +9,7 @@
                             (add_mode == `AM3_ZPG)   ? `SELECTOR_MEM:   \
                             (add_mode == `AM3_ZPG_X) ? `SELECTOR_MEM:   \
                             (add_mode == `AM3_ABS)   ? `SELECTOR_MEM:   \
+                            (add_mode == `AM3_ABS_X) ? `SELECTOR_MEM:   \
                             {ADDR_WIDTH{1'bz}};
 
 module decoder(

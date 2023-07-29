@@ -184,16 +184,19 @@ module fetcher(
                                 fetch_selector = `SELECTOR_MEM;
                             end 
                             if (fetch_counter == 1) begin
-                                addr = {16'h00, data_in};
+                                addr_reg[15:8] = data_in;
                                 fetch_selector = `SELECTOR_MEM;
                             end
                             if (fetch_counter == 2) begin 
-                                addr[15:8] = data_in;
+                                addr_reg[7:0] = data_in;
                                 fetch_selector = `SELECTOR_X;
+                                pc_wait = 1'b1;
                             end
                             if (fetch_counter == 3) begin
-                                addr += data_in;
+                                addr_reg += data_in;
+                                addr = addr_reg;
                                 instruction_ready = 1'b1;
+                                pc_wait = 1'b0;
                             end    
                         end
                     endcase

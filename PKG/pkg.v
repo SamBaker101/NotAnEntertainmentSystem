@@ -72,9 +72,9 @@
 	`define OPP_ADC		5'b011_01
 	`define OPP_ROR		5'b011_10
 	`define OPP_STA		5'b100_01
-	`define OPP_STX		5'b100_10    // 1000 1110
-	`define OPP_LDA		5'b101_01    // 1010 1101 
-	`define OPP_LDX		5'b101_10    
+	`define OPP_STX		5'b100_10    // 1001 1110
+	`define OPP_LDA		5'b101_01    // 1011 1101 
+	`define OPP_LDX		5'b101_10    // 1010 1010   AA
 	`define OPP_CMP		5'b110_01
 	`define OPP_DEC		5'b110_10
 	`define OPP_SBC		5'b111_01
