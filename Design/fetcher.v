@@ -85,17 +85,30 @@ module fetcher(
                                 fetch_selector = `SELECTOR_MEM;
                             end 
                             if (fetch_counter == 1) begin
-                                addr = {16'h00, data_in};
+                                addr_reg[7:0] = data_in;
                                 fetch_selector = `SELECTOR_MEM;
                             end
-                            if (fetch_counter == 2) begin
-                                addr[15:8] = data_in;
-                                fetch_selector = `SELECTOR_MEM;
+                            if (fetch_counter == 2) begin 
+                                addr_reg[15:8] = data_in;
+                                fetch_selector = `SELECTOR_X;
+                                pc_wait = 1'b1;
                             end
                             if (fetch_counter == 3) begin
-                                addr[7:0] = (data_in + addr[7:0]);
+                                addr_reg += data_in;
+                                addr = addr_reg;
+                                fetch_selector = `SELECTOR_MEM;
+                            end  
+                            if (fetch_counter == 4) begin
+                                addr_reg[7:0] = data_in;
+                                fetch_selector = `SELECTOR_MEM;
+                                addr = addr + 1;
+                            end
+                            if (fetch_counter == 5) begin 
+                                addr_reg[15:8] = data_in;
+                                addr = addr_reg;
                                 instruction_ready = 1'b1;
-                            end                            
+                                pc_wait = 1'b0;
+                            end
                         end
                         `AM3_ZPG	: begin     
                             if (fetch_counter == 0) begin 
@@ -134,17 +147,31 @@ module fetcher(
                                 fetch_selector = `SELECTOR_MEM;
                             end 
                             if (fetch_counter == 1) begin
-                                addr = {16'h00, data_in};
+                                addr_reg[7:0] = data_in;
                                 fetch_selector = `SELECTOR_MEM;
                             end
-                            if (fetch_counter == 1) begin 
-                                addr[15:8] = data_in;
+                            if (fetch_counter == 2) begin 
+                                addr_reg[15:8] = data_in;
                                 fetch_selector = `SELECTOR_MEM;
+                                addr = addr_reg;
+                                pc_wait = 1'b1;
                             end
                             if (fetch_counter == 4) begin
-                                addr = addr + data_in;
-                                instruction_ready = 1'b1;
+                                addr_reg[7:0] = data_in;
+                                fetch_selector = `SELECTOR_MEM;
+                                addr = addr + 1;
                             end
+                            if (fetch_counter == 5) begin 
+                                addr_reg[15:8] = data_in;
+                                addr = addr_reg;
+                                fetch_selector = `SELECTOR_Y;
+                            end
+                            if (fetch_counter == 3) begin
+                                addr_reg += data_in;
+                                addr = addr_reg;
+                                instruction_ready = 1'b1;
+                                pc_wait = 1'b0;
+                            end  
                         end
                         `AM3_ZPG_X  : begin
                             if (fetch_counter == 0) begin 
