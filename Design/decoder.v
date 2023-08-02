@@ -68,11 +68,11 @@ module decoder(
             instruction = instruction_in;
             instruction_done = 1'b0;
             decode_counter = 0;
+            alu_update_status = 0;
         end
 
         always @(posedge clk) begin
             we = 0;
-            
 
             if (!reset_n) begin
                 opp = 0;
@@ -112,6 +112,8 @@ module decoder(
                             end else if (alu_done == 1) begin
                                 add_selector = `SELECTOR_ALU_0;
                                 we[`WE_ADD] = 1'b1;
+                                we[`WE_STAT] = 1'b1;
+                                alu_update_status = 1'b1;
                                 instruction_done = 1'b1;
                             end
                         end	

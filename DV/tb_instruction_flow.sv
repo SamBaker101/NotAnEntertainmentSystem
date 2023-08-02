@@ -38,7 +38,7 @@ module tb_iflow;
     reg [`ADDR_WIDTH - 1 : 0] addr_in;
     reg [`REG_WIDTH - 1 : 0] d_in;
     reg manual_mem;
-
+    reg test_carry;
     /////////////////////////
     ////  Top Level I/O  ////
     /////////////////////////
@@ -229,7 +229,7 @@ module tb_iflow;
         .b(d_to_alu_1), 
         .dout(d_from_alu),
         .wout(alu_done),
-        .status_out()
+        .status_out(status_from_alu)
         );
 
 	//Regs
@@ -257,6 +257,8 @@ module tb_iflow;
 		$dumpfile("Out/iflow.vcd");
 		$dumpvars(0, tb_iflow);
         
+        test_carry = 1'b0;
+
         phi0 = 0;
         seed = `SEED;
         manual_mem = 1'b1;
@@ -417,6 +419,8 @@ module tb_iflow;
 
                 if (mem_unit !== mem_model[i]) $fatal(1, "Error: incorrect mem at addr %h", i);
         end
+
+        if (test_carry !== oSTATUS[`CARRY]) $fatal(1, "Error: Carry should be %d", test_carry);
     end
 
 endmodule

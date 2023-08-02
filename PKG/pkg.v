@@ -51,13 +51,13 @@
 	`define SELECTOR_ALU_1	4'd12
 
 	//STATUS REG Bit Definitions
-	`define CARRY       1
-	`define ZERO       	2
-	`define INT_DIS  	4
-	`define DEC      	8
-	`define BREAK    	16
-	`define V_OVERFLOW	64
-	`define NEG			128
+	`define CARRY       0
+	`define ZERO       	1
+	`define INT_DIS  	2
+	`define DEC      	3
+	`define BREAK    	4
+	`define V_OVERFLOW	6
+	`define NEG			7
 
 	//Opp Code
 	`define OPP_SPECIAL 5'bXXX_00 //LB 0, 4, 8, C

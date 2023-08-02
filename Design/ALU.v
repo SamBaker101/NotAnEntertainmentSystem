@@ -17,8 +17,7 @@ module ALU(
 	
 	output reg [`REG_WIDTH - 1 : 0] dout, //douter hold register
 	output reg [`REG_WIDTH - 1 : 0] status_out,
-	output reg wout,
-	output reg wout_status
+	output reg wout
 	);
 	
 	reg carry_out;
@@ -26,7 +25,8 @@ module ALU(
 
 	assign carry_in = status_in[`CARRY];
 
-	
+	always @(phi2) 
+		status_out[`CARRY] = carry_out;
 
 
 	//In the 6502 most of this logic is implemented with NANDs and NORs but Im not pressed about it
@@ -38,6 +38,7 @@ module ALU(
 
 		if (!reset_n) begin
 			dout = 8'h00;
+			status_out = 8'h00;
 		end else if (wout == 0) begin 
 			if (func == `SUM) begin
 				if (carry_in)						//I know it's wierd, don't ask
@@ -61,8 +62,6 @@ module ALU(
 				dout = 8'hZZ;
 				wout = 1'b0;
 			end
-
-			status_out[`CARRY] = carry_out;
 		end
 	end
 
