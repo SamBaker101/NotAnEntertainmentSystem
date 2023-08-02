@@ -15,12 +15,14 @@ module tb_alu;
 		
 	    reg [`REG_WIDTH - 1 : 0] a; 
 	    reg [`REG_WIDTH - 1 : 0] b; 
+		reg [`REG_WIDTH - 1 : 0] status_in; 
 	    reg [`OPP_WIDTH - 1 : 0] func; 
 	    reg carry_in;
 	    reg dec_mode; 
 	
 	    wire [`REG_WIDTH - 1 : 0] add; 
 	    wire [`REG_WIDTH - 1 : 0] status;
+		wire [`REG_WIDTH - 1 : 0] status_out; 
 	    wire wout;
 	    wire wout_status;
 	    wire overflow;
@@ -33,12 +35,12 @@ module tb_alu;
 			.phi1(phi1),
 			.phi2(phi2),
 			.func(func), 
-			.carry_in(carry_in),
+			.status_in(status_in),
 			.a(a), 
 			.b(b), 
 			.dout(add),
 			.wout(wout),
-			.carry_out(carry_out)
+			.status_out(status_out)
 			);
 
 	initial begin
@@ -70,10 +72,12 @@ module tb_alu;
 
 				func = `REG_WIDTH'b1 << j;
 
-				carry_in = $urandom(seed);
+				status_in = $urandom(seed);
 				a = $urandom(seed);
 				b = $urandom(seed);
 				//$display("X = %0d, Y = %0d, Opp = %b, j = %0d", a, b, opp, j);
+				
+				carry_in = status_in[`CARRY];
 
 				#10;
 				case (func)

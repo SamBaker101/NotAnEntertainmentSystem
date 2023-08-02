@@ -11,11 +11,12 @@ module ALU(
 	input [`REG_WIDTH - 1 : 0] a, 
 	input [`REG_WIDTH - 1 : 0] b, 
 	input [`OPP_WIDTH - 1 : 0] func, 
+	input [`REG_WIDTH - 1 : 0] status_in, 
 	input carry_in,
 	input dec_mode, 
 	
 	output reg [`REG_WIDTH - 1 : 0] dout, //douter hold register
-	output reg [`REG_WIDTH - 1 : 0] status,
+	output reg [`REG_WIDTH - 1 : 0] status_out,
 	output reg wout,
 	output reg wout_status,
 	output overflow,

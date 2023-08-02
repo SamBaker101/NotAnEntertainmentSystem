@@ -18,11 +18,11 @@
 
 module decoder(
 		clk, reset_n, addr_in, instruction_in, opp, we,
-        instruction_ready, addr, instruction_done, 
+        instruction_ready, addr, instruction_done, alu_done,
         
         pc_selector,  
         sp_selector, add_selector,  x_selector,  y_selector, stat_selector, mem_selector, 
-        decode_selector,  alu0_selector,  alu1_selector    
+        decode_selector,  alu0_selector,  alu1_selector, alu_update_status    
         );
 	
         parameter REG_WIDTH = `REG_WIDTH;
@@ -32,7 +32,7 @@ module decoder(
         input clk, reset_n;
         input [ADDR_WIDTH - 1 : 0] addr_in;
         input [REG_WIDTH - 1 : 0] instruction_in;
-        input instruction_ready;
+        input instruction_ready, alu_done;
 
         output reg [OPP_WIDTH - 1 : 0] opp;       
         output reg instruction_done;
@@ -51,6 +51,7 @@ module decoder(
         output reg [3:0] alu0_selector; 
         output reg [3:0] alu1_selector;      
 
+        output reg alu_update_status;
         /////////////////////////////
 
         reg [2:0] add_mode;

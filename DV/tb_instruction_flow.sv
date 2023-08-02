@@ -95,9 +95,11 @@ module tb_iflow;
     reg [`ADDR_WIDTH - 1 : 0] pc;
 
     wire [`REG_WIDTH - 1: 0] d_from_alu;
+    wire [`REG_WIDTH - 1: 0] status_from_alu, status_from_bus;
     wire [`REG_WIDTH - 1: 0] d_to_alu_0;
     wire [`REG_WIDTH - 1: 0] d_to_alu_1;
-    wire [7:0] alu_opp, alu_done;
+    wire [7:0] alu_opp;
+    wire alu_done, update_status;
 
     ////////////////////////
     ////   TL Assigns   ////
@@ -108,6 +110,8 @@ module tb_iflow;
 	assign we_x 	= we[`WE_X];
 	assign we_y 	= we[`WE_Y];
 	assign we_stat 	= we[`WE_STAT];
+
+    assign iSTATUS = update_status ? status_from_alu : status_from_bus;
 
     ////////////////////////
     ////   TB Assigns   ////
@@ -157,7 +161,7 @@ module tb_iflow;
         .add_out(iADD), 
         .x_out(iX), 
         .y_out(iY), 
-        .stat_out(iSTATUS), 
+        .stat_out(status_from_bus), 
         .mem_out(d_to_mem), 
         .fetch_out(d_to_fetch), 
         .decode_out(), 
@@ -201,6 +205,7 @@ module tb_iflow;
 		.we({we_dout, we[5:0]}),    //dont ask, Ill fix this in a minute
 		.instruction_ready(instruction_ready),
 		.instruction_done(instruction_done),
+        .alu_done(alu_done),
         //Selectors
         .pc_selector(pc_selector),  
         .sp_selector(sp_selector), 
@@ -211,19 +216,20 @@ module tb_iflow;
         .mem_selector(mem_selector), 
         .decode_selector(decode_selector),  
         .alu0_selector(alu0_selector),  
-        .alu1_selector(alu1_selector)    
+        .alu1_selector(alu1_selector),
+        .alu_update_status(update_status)    
         );
 
     ALU alu(.reset_n(reset_n), 
         .phi1(phi1_int),
         .phi2(phi2_int),
         .func(alu_opp), 
-        .carry_in(1'b0),
+        .status_in(oSTATUS),
         .a(d_to_alu_0), 
         .b(d_to_alu_1), 
         .dout(d_from_alu),
         .wout(alu_done),
-        .carry_out()
+        .status_out()
         );
 
 	//Regs
