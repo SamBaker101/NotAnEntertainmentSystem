@@ -3,7 +3,9 @@
 `define TB_ALU
 
 `timescale 1ns/1ns
+`include "PKG/test_program_macros.v"
 `include "PKG/pkg.v"
+
 
 `define SEED   		33551
 `define CYCLES 		30
@@ -34,7 +36,7 @@ module tb_alu;
 			.carry_in(carry_in),
 			.a(a), 
 			.b(b), 
-			.add(add),
+			.dout(add),
 			.wout(wout),
 			.carry_out(carry_out)
 			);

@@ -94,6 +94,11 @@ module tb_iflow;
 
     reg [`ADDR_WIDTH - 1 : 0] pc;
 
+    wire [`REG_WIDTH - 1: 0] d_from_alu;
+    wire [`REG_WIDTH - 1: 0] d_to_alu_0;
+    wire [`REG_WIDTH - 1: 0] d_to_alu_1;
+    wire [7:0] alu_opp, alu_done;
+
     ////////////////////////
     ////   TL Assigns   ////
     ////////////////////////
@@ -133,7 +138,7 @@ module tb_iflow;
         .imm_in(imm), 
         .fetch_in(d_from_fetch), 
         .decode_in(8'hzz), 
-        .alu_in(8'hzz),             //Not currently using ALU
+        .alu_in(d_from_alu),            
         //SEL
         .pc_selector(pc_selector), 
         .sp_selector(sp_selector), 
@@ -156,8 +161,8 @@ module tb_iflow;
         .mem_out(d_to_mem), 
         .fetch_out(d_to_fetch), 
         .decode_out(), 
-        .alu0_out(), 
-        .alu1_out() 
+        .alu0_out(d_to_alu_0), 
+        .alu1_out(d_to_alu_1) 
 		);
 
 //Tests functionality with single bit inputs
@@ -192,7 +197,7 @@ module tb_iflow;
 		.reset_n(reset_n), 
         .addr_in(fetcher_addr),
 		.instruction_in(instruction), 
-		.opp(),
+		.opp(alu_opp),
 		.we({we_dout, we[5:0]}),    //dont ask, Ill fix this in a minute
 		.instruction_ready(instruction_ready),
 		.instruction_done(instruction_done),
@@ -207,6 +212,18 @@ module tb_iflow;
         .decode_selector(decode_selector),  
         .alu0_selector(alu0_selector),  
         .alu1_selector(alu1_selector)    
+        );
+
+    ALU alu(.reset_n(reset_n), 
+        .phi1(phi1_int),
+        .phi2(phi2_int),
+        .func(alu_opp), 
+        .carry_in(1'b0),
+        .a(d_to_alu_0), 
+        .b(d_to_alu_1), 
+        .dout(d_from_alu),
+        .wout(alu_done),
+        .carry_out()
         );
 
 	//Regs
