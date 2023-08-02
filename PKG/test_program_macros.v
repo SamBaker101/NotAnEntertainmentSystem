@@ -7,11 +7,11 @@
 `ifndef INST_MACROS
 `define INST_MACROS
 
-`define MEM_DEPTH           'h01FF 
-`define INSTRUCTION_BASE    'h0150
+//`define MEM_DEPTH           'h01FF 
+//`define INSTRUCTION_BASE    'h0150
 
-//`define MEM_DEPTH           'h001F 
-//`define INSTRUCTION_BASE    'h0010
+`define MEM_DEPTH           'h001F 
+`define INSTRUCTION_BASE    'h0010
 
 //Blank test for checking build
 `define TEST_NOOPP          inst_list[0]    = 8'h00;        \     
@@ -162,5 +162,14 @@
                             mem_model[16'h0124] = 8'h30;      \
                             mem_model[16'h0125] = 8'h01;      \
                             mem_model[16'h0109] = mem_model[16'h0130];
+
+`define TEST_ADC            inst_list[0]    = 8'hA9;        \   //  LDA #   
+                            inst_list[1]    = 8'h04;        \   //  x04
+                            inst_list[2]    = 8'h69;        \   //  ADC # 
+                            inst_list[3]    = 8'h02;        \   //  x02
+                            inst_list[4]    = 8'h85;        \   //  STA ZPG 
+                            inst_list[5]    = 8'h03;        \   //  x03
+                                                            \
+                            mem_model[16'h0003] = 8'h06;                   
 
 `endif 
