@@ -10,8 +10,8 @@
 //`define MEM_DEPTH           'h01FF 
 //`define INSTRUCTION_BASE    'h0150
 
-`define MEM_DEPTH           'h003F 
-`define INSTRUCTION_BASE    'h0020
+`define MEM_DEPTH           16'h00FF 
+`define INSTRUCTION_BASE    16'h0050
 
 //Blank test for checking build
 `define TEST_NOOPP          inst_list[0]    = 8'h00;        \     
@@ -163,6 +163,7 @@
                             mem_model[16'h0125] = 8'h01;      \
                             mem_model[16'h0109] = mem_model[16'h0130];
 
+
 `define TEST_ADC            inst_list[0]    = 8'hA9;        \   //  LDA #   
                             inst_list[1]    = 8'h04;        \   //  x04
                             inst_list[2]    = 8'h69;        \   //  ADC # 
@@ -188,6 +189,36 @@
                                                             \
                             mem_model[16'h0003] = 8'h06;    \
                             mem_model[16'h0004] = 8'h01;    \
-                            mem_model[16'h0005] = 8'h07;                      
+                            mem_model[16'h0005] = 8'h07;      
+
+
+`define TEST_ALU_LOG        inst_list[0]    = 8'hA9;        \   //  LDA #   
+                            inst_list[1]    = 8'h04;        \   //  x04
+                            inst_list[2]    = 8'h69;        \   //  ADC # 
+                            inst_list[3]    = 8'h02;        \   //  x02
+                            inst_list[4]    = 8'h85;        \   //  STA ZPG 
+                            inst_list[5]    = 8'h03;        \   //  x03
+                            \
+                            inst_list[6]    = 8'h09;        \   //  ORA #
+                            inst_list[7]    = 8'h4A;        \   //  x01
+                            inst_list[8]    = 8'h85;        \   //  STA ZPG 
+                            inst_list[9]    = 8'h04;        \   //  x04
+                            \
+                            inst_list[10]   = 8'h29;        \   //  AND #
+                            inst_list[11]   = 8'h55;        \   //  x55
+                            inst_list[12]   = 8'h85;        \   //  STA ZPG 
+                            inst_list[13]   = 8'h05;        \   //  x05
+                            \                                                                                                                       
+                            inst_list[14]   = 8'h49;        \   //  EOR #
+                            inst_list[15]   = 8'h0F;        \   //  x0F
+                            inst_list[16]   = 8'h85;        \   //  STA ZPG 
+                            inst_list[17]   = 8'h06;        \   //  x06
+                            \
+                            mem_model[16'h0003] = 8'h06;                            \
+                            mem_model[16'h0004] = (mem_model[16'h0003]   |   8'h4A);  \
+                            mem_model[16'h0005] = (mem_model[16'h0004]   &   8'h55);  \
+                            mem_model[16'h0006] = (mem_model[16'h0005]   ^   8'h0F);  
+
+
 
 `endif 

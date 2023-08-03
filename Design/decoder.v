@@ -87,19 +87,49 @@ module decoder(
                     	5'bXXXXX: ; //FIXME workaround while mem is being loaded
                         
                         `OPP_ORA: begin  
-
+                            if (decode_counter == 0) begin
+                                alu0_selector = `SELECTOR_ADD;
+                                alu1_selector = `ADDR_MODE_SELECTOR;
+                                opp = `OR;
+                            end else if (alu_done == 1) begin
+                                add_selector = `SELECTOR_ALU_0;
+                                we[`WE_ADD] = 1'b1;
+                                we[`WE_STAT] = 1'b0;
+                                alu_update_status = 1'b0;
+                                instruction_done = 1'b1;
+                            end
                         end 
 	                    `OPP_ASL: begin  
 
                         end	
 	                    `OPP_AND: begin  
-
+                            if (decode_counter == 0) begin
+                                alu0_selector = `SELECTOR_ADD;
+                                alu1_selector = `ADDR_MODE_SELECTOR;
+                                opp = `AND;
+                            end else if (alu_done == 1) begin
+                                add_selector = `SELECTOR_ALU_0;
+                                we[`WE_ADD] = 1'b1;
+                                we[`WE_STAT] = 1'b0;
+                                alu_update_status = 1'b0;
+                                instruction_done = 1'b1;
+                            end
                         end	
 	                    `OPP_ROL: begin  
 
                         end	
 	                    `OPP_EOR: begin  
-
+                            if (decode_counter == 0) begin
+                                alu0_selector = `SELECTOR_ADD;
+                                alu1_selector = `ADDR_MODE_SELECTOR;
+                                opp = `XOR;
+                            end else if (alu_done == 1) begin
+                                add_selector = `SELECTOR_ALU_0;
+                                we[`WE_ADD] = 1'b1;
+                                we[`WE_STAT] = 1'b0;
+                                alu_update_status = 1'b0;
+                                instruction_done = 1'b1;
+                            end
                         end	
 	                    `OPP_LSR: begin  
 

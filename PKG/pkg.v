@@ -49,6 +49,7 @@
 	`define SELECTOR_DECODE 4'd10
 	`define SELECTOR_ALU_0	4'd11
 	`define SELECTOR_ALU_1	4'd12
+	`define SELECTOR_ONE 	4'd13
 
 	//STATUS REG Bit Definitions
 	`define CARRY       0

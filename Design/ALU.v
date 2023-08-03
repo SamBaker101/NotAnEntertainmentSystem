@@ -20,14 +20,30 @@ module ALU(
 	output reg wout
 	);
 	
-	reg carry_out;
 	reg opp_reg;
-
+	
+	//STATUS REGS
+	reg carry_out;
+	reg interrupt_mask_out;
+	reg decimal_out;
+	reg break_out;
+	//--//
+	reg overflow_out;
+	reg negative_out;
+	
+	//STATUS ASSIGNS
 	assign carry_in = status_in[`CARRY];
 
-	always @(phi2) 
-		status_out[`CARRY] = carry_out;
-
+	always @(phi2) begin
+		status_out[`CARRY] 		= carry_out;
+		status_out[`ZERO] 		= dout === `REG_WIDTH'h0;
+		status_out[`INT_DIS] 	= interrupt_mask_out;
+		status_out[`DEC] 		= decimal_out;
+		status_out[`BREAK] 		= break_out;
+		//--//
+		status_out[`V_OVERFLOW] = overflow_out;
+		status_out[`NEG] 		= dout[`REG_WIDTH - 1]; 
+	end
 
 	//In the 6502 most of this logic is implemented with NANDs and NORs but Im not pressed about it
 	always @(posedge phi1) begin
@@ -56,7 +72,7 @@ module ALU(
 				dout = ~(a & b) & (a | b);	
 				wout = 1'b1;
 			end else if (func == `SR) begin
-				dout = a << b;		
+				{carry_out, dout} = a << b;		
 				wout = 1'b1;
 			end else begin
 				dout = 8'hZZ;

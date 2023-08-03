@@ -27,7 +27,8 @@
 //`define SELECT_TEST `TEST_LDAABS
 //`define SELECT_TEST `TEST_LDYSTY
 //`define SELECT_TEST `TEST_INDXY
-`define SELECT_TEST `TEST_ADC
+//`define SELECT_TEST `TEST_ADC
+`define SELECT_TEST `TEST_ALU_LOG
 
 module tb_iflow;
 
@@ -363,7 +364,7 @@ module tb_iflow;
                 if (mem_unit != inst_list[i]) $fatal(1, "Error with mem write/read at addr %h", i + `INSTRUCTION_BASE);
                 //else $display("Match at instruct addr %0d value %h", i + `INSTRUCTION_BASE, inst_list[i]);
         end
-        
+      
         manual_mem = 1'b0;
         reset_n = 1'b1;
 
