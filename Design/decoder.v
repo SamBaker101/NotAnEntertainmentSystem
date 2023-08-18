@@ -99,8 +99,19 @@ module decoder(
                                 instruction_done = 1'b1;
                             end
                         end 
-	                    `OPP_ASL: begin  
-
+	                    `OPP_ASL: begin  // not working
+                            if (decode_counter == 0) begin
+                                if 
+                                alu0_selector = (add_mode == `AM3_IMM) ? `SELECTOR_ADD : `SELECTOR_MEM;
+                                alu1_selector = (add_mode == `AM3_IMM) ? `SELECTOR_ADD : `SELECTOR_MEM;
+                                opp = `SUM;
+                            end else if (alu_done == 1) begin
+                                add_selector = `SELECTOR_ALU_0;
+                                we[`WE_ADD] = 1'b1;
+                                we[`WE_STAT] = 1'b1;
+                                alu_update_status = 1'b1;
+                                instruction_done = 1'b1;
+                            end
                         end	
 	                    `OPP_AND: begin  
                             if (decode_counter == 0) begin

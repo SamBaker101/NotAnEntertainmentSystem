@@ -72,7 +72,7 @@ module ALU(
 				dout = ~(a & b) & (a | b);	
 				wout = 1'b1;
 			end else if (func == `SR) begin
-				{carry_out, dout} = a << b;		
+				carry_out = a >> b;		
 				wout = 1'b1;
 			end else begin
 				dout = 8'hZZ;
