@@ -118,9 +118,15 @@ module fetcher(
                                 instruction_ready = 1'b1;
                             end
                         end	
-                        `AM3_IMM	: begin        
+                        `AM3_ADD	: begin        
                             if (fetch_counter == 0) begin 
-                                fetch_selector = `SELECTOR_MEM;
+                                if (data_in[0] == 1) begin
+                                    fetch_selector = `SELECTOR_MEM;
+                                    end
+                                else begin
+                                    instruction_ready = 1'b1;
+                                    pc_next = pc + 1;
+                                    end
                             end 
                             if (fetch_counter == 1) begin
                                 imm = data_in;

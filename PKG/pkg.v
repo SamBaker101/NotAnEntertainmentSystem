@@ -44,7 +44,7 @@
 	`define SELECTOR_Y	    4'd5
 	`define SELECTOR_STAT   4'd6
 	`define SELECTOR_MEM  	4'd7
-	`define SELECTOR_ACC    4'd8
+	`define SELECTOR_IMM    4'd8
 	`define SELECTOR_FETCH  4'd9
 	`define SELECTOR_DECODE 4'd10
 	`define SELECTOR_ALU_0	4'd11
@@ -96,7 +96,7 @@
 	//Address Modes
 	`define AM3_X_IND	3'b000 
 	`define AM3_ZPG		3'b001
-	`define AM3_IMM		3'b010  
+	`define AM3_ADD		3'b010  
 	`define AM3_ABS		3'b011
 	`define AM3_IND_Y	3'b100
 	`define AM3_ZPG_X	3'b101

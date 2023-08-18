@@ -6,7 +6,7 @@
 `define DECODE
 
 //Im begginning to suspect this is not necessary...
-`define ADDR_MODE_SELECTOR  (add_mode == `AM3_IMM)   ? ((instruction_in[0] == 1) ? `SELECTOR_ACC: `SELECTOR_ADD):  \
+`define ADDR_MODE_SELECTOR  (add_mode == `AM3_ADD)   ? ((instruction_in[0] == 1) ? `SELECTOR_IMM: `SELECTOR_ADD):  \
                             (add_mode == `AM3_ZPG)   ? `SELECTOR_MEM:   \
                             (add_mode == `AM3_ZPG_X) ? `SELECTOR_MEM:   \
                             (add_mode == `AM3_ABS)   ? `SELECTOR_MEM:   \
@@ -69,6 +69,7 @@ module decoder(
             instruction_done = 1'b0;
             decode_counter = 0;
             alu_update_status = 0;
+            stat_selector = `SELECTOR_STAT; 
         end
 
         always @(posedge clk) begin

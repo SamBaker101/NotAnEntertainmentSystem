@@ -22,13 +22,15 @@
 
 //Test selection (Only one of these should be uncommented at a time)
 
+//FIXME I need a better way to handle my tests...
 //`define SELECT_TEST `TEST_NOOPP
 //`define SELECT_TEST `TEST_LDAZPG
 //`define SELECT_TEST `TEST_LDAABS
 //`define SELECT_TEST `TEST_LDYSTY
 //`define SELECT_TEST `TEST_INDXY
 //`define SELECT_TEST `TEST_ADC
-`define SELECT_TEST `TEST_ALU_LOG
+//`define SELECT_TEST `TEST_ALU_LOG
+`define SELECT_TEST `TEST_ALU_ASL
 
 module tb_iflow;
 
@@ -110,7 +112,7 @@ module tb_iflow;
 	assign we_add 	= we[`WE_ADD];
 	assign we_x 	= we[`WE_X];
 	assign we_y 	= we[`WE_Y];
-	assign we_stat 	= we[`WE_STAT];
+	assign we_stat 	= update_status ? 1'b1 : we[`WE_STAT];
 
     assign iSTATUS = update_status ? status_from_alu : status_from_bus;
 
