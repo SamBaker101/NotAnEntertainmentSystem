@@ -220,7 +220,7 @@
                             mem_model[16'h0006] = (mem_model[16'h0005]   ^   8'h0F);  
 
 `define TEST_ALU_ASL        inst_list[0]    = 8'hA9;        \   //  LDA #   
-                            inst_list[1]    = 8'hA4;        \   //  x04
+                            inst_list[1]    = 8'hA4;        \   //  xA4
                             inst_list[2]    = 8'h0A;        \   //  ASL A 
                             inst_list[4]    = 8'h85;        \   //  STA ZPG 
                             inst_list[5]    = 8'h03;        \   //  x03
@@ -229,6 +229,14 @@
                                                             \
                             mem_model[16'h0003] = (8'hA4 << 1); // 10100100 << 1 = 01001000 = 48
  
-
-
+`define TEST_ALU_LSR        inst_list[0]    = 8'hA9;        \   //  LDA #   
+                            inst_list[1]    = 8'hA1;        \   //  xA4
+                            inst_list[2]    = 8'h4A;        \   //  LSR A 
+                            inst_list[4]    = 8'h85;        \   //  STA ZPG 
+                            inst_list[5]    = 8'h03;        \   //  x03
+                                                            \
+                            test_carry = 1'b1;              \
+                                                            \
+                            mem_model[16'h0003] = (8'hA1 >> 1); 
+                            
 `endif 
