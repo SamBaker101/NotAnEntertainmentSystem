@@ -44,12 +44,16 @@
 	`define SELECTOR_Y	    4'd5
 	`define SELECTOR_STAT   4'd6
 	`define SELECTOR_MEM  	4'd7
-	`define SELECTOR_IMM    4'd8
+	`define SELECTOR_ACC    4'd8
 	`define SELECTOR_FETCH  4'd9
 	`define SELECTOR_DECODE 4'd10
 	`define SELECTOR_ALU_0	4'd11
 	`define SELECTOR_ALU_1	4'd12
 	`define SELECTOR_ONE 	4'd13
+
+	// IMM vs IMP/ADD
+	// impl/A   08 0A      	000 010 00 | 000 010 10 
+	// Imm      09  	   	000 010 01
 
 	//STATUS REG Bit Definitions
 	`define CARRY       0

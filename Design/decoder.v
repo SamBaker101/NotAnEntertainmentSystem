@@ -6,7 +6,7 @@
 `define DECODE
 
 //Im begginning to suspect this is not necessary...
-`define ADDR_MODE_SELECTOR  (add_mode == `AM3_IMM)   ? ((instruction_in[0] == 1) ? `SELECTOR_IMM: `SELECTOR_ADD):  \
+`define ADDR_MODE_SELECTOR  (add_mode == `AM3_IMM)   ? ((instruction_in[0] == 1) ? `SELECTOR_ACC: `SELECTOR_ADD):  \
                             (add_mode == `AM3_ZPG)   ? `SELECTOR_MEM:   \
                             (add_mode == `AM3_ZPG_X) ? `SELECTOR_MEM:   \
                             (add_mode == `AM3_ABS)   ? `SELECTOR_MEM:   \
@@ -101,9 +101,8 @@ module decoder(
                         end 
 	                    `OPP_ASL: begin  // not working
                             if (decode_counter == 0) begin
-                                if 
-                                alu0_selector = (add_mode == `AM3_IMM) ? `SELECTOR_ADD : `SELECTOR_MEM;
-                                alu1_selector = (add_mode == `AM3_IMM) ? `SELECTOR_ADD : `SELECTOR_MEM;
+                                alu0_selector = `ADDR_MODE_SELECTOR;
+                                alu1_selector = `ADDR_MODE_SELECTOR;
                                 opp = `SUM;
                             end else if (alu_done == 1) begin
                                 add_selector = `SELECTOR_ALU_0;

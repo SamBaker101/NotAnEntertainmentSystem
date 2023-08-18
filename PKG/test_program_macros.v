@@ -219,6 +219,17 @@
                             mem_model[16'h0005] = (mem_model[16'h0004]   &   8'h55);  \
                             mem_model[16'h0006] = (mem_model[16'h0005]   ^   8'h0F);  
 
+`define TEST_ALU_LOG        inst_list[0]    = 8'hA9;        \   //  LDA #   
+                            inst_list[1]    = 8'h04;        \   //  x04
+                            inst_list[2]    = 8'h69;        \   //  ASL A 
+                            inst_list[3]    = 8'h02;        \   //  x02
+                            inst_list[4]    = 8'h85;        \   //  STA ZPG 
+                            inst_list[5]    = 8'h03;        \   //  x03
+                                                            \
+                            test_carry = 1'b0;              \
+                                                            \
+                            mem_model[16'h0003] = 8'h06;                            \
+ 
 
 
 `endif 

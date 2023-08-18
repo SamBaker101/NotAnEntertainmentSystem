@@ -51,7 +51,6 @@ module fetcher(
         always @(posedge phi1) begin
             //Operation
             
-  
 
             if (!reset_n) begin
                 fetch_counter = 0;
