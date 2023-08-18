@@ -5,14 +5,15 @@
 `ifndef DECODE
 `define DECODE
 
-//Im begginning to suspect this is not necessary...
+//TODO: find a more graceful way to handle this 
 `define ADDR_MODE_SELECTOR  (add_mode == `AM3_ADD)   ? ((instruction_in[0] == 1) ? `SELECTOR_IMM: `SELECTOR_ADD):  \
                             (add_mode == `AM3_ZPG)   ? `SELECTOR_MEM:   \
                             (add_mode == `AM3_ZPG_X) ? `SELECTOR_MEM:   \
                             (add_mode == `AM3_ABS)   ? `SELECTOR_MEM:   \
                             (add_mode == `AM3_ABS_X) ? `SELECTOR_MEM:   \
                             (add_mode == `AM3_ABS_Y) ? `SELECTOR_MEM:   \
-                            (add_mode == `AM3_X_IND) ? `SELECTOR_MEM:   \
+                            (add_mode == `AM3_X_IND) ? ((instruction_in == 8'hA0)||                                 \
+                                                        (instruction_in == 8'hA2) ? `SELECTOR_IMM : `SELECTOR_MEM):  \
                             (add_mode == `AM3_IND_Y) ? `SELECTOR_MEM:   \
                             {ADDR_WIDTH{1'bz}};
 
@@ -239,9 +240,34 @@ module decoder(
 
                         end	
 	                    `OPP_INC: begin  
-
+                            if (decode_counter == 0) begin
+                                alu0_selector = `SELECTOR_MEM;
+                                alu1_selector = `SELECTOR_ONE;
+                                opp = `SUM;
+                            end else if (alu_done == 1) begin
+                                add_selector = `SELECTOR_ALU_0;
+                                we[`WE_ADD] = 1'b1;
+                                we[`WE_STAT] = 1'b1;
+                                alu_update_status = 1'b1;
+                                instruction_done = 1'b1;
+                            end
                         end	
-            
+            	        `OPP_INXY: begin  
+                            if (decode_counter == 0) begin
+                                alu0_selector = (instruction_in == 8'hE8) ? `SELECTOR_X: 
+                                                (instruction_in == 8'hC8) ? `SELECTOR_Y: 
+                                                `SELECTOR_MEM;
+                                alu1_selector = `SELECTOR_ONE;
+                                opp = `SUM;
+                            end else if (alu_done == 1) begin
+                                add_selector = `SELECTOR_ALU_0;
+                                we[`WE_X] = 1'b1;
+                                we[`WE_STAT] = 1'b1;
+                                alu_update_status = 1'b1;
+                                instruction_done = 1'b1;
+                            end
+                        end	
+                        
                         `OPP_ILLEGAL: begin 
                             $fatal(1, "Illegal Instruction ecountered: %h", instruction);
                         end

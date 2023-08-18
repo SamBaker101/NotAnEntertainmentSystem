@@ -86,6 +86,10 @@
 	`define OPP_DEC		5'b110_10
 	`define OPP_SBC		5'b111_01
 	`define OPP_INC		5'b111_10
+	`define OPP_INXY	5'b111_00
+
+	//E8 - 111 010 00
+	//     111 001 10
 
 	//Spec Opp Codes 6 bits (instruction [7:2])
 	//There is probably a cleaner way to encode these

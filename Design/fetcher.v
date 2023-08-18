@@ -79,34 +79,44 @@ module fetcher(
 
                     //This logic is a big mess, many of these need to be rewritten
                     case(add_mode) //These are the basic addr mode, may need to be overwritten in some cases
-                        `AM3_X_IND  : begin 
-                            if (fetch_counter == 0) begin 
-                                fetch_selector = `SELECTOR_MEM;
-                            end 
-                            if (fetch_counter == 1) begin
-                                addr_reg[7:0] = data_in;
-                                fetch_selector = `SELECTOR_MEM;
-                            end
-                            if (fetch_counter == 2) begin 
-                                addr_reg[15:8] = data_in;
-                                fetch_selector = `SELECTOR_X;
-                                pc_wait = 1'b1;
-                            end
-                            if (fetch_counter == 3) begin
-                                addr_reg += data_in;
-                                addr = addr_reg;
-                                fetch_selector = `SELECTOR_MEM;
-                            end  
-                            if (fetch_counter == 4) begin
-                                addr = addr_reg + 1;
-                                addr_reg[7:0] = data_in;
-                                fetch_selector = `SELECTOR_MEM;
-                            end
-                            if (fetch_counter == 5) begin
-                                addr_reg[15:8] = data_in;
-                                addr = addr_reg;
-                                instruction_ready = 1'b1;
-                                pc_wait = 1'b0;
+                        `AM3_X_IND  : begin
+                            if (instruction_out[1:0] == 2'b01) begin
+                                if (fetch_counter == 0) begin 
+                                    fetch_selector = `SELECTOR_MEM;
+                                end 
+                                if (fetch_counter == 1) begin
+                                    addr_reg[7:0] = data_in;
+                                    fetch_selector = `SELECTOR_MEM;
+                                end
+                                if (fetch_counter == 2) begin 
+                                    addr_reg[15:8] = data_in;
+                                    fetch_selector = `SELECTOR_X;
+                                    pc_wait = 1'b1;
+                                end
+                                if (fetch_counter == 3) begin
+                                    addr_reg += data_in;
+                                    addr = addr_reg;
+                                    fetch_selector = `SELECTOR_MEM;
+                                end  
+                                if (fetch_counter == 4) begin
+                                    addr = addr_reg + 1;
+                                    addr_reg[7:0] = data_in;
+                                    fetch_selector = `SELECTOR_MEM;
+                                end
+                                if (fetch_counter == 5) begin
+                                    addr_reg[15:8] = data_in;
+                                    addr = addr_reg;
+                                    instruction_ready = 1'b1;
+                                    pc_wait = 1'b0;
+                                end
+                            end else begin  //Imm for LDX LDY and CPX CPY
+                                if (fetch_counter == 0) begin 
+                                    fetch_selector = `SELECTOR_MEM;
+                                end 
+                                if (fetch_counter == 1) begin
+                                    imm = data_in;
+                                    instruction_ready = 1'b1;
+                                end
                             end
                         end
                         `AM3_ZPG	: begin     
@@ -120,13 +130,12 @@ module fetcher(
                         end	
                         `AM3_ADD	: begin        
                             if (fetch_counter == 0) begin 
-                                if (data_in[0] == 1) begin
+                                if ((data_in[0] == 1) || (data_in[1:0] == 2'b00))
                                     fetch_selector = `SELECTOR_MEM;
-                                    end
-                                else begin
+                                else begin 
                                     instruction_ready = 1'b1;
                                     pc_next = pc + 1;
-                                    end
+                                end
                             end 
                             if (fetch_counter == 1) begin
                                 imm = data_in;
