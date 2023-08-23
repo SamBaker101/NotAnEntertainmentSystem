@@ -198,9 +198,9 @@
 
 `define TEST_ALU_ASL        inst_list[0]    = 8'hA9;        \   //  LDA #   
                             inst_list[1]    = 8'hA4;        \   //  xA4
-                            inst_list[2]    = 8'h0A;        \   //  ASL A 
-                            inst_list[4]    = 8'h85;        \   //  STA ZPG 
-                            inst_list[5]    = 8'h03;        \   //  x03
+                            inst_list[2]    = 8'h0A;        \   //  ASL A 0A - 000 010 10
+                            inst_list[3]    = 8'h85;        \   //  STA ZPG 
+                            inst_list[4]    = 8'h03;        \   //  x03
                                                             \
                             test_carry = 1'b1;              \
                                                             \
@@ -209,8 +209,8 @@
 `define TEST_ALU_LSR        inst_list[0]    = 8'hA9;        \   //  LDA #   
                             inst_list[1]    = 8'hA1;        \   //  xA4
                             inst_list[2]    = 8'h4A;        \   //  LSR A 
-                            inst_list[4]    = 8'h85;        \   //  STA ZPG 
-                            inst_list[5]    = 8'h03;        \   //  x03
+                            inst_list[3]    = 8'h85;        \   //  STA ZPG 
+                            inst_list[4]    = 8'h03;        \   //  x03
                                                             \
                             test_carry = 1'b1;              \
                                                             \
@@ -220,19 +220,19 @@
 `define TEST_ALU_INC        inst_list[0]    = 8'hA2;        \   //  LDX #   
                             inst_list[1]    = 8'hA4;        \   //  xA4
                             inst_list[2]    = 8'hE8;        \   //  INX 
-                            inst_list[4]    = 8'h85;        \   //  STA ZPG 
-                            inst_list[5]    = 8'h03;        \   //  x03
+                            inst_list[3]    = 8'h85;        \   //  STA ZPG 
+                            inst_list[4]    = 8'h03;        \   //  x03
                                                             \
-                            inst_list[6]    = 8'hA0;        \   //  LDY #   
-                            inst_list[7]    = 8'hA1;        \   //  xA4
-                            inst_list[8]    = 8'hC8;        \   //  INY 
-                            inst_list[9]    = 8'h85;        \   //  STA ZPG 
-                            inst_list[10]    = 8'h04;        \   //  x03
+                            inst_list[5]    = 8'hA0;        \   //  LDY #   
+                            inst_list[6]    = 8'hA1;        \   //  xA4
+                            inst_list[7]    = 8'hC8;        \   //  INY 
+                            inst_list[8]    = 8'h85;        \   //  STA ZPG 
+                            inst_list[9]    = 8'h04;        \   //  x03
                                                             \
-                            inst_list[11]    = 8'hE6;        \   //  INC ZPG
-                            inst_list[12]    = 8'h04;        \   //  x04  
-                            inst_list[13]    = 8'h85;        \   //  STA ZPG 
-                            inst_list[14]    = 8'h05;        \   //  x03
+                            inst_list[10]    = 8'hE6;        \   //  INC ZPG
+                            inst_list[11]    = 8'h04;        \   //  x04  
+                            inst_list[12]    = 8'h85;        \   //  STA ZPG 
+                            inst_list[13]    = 8'h05;        \   //  x03
                                                             \        
                             test_carry = 1'b0;              \
                                                             \

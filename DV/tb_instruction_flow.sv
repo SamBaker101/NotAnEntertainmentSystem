@@ -31,7 +31,8 @@
 //`define SELECT_TEST `TEST_ADC
 //`define SELECT_TEST `TEST_ALU_LOG
 //`define SELECT_TEST `TEST_ALU_ASL
-`define SELECT_TEST `TEST_ALU_INC
+`define SELECT_TEST `TEST_ALU_LSR
+//`define SELECT_TEST `TEST_ALU_INC
 
 
 
@@ -128,7 +129,7 @@ module tb_iflow;
 
     assign get_next     = trigger_program;
     
-    always @(*) pc      = pc_next;
+    always @(phi2_int) pc      = pc_next;
 
     ///////////////////////
     ////    Modules    ////

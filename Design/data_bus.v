@@ -21,8 +21,8 @@
                     .in9(fetch_in),         \
                     .in10(decode_in),       \
                     .in11(alu_in),          \
-                    .in12(8'h01),           \ 
-                    .in13(8'hzz),           \ 
+                    .in12(8'hzz),           \ 
+                    .in13(8'h01),           \ 
                     .in14(8'hzz),           \
                     .in15(8'hzz)     
 

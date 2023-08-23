@@ -73,6 +73,8 @@ module decoder(
             stat_selector = `SELECTOR_STAT; 
         end
 
+        always @(posedge reset_n) instruction_done = 1'b1;
+
         always @(posedge clk) begin
             we = 0;
 
@@ -80,6 +82,7 @@ module decoder(
                 opp = 0;
                 we = 0;
                 decode_counter = 0;
+                instruction_done = 1'b0;
 
             end else begin
                 we = 0;
@@ -251,17 +254,28 @@ module decoder(
                                 alu_update_status = 1'b1;
                                 instruction_done = 1'b1;
                             end
-                        end	
-            	        `OPP_INXY: begin  
+                        end
+                        `OPP_INX: begin  
                             if (decode_counter == 0) begin
-                                alu0_selector = (instruction_in == 8'hE8) ? `SELECTOR_X: 
-                                                (instruction_in == 8'hC8) ? `SELECTOR_Y: 
-                                                `SELECTOR_MEM;
+                                alu0_selector = `SELECTOR_X;
                                 alu1_selector = `SELECTOR_ONE;
                                 opp = `SUM;
                             end else if (alu_done == 1) begin
                                 add_selector = `SELECTOR_ALU_0;
-                                we[`WE_X] = 1'b1;
+                                we[`WE_ADD] = 1'b1;
+                                we[`WE_STAT] = 1'b1;
+                                alu_update_status = 1'b1;
+                                instruction_done = 1'b1;
+                            end
+                        end	
+            	        `OPP_INY: begin  
+                            if (decode_counter == 0) begin
+                                alu0_selector = `SELECTOR_Y;
+                                alu1_selector = `SELECTOR_ONE;
+                                opp = `SUM;
+                            end else if (alu_done == 1) begin
+                                add_selector = `SELECTOR_ALU_0;
+                                we[`WE_ADD] = 1'b1;
                                 we[`WE_STAT] = 1'b1;
                                 alu_update_status = 1'b1;
                                 instruction_done = 1'b1;

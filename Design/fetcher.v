@@ -43,11 +43,6 @@ module fetcher(
             pc_wait = 1'b0;
             end
 
-        always @(posedge phi2) begin
-            if ((!instruction_ready) & (!pc_wait))
-                pc_next = pc + 1;
-        end
-
         always @(posedge phi1) begin
             //Operation
             
@@ -59,6 +54,7 @@ module fetcher(
                 pc_wait = 1'b1;
             end else begin 
       //This logic is a mess, try again          
+                
 
                 if (get_next) begin                     //FIXME: This is TB specific and should be removed
                     fetch_counter = 1'b0;
@@ -71,10 +67,13 @@ module fetcher(
                     fetch_selector = 0;
                     addr = pc;
                     fetch_selector = `SELECTOR_MEM;
+
+                    if (!pc_wait)
+                        pc_next = pc + 1;
+
                     if (fetch_counter == 0) begin
                         add_mode = data_in[4:2]; 
                         instruction_out = data_in;
-                        pc_wait = 1'b0;
                     end 
 
                     //This logic is a big mess, many of these need to be rewritten
@@ -130,11 +129,13 @@ module fetcher(
                         end	
                         `AM3_ADD	: begin        
                             if (fetch_counter == 0) begin 
-                                if ((data_in[0] == 1) || (data_in[1:0] == 2'b00))
+                                if ((instruction_out[0] == 1)  ||    //TODO: Simplify this
+                                    (instruction_out == 8'hA0) ||
+                                    (instruction_out == 8'hA2)) begin
                                     fetch_selector = `SELECTOR_MEM;
-                                else begin 
+                                    pc_wait = 1'b1;
+                                    end else begin 
                                     instruction_ready = 1'b1;
-                                    pc_next = pc + 1;
                                 end
                             end 
                             if (fetch_counter == 1) begin
