@@ -41,6 +41,7 @@ module fetcher(
             fetch_selector = `SELECTOR_MEM;
             addr = pc;
             pc_wait = 1'b0;
+            pc_next = pc + 1;
             end
 
         always @(posedge phi1) begin
