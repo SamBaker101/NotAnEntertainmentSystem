@@ -56,6 +56,7 @@ module ALU(
 		if (!reset_n) begin
 			dout = 8'h00;
 			status_out = 8'h00;
+			carry_out = 1'b0;
 
 		end else if (wout == 0) begin
 			if (func == `SUM) begin

@@ -33,7 +33,7 @@
 	`define WE_X	3
 	`define WE_Y 	4
 	`define WE_STAT 5
-	`define WE_DOUT 6
+	`define WE_DOUT 6   //0100 0000
 
 	//ALU MUX Reg Selectors
 	`define SELECTOR_ZERO 	4'd0

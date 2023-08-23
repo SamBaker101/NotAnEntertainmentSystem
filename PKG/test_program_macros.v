@@ -123,9 +123,9 @@
                             inst_list[18]    = 8'h25;        \   //  x25
                             inst_list[19]    = 8'h01;        \   //  x01
                             \                                  
-                            inst_list[20]    = 8'hAA;        \   //  LDX #   
+                            inst_list[20]    = 8'hA2;        \   //  LDX #   
                             inst_list[21]    = 8'h04;        \   //  x04
-                            inst_list[22]    = 8'hA8;        \   //  LDY #
+                            inst_list[22]    = 8'hA0;        \   //  LDY #
                             inst_list[23]    = 8'h0A;        \   //  x0A
                             inst_list[24]    = 8'hA1;        \   //  LDA X_IND 101 000 01
                             inst_list[25]    = 8'h20;        \   //  x20  
@@ -133,6 +133,8 @@
                             inst_list[27]    = 8'h91;        \   //  STA IND_Y   100  100  01
                             inst_list[28]    = 8'h41;        \   //  8'h41
                             inst_list[29]    = 8'h01;        \   //  8'h01
+                            \
+                            test_carry = 1'b0;              \
                             \
                             mem_model[16'h0141] = 8'hFF;      \
                             mem_model[16'h0142] = 8'h00;      \

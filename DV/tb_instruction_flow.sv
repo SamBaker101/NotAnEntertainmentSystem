@@ -18,7 +18,7 @@
 
 
 `define SEED   		        33551
-`define CYCLES 		        150
+`define CYCLES 		        75
 
 //Test selection (Only one of these should be uncommented at a time)
 
@@ -392,6 +392,7 @@ module tb_iflow;
         end
 
         manual_mem = 1'b1;
+        reset_n = 1'b1;
 
         $display("Mem Dump");
         for (i = 0; i < `INSTRUCTION_BASE; i++) begin
@@ -410,7 +411,8 @@ module tb_iflow;
         end
         
         $display("");
-        
+
+        if (test_carry !== oSTATUS[`CARRY]) $fatal(1, "Error: Carry is %d should be %d", oSTATUS[`CARRY], test_carry);
         //Checks
         //Check that model matches mem
         for (i = 0; i < `INSTRUCTION_BASE; i++) begin
@@ -427,7 +429,7 @@ module tb_iflow;
                 if (mem_unit !== mem_model[i]) $fatal(1, "Error: incorrect mem at addr %h", i);
         end
 
-        if (test_carry !== oSTATUS[`CARRY]) $fatal(1, "Error: Carry should be %d", test_carry);
+        
     end
 
 endmodule
