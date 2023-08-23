@@ -55,8 +55,7 @@ module fetcher(
                 pc_wait = 1'b1;
             end else begin 
       //This logic is a mess, try again          
-                if (!pc_wait && instruction_done)
-                        pc_next = pc + 1;
+
 
                 if (get_next) begin                     //FIXME: This is TB specific and should be removed
                     fetch_counter = 1'b0;
@@ -247,6 +246,8 @@ module fetcher(
                         end
                     endcase
                 fetch_counter++; 
+                if (!pc_wait && !instruction_ready)
+                    pc_next = pc + 1;
                 end
             end
         end 
