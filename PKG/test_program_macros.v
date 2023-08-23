@@ -210,7 +210,7 @@
                             inst_list[1]    = 8'hA1;        \   //  xA4
                             inst_list[2]    = 8'h4A;        \   //  LSR A 
                             inst_list[3]    = 8'h85;        \   //  STA ZPG 1000 0101
-                            inst_list[4]    = 8'h03;        \   //  x03
+                            inst_list[4]    = 8'h03;        \   //  x03     00 1010 0001
                                                             \
                             test_carry = 1'b1;              \
                                                             \

@@ -71,6 +71,7 @@ module decoder(
             decode_counter = 0;
             alu_update_status = 0;
             stat_selector = `SELECTOR_STAT; 
+            we = 0;
         end
 
         always @(posedge reset_n) instruction_done = 1'b1;

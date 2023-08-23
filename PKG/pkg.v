@@ -15,7 +15,7 @@
 	`define AND 	16
 	`define OR  	32
 	`define XOR 	64
-	`define SR  	128
+	`define SR  	128   
 
 
 	//Hardware Definitions
