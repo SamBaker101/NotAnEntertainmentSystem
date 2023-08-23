@@ -54,7 +54,8 @@ module fetcher(
                 pc_wait = 1'b1;
             end else begin 
       //This logic is a mess, try again          
-                
+                if (!pc_wait && instruction_done)
+                        pc_next = pc + 1;
 
                 if (get_next) begin                     //FIXME: This is TB specific and should be removed
                     fetch_counter = 1'b0;
@@ -67,9 +68,6 @@ module fetcher(
                     fetch_selector = 0;
                     addr = pc;
                     fetch_selector = `SELECTOR_MEM;
-
-                    if (!pc_wait)
-                        pc_next = pc + 1;
 
                     if (fetch_counter == 0) begin
                         add_mode = data_in[4:2]; 
@@ -121,11 +119,12 @@ module fetcher(
                         `AM3_ZPG	: begin     
                             if (fetch_counter == 0) begin 
                                 fetch_selector = `SELECTOR_MEM;
+
                             end 
                             if (fetch_counter == 1) begin
-                                addr = {16'h00, data_in};                        
-                                instruction_ready = 1'b1;
-                            end
+                                addr = {16'h00, data_in};
+                                instruction_ready = 1'b1;                         
+                            end                             
                         end	
                         `AM3_ADD	: begin        
                             if (fetch_counter == 0) begin 
@@ -133,7 +132,7 @@ module fetcher(
                                     (instruction_out == 8'hA0) ||
                                     (instruction_out == 8'hA2)) begin
                                     fetch_selector = `SELECTOR_MEM;
-                                    pc_wait = 1'b1;
+                                    //pc_wait = 1'b1;
                                     end else begin 
                                     instruction_ready = 1'b1;
                                 end
@@ -141,6 +140,7 @@ module fetcher(
                             if (fetch_counter == 1) begin
                                 imm = data_in;
                                 instruction_ready = 1'b1;
+                                //pc_wait = 1'b0;
                             end
                         end
                         `AM3_ABS	: begin

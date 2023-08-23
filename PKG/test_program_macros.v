@@ -209,7 +209,7 @@
 `define TEST_ALU_LSR        inst_list[0]    = 8'hA9;        \   //  LDA #   
                             inst_list[1]    = 8'hA1;        \   //  xA4
                             inst_list[2]    = 8'h4A;        \   //  LSR A 
-                            inst_list[3]    = 8'h85;        \   //  STA ZPG 
+                            inst_list[3]    = 8'h85;        \   //  STA ZPG 1000 0101
                             inst_list[4]    = 8'h03;        \   //  x03
                                                             \
                             test_carry = 1'b1;              \
