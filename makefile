@@ -64,10 +64,10 @@ view:
 ### DERIVED DIRECTIVES ###
 go: build sim
 
-#runall :   $(TB) $(SRC)
-#	$(foreach test, $(TEST_LIST), 																				\
-#		$(COMPILER) -D $(DEPTH) -D $(INST_BASE) -D "SELECT_TEST \`$(test)" -o  Out/$(test).vvp $(TB) $(SRC);)   \
-#	$(foreach test, $(TEST_LIST), 																				\
-#		$(SIMULATOR) Out/$(test).vvp;)																			\
+runall :   $(TB) $(SRC)
+	$(foreach test, $(TEST_LIST), 																				\
+		$(COMPILER) -D $(DEPTH) -D $(INST_BASE) -D "SELECT_TEST=\`$(test)" -o  Out/$(test).vvp $(TB) $(SRC);)   \
+	$(foreach test, $(TEST_LIST), 																				\
+		$(SIMULATOR) Out/$(test).vvp;)																			\
 
 

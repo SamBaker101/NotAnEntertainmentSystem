@@ -8,7 +8,9 @@
 `define INST_MACROS
 
 //Blank test for checking build
-`define TEST_NOOPP          inst_list[0]    = 8'h00;        \     
+`define TEST_NOOPP          $display("LOADING TEST: NOOPP"); \
+                                                            \
+                            inst_list[0]    = 8'h00;        \     
                             inst_list[1]    = 8'h00;        \
                             inst_list[2]    = 8'h00;        \     
                             inst_list[3]    = 8'h00;        \
@@ -31,7 +33,9 @@
                             mem_model[16'h06] = mem_model[16'h06];
 
 
-`define TEST_LDAZPG         inst_list[0]    = 8'hA9;        \   //  LDA #   
+`define TEST_LDAZPG          $display("LOADING TEST: LDAZPG"); \
+                                                            \
+                            inst_list[0]    = 8'hA9;        \   //  LDA #   
                             inst_list[1]    = 8'h04;        \   //  x04
                             inst_list[2]    = 8'h85;        \   //  STA ZPG 
                             inst_list[3]    = 8'h02;        \   //  x02
@@ -54,7 +58,9 @@
                             mem_model[16'h0A] = 8'h01;
 
 // Test ABS LDA and STA, Note MEM must be at least 'h015f for this test
-`define TEST_LDAABS         inst_list[0]    = 8'hAD;        \   //  LDA ABS   
+`define TEST_LDAABS          $display("LOADING TEST: LDAABS"); \
+                                                            \
+                            inst_list[0]    = 8'hAD;        \   //  LDA ABS   
                             inst_list[1]    = 8'h4f;        \   //  x4f
                             inst_list[2]    = 8'h01;        \   //  x01
                             inst_list[3]    = 8'h8D;        \   //  STA ABS
@@ -86,7 +92,9 @@
                             mem_model[16'h0144] = mem_model[16'h0109];      \
                             mem_model[16'h0102] = mem_model[16'h0101];
 
-`define TEST_LDYSTY         inst_list[0]    = 8'hA0;        \   //  LDY #   
+`define TEST_LDYSTY           $display("LOADING TEST: LDYSTY"); \
+                                                            \
+                            inst_list[0]    = 8'hA0;        \   //  LDY #   
                             inst_list[1]    = 8'hFF;        \   //  xFF
                             inst_list[2]    = 8'h84;        \   //  STY ZPG
                             inst_list[3]    = 8'h0A;        \   //  x0A
@@ -95,7 +103,9 @@
 
 
 // X_IND and IND_Y, Note MEM must be at least 'h015f for this test
-`define TEST_INDXY          inst_list[0]    = 8'hA9;        \   //  LDA #   
+`define TEST_INDXY           $display("LOADING TEST: INDXY"); \
+                                                            \
+                            inst_list[0]    = 8'hA9;        \   //  LDA #   
                             inst_list[1]    = 8'hFF;        \   //  xFF
                             inst_list[2]    = 8'h8D;        \   //  STA ABS
                             inst_list[3]    = 8'h41;        \   //  x41
@@ -137,7 +147,9 @@
                             mem_model[16'h0109] = mem_model[16'h0130];
 
 
-`define TEST_ADC            inst_list[0]    = 8'hA9;        \   //  LDA #   
+`define TEST_ADC           $display("LOADING TEST: ADC"); \
+                                                            \
+                            inst_list[0]    = 8'hA9;        \   //  LDA #   
                             inst_list[1]    = 8'h04;        \   //  x04
                             inst_list[2]    = 8'h69;        \   //  ADC # 
                             inst_list[3]    = 8'h02;        \   //  x02
@@ -165,7 +177,9 @@
                             mem_model[16'h0005] = 8'h06;      
 
 
-`define TEST_ALU_LOG        inst_list[0]    = 8'hA9;        \   //  LDA #   
+`define TEST_ALU_LOG        $display("LOADING TEST: ALU_LOG"); \
+                                                            \
+                            inst_list[0]    = 8'hA9;        \   //  LDA #   
                             inst_list[1]    = 8'h04;        \   //  x04
                             inst_list[2]    = 8'h69;        \   //  ADC # 
                             inst_list[3]    = 8'h02;        \   //  x02
@@ -192,7 +206,9 @@
                             mem_model[16'h0005] = (mem_model[16'h0004]   &   8'h55);  \
                             mem_model[16'h0006] = (mem_model[16'h0005]   ^   8'h0F);  
 
-`define TEST_ALU_ASL        inst_list[0]    = 8'hA9;        \   //  LDA #   
+`define TEST_ALU_ASL        $display("LOADING TEST: ALU_ASL"); \
+                                                            \
+                            inst_list[0]    = 8'hA9;        \   //  LDA #   
                             inst_list[1]    = 8'hA4;        \   //  xA4
                             inst_list[2]    = 8'h0A;        \   //  ASL A 0A - 000 010 10
                             inst_list[3]    = 8'h85;        \   //  STA ZPG 
@@ -202,7 +218,9 @@
                                                             \
                             mem_model[16'h0003] = (8'hA4 << 1); // 10100100 << 1 = 01001000 = 48
  
-`define TEST_ALU_LSR        inst_list[0]    = 8'hA9;        \   //  LDA #   
+`define TEST_ALU_LSR        $display("LOADING TEST: ALU_LSR"); \
+                                                            \
+                            inst_list[0]    = 8'hA9;        \   //  LDA #   
                             inst_list[1]    = 8'hA1;        \   //  xA4
                             inst_list[2]    = 8'h4A;        \   //  LSR A 
                             inst_list[3]    = 8'h85;        \   //  STA ZPG 1000 0101
@@ -213,7 +231,9 @@
                             mem_model[16'h0003] = (8'hA1 >> 1); 
 
 //NOT DONE
-`define TEST_ALU_INC        inst_list[0]    = 8'hA2;        \   //  LDX #   
+`define TEST_ALU_INC        $display("LOADING TEST: ALU_INC"); \
+                                                            \ 
+                            inst_list[0]    = 8'hA2;        \   //  LDX #   
                             inst_list[1]    = 8'hA4;        \   //  xA4
                             inst_list[2]    = 8'hE8;        \   //  INX 
                             inst_list[3]    = 8'h85;        \   //  STA ZPG 
