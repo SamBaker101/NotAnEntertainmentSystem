@@ -25,11 +25,4 @@ sim:
 view:
 	$(VIEWER) $(SIMOUT)
 
-#MAKE DEPENDANCIES
-$(TBOUT): $(COUTPUT)
-	$(SIMULATOR) $(SOPTIONS) $(COUTPUT) $(SOUTPUT)
-
-$(COUTPUT): $(TB) $(SRC)
-	$(COMPILER) $(COFLAGS) $(COUTPUT) $(TB) $(SRC)
-
 #make: iverilog -o Out/tb.vvp DV/tb_instruction_flow.sv
