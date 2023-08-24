@@ -4,7 +4,7 @@
 SHELL = /bin/sh
 
 ####### FILES #######
-SRC = PKG/test_program_macros.v PKG/pkg.v Design/data_bus.v Design/decoder.v Design/fetcher.v Design/mem.v Design/mux831.v Design/fan138.v Design/register.v Design/clock_module.v Design/ALU.v Design/6502_top.v Design/switch.v
+SRC = PKG/test_program_macros.v PKG/pkg.v Design/*
 TB = DV/tb_instruction_flow.sv
 TBOUT = Out/tb.vvp
 SIMOUT = Out/iflow.vcd
@@ -17,10 +17,11 @@ VIEWER = gtkwave
 
 ### DIRECTIVES #####
 make : $(TB) $(SRC)
-	$(COMPILER) -o $(TBOUT) $(SRC)
+	$(COMPILER) -o $(TBOUT) $(TB) $(SRC)
 
 sim: 
-	$(SIMULATOR) $(TBOUT) >> $(LOGOUT)
+	$(SIMULATOR) $(TBOUT)
+		
 
 view:
 	$(VIEWER) $(SIMOUT)
