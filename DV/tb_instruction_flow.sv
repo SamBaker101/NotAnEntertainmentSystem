@@ -23,11 +23,11 @@
 //Test selection (Only one of these should be uncommented at a time)
 
 //FIXME I need a better way to handle my tests...
-//`define SELECT_TEST `TEST_NOOPP
+`define SELECT_TEST `TEST_NOOPP
 //`define SELECT_TEST `TEST_LDAZPG
 //`define SELECT_TEST `TEST_LDAABS
 //`define SELECT_TEST `TEST_LDYSTY
-`define SELECT_TEST `TEST_INDXY     
+//`define SELECT_TEST `TEST_INDXY     
 //`define SELECT_TEST `TEST_ADC
 //`define SELECT_TEST `TEST_ALU_LOG
 //`define SELECT_TEST `TEST_ALU_ASL
