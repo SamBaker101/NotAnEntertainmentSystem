@@ -16,14 +16,12 @@
 `include "PKG/test_program_macros.v"
 `include "PKG/pkg.v"
 
-
 `define SEED   		        33551
 `define CYCLES 		        75
 
-//Test selection (Only one of these should be uncommented at a time)
+//`define MEM_DUMP
 
-//FIXME I need a better way to handle my tests...
-`define SELECT_TEST `TEST_NOOPP
+//`define SELECT_TEST `TEST_NOOPP
 //`define SELECT_TEST `TEST_LDAZPG
 //`define SELECT_TEST `TEST_LDAABS
 //`define SELECT_TEST `TEST_LDYSTY
@@ -33,8 +31,6 @@
 //`define SELECT_TEST `TEST_ALU_ASL
 //`define SELECT_TEST `TEST_ALU_LSR
 //`define SELECT_TEST `TEST_ALU_INC
-
-
 
 module tb_iflow;
 
@@ -394,6 +390,7 @@ module tb_iflow;
         manual_mem = 1'b1;
         reset_n = 1'b1;
 
+`ifdef MEM_DUMP
         $display("Mem Dump");
         for (i = 0; i < `INSTRUCTION_BASE; i++) begin
                 mem_write   = 1'b0;
@@ -409,7 +406,8 @@ module tb_iflow;
                 $write("| %h:%h = %h | ", i, mem_unit, mem_model[i]);
                 if (i % 8 == 0) $display("");
         end
-        
+`endif
+
         $display("");
 
         if (test_carry !== oSTATUS[`CARRY]) $fatal(1, "Error: Carry is %d should be %d", oSTATUS[`CARRY], test_carry);

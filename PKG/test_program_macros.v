@@ -7,12 +7,6 @@
 `ifndef INST_MACROS
 `define INST_MACROS
 
-`define MEM_DEPTH           'h01FF 
-`define INSTRUCTION_BASE    'h0150
-
-//`define MEM_DEPTH           16'h00FF 
-//`define INSTRUCTION_BASE    16'h0050
-
 //Blank test for checking build
 `define TEST_NOOPP          inst_list[0]    = 8'h00;        \     
                             inst_list[1]    = 8'h00;        \
