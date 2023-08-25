@@ -271,9 +271,10 @@ module decoder(
                                     alu1_selector = `SELECTOR_FF;
                                     alu_update_status = 1'b0;
                                     opp = `SUM;
-                                end else if (alu_done == 1) begin
-                                    add_selector = `SELECTOR_ALU_0;
-                                    we[`WE_ADD] = 1'b1;
+                                end else if (decode_counter == 1) begin
+                                    mem_selector = `SELECTOR_ALU_0;
+                                    we[`WE_DOUT] = 1'b1;
+                                end else if (decode_counter == 2) begin
                                     instruction_done = 1'b1;
                                 end
                             end
@@ -287,11 +288,12 @@ module decoder(
                                 alu1_selector = `SELECTOR_ZERO;
                                 carry_in = 1'b1;
                                 opp = `SUM;
-                            end else if (alu_done == 1) begin
-                                add_selector = `SELECTOR_ALU_0;
-                                we[`WE_ADD] = 1'b1;
+                            end else if (decode_counter == 1) begin
+                                mem_selector = `SELECTOR_ALU_0;
+                                we[`WE_DOUT] = 1'b1;
                                 we[`WE_STAT] = 1'b1;
                                 alu_update_status = 1'b1;
+                            end else if (decode_counter == 2) begin
                                 instruction_done = 1'b1;
                             end
                         end
