@@ -5,6 +5,8 @@
 `ifndef DECODE
 `define DECODE
 
+//FIXME: INC AND DEC should compare and store direct to mem
+
 //TODO: find a more graceful way to handle this 
 `define ADDR_MODE_SELECTOR  (add_mode == `AM3_ADD)   ? ((instruction_in[0] == 1) ? `SELECTOR_IMM: `SELECTOR_ADD):  \
                             (add_mode == `AM3_ZPG)   ? `SELECTOR_MEM:   \
@@ -19,7 +21,7 @@
 
 module decoder(
 		clk, reset_n, addr_in, instruction_in, opp, we,
-        instruction_ready, addr, instruction_done, alu_done,
+        instruction_ready, addr, instruction_done, alu_done, carry_in,
         
         pc_selector,  
         sp_selector, add_selector,  x_selector,  y_selector, stat_selector, mem_selector, 
@@ -36,7 +38,7 @@ module decoder(
         input instruction_ready, alu_done;
 
         output reg [OPP_WIDTH - 1 : 0] opp;       
-        output reg instruction_done;
+        output reg instruction_done, carry_in;
 
         output reg [ADDR_WIDTH - 1: 0] addr;
         output reg [`WE_WIDTH - 1 : 0] we;
@@ -72,6 +74,7 @@ module decoder(
             alu_update_status = 0;
             stat_selector = `SELECTOR_STAT; 
             we = 0;
+            carry_in = 1'b0;
         end
 
         always @(posedge reset_n) instruction_done = 1'b1;
@@ -174,15 +177,28 @@ module decoder(
 	                    `OPP_ROR: begin  
 
                         end	
-	                    `OPP_STA: begin  
-                            if (decode_counter == 0) begin
-                                we[`WE_DOUT] = 1'b1;
-                                mem_selector = `SELECTOR_ADD;
-                            end else if (decode_counter == 1) begin
-                                we = 0;
-                                opp_code = 0;
-                                instruction_done = 1'b1;
-                            end
+	                    `OPP_STA: begin 
+                            if (instruction[4:2] == `AM3_ADD) begin
+                                if (decode_counter == 0) begin
+                                    alu0_selector = `SELECTOR_Y;
+                                    alu1_selector = `SELECTOR_FF;
+                                    alu_update_status = 1'b0;
+                                    opp = `SUM;
+                                end else if (alu_done == 1) begin
+                                    add_selector = `SELECTOR_ALU_0;
+                                    we[`WE_ADD] = 1'b1;
+                                    instruction_done = 1'b1;
+                                end
+                            end else begin
+                                if (decode_counter == 0) begin
+                                    we[`WE_DOUT] = 1'b1;
+                                    mem_selector = `SELECTOR_ADD;
+                                end else if (decode_counter == 1) begin
+                                    we = 0;
+                                    opp_code = 0;
+                                    instruction_done = 1'b1;
+                                end
+                            end    
                         end
                         `OPP_STY: begin  
                             if (decode_counter == 0) begin
@@ -238,7 +254,29 @@ module decoder(
 
                         end	
 	                    `OPP_DEC: begin  
-
+                            if (instruction[4:2] == `AM3_ADD) begin
+                                if (decode_counter == 0) begin
+                                    alu0_selector = `SELECTOR_X;
+                                    alu1_selector = `SELECTOR_FF;
+                                    alu_update_status = 1'b0;
+                                    opp = `SUM;
+                                end else if (alu_done == 1) begin
+                                    x_selector = `SELECTOR_ALU_0;
+                                    we[`WE_X] = 1'b1;
+                                    instruction_done = 1'b1;
+                                end    
+                            end else begin
+                                if (decode_counter == 0) begin
+                                    alu0_selector = `SELECTOR_MEM;
+                                    alu1_selector = `SELECTOR_FF;
+                                    alu_update_status = 1'b0;
+                                    opp = `SUM;
+                                end else if (alu_done == 1) begin
+                                    add_selector = `SELECTOR_ALU_0;
+                                    we[`WE_ADD] = 1'b1;
+                                    instruction_done = 1'b1;
+                                end
+                            end
                         end	
 	                    `OPP_SBC: begin  
 
@@ -246,7 +284,8 @@ module decoder(
 	                    `OPP_INC: begin  
                             if (decode_counter == 0) begin
                                 alu0_selector = `SELECTOR_MEM;
-                                alu1_selector = `SELECTOR_ONE;
+                                alu1_selector = `SELECTOR_ZERO;
+                                carry_in = 1'b1;
                                 opp = `SUM;
                             end else if (alu_done == 1) begin
                                 add_selector = `SELECTOR_ALU_0;
@@ -259,7 +298,8 @@ module decoder(
                         `OPP_INX: begin  
                             if (decode_counter == 0) begin
                                 alu0_selector = `SELECTOR_X;
-                                alu1_selector = `SELECTOR_ONE;
+                                alu1_selector = `SELECTOR_ZERO;
+                                carry_in = 1'b1;
                                 opp = `SUM;
                             end else if (alu_done == 1) begin
                                 add_selector = `SELECTOR_ALU_0;
@@ -272,7 +312,8 @@ module decoder(
             	        `OPP_INY: begin  
                             if (decode_counter == 0) begin
                                 alu0_selector = `SELECTOR_Y;
-                                alu1_selector = `SELECTOR_ONE;
+                                alu1_selector = `SELECTOR_ZERO;
+                                carry_in = 1'b1;
                                 opp = `SUM;
                             end else if (alu_done == 1) begin
                                 add_selector = `SELECTOR_ALU_0;

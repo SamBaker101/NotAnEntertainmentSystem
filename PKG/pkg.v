@@ -49,7 +49,7 @@
 	`define SELECTOR_DECODE 4'd10
 	`define SELECTOR_ALU_0	4'd11
 	`define SELECTOR_ALU_1	4'd12
-	`define SELECTOR_ONE 	4'd13
+	`define SELECTOR_FF 	4'd13
 
 	// IMM vs IMP/ADD
 	// impl/A   08 0A      	000 010 00 | 000 010 10 
@@ -84,7 +84,7 @@
 	`define OPP_LDX		5'b101_10
 	`define OPP_INY     5'b110_00   
 	`define OPP_CMP		5'b110_01
-	`define OPP_DEC		5'b110_10
+	`define OPP_DEC		5'b110_10   //CA = 110 010 10     88 = 100 010 00
 	`define OPP_SBC		5'b111_01
 	`define OPP_INC		5'b111_10
 	`define OPP_INX  	5'b111_00

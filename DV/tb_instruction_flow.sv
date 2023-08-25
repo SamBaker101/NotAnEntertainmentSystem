@@ -5,7 +5,7 @@
 //Connects mem to fetcher and decoder logic
 //Includes necessary mem, reg, switch, mux and fan modules
 
-//FIXMEs
+//FIXME:
 // Remove get_next signal between decoder and fetcher (use instruction_ready toggling)
 // Set up logic such that mem can be filled with data (outside of chip logic) while chip is in reset
 
@@ -16,7 +16,6 @@
 `include "PKG/test_program_macros.v"
 `include "PKG/pkg.v"
 
-`define SEED   		        33551
 `define CYCLES 		        75
 
 module tb_iflow;
@@ -90,6 +89,7 @@ module tb_iflow;
     wire [`REG_WIDTH - 1: 0] d_to_alu_1;
     wire [7:0] alu_opp;
     wire alu_done, update_status;
+    wire carry_in;
 
     ////////////////////////
     ////   TL Assigns   ////
@@ -114,6 +114,7 @@ module tb_iflow;
     
     always @(phi2_int) pc      = pc_next;
 
+    string test_name = "UNDEF";
     ///////////////////////
     ////    Modules    ////
     ///////////////////////
@@ -193,6 +194,7 @@ module tb_iflow;
 		.instruction_in(instruction), 
 		.opp(alu_opp),
 		.we({we_dout, we[5:0]}),    //dont ask, Ill fix this in a minute
+        .carry_in(carry_in),
 		.instruction_ready(instruction_ready),
 		.instruction_done(instruction_done),
         .alu_done(alu_done),
@@ -215,6 +217,7 @@ module tb_iflow;
         .phi2(phi2_int),
         .func(alu_opp), 
         .status_in(oSTATUS),
+        .carry_in(carry_in),
         .a(d_to_alu_0), 
         .b(d_to_alu_1), 
         .dout(d_from_alu),
@@ -397,7 +400,7 @@ module tb_iflow;
 
         $display("");
 
-        if (test_carry !== oSTATUS[`CARRY]) $fatal(1, "##### ERROR ##### \n Carry is %d should be %d", oSTATUS[`CARRY], test_carry);
+        if (test_carry !== oSTATUS[`CARRY]) $fatal(1, "\n##### ERROR ##### \nTEST: %s \nCarry is %d should be %d", test_name, oSTATUS[`CARRY], test_carry);
         //Checks
         //Check that model matches mem
         for (i = 0; i < `INSTRUCTION_BASE; i++) begin
@@ -411,7 +414,7 @@ module tb_iflow;
 
                 mem_unit    = d_from_mem;
 
-                if (mem_unit !== mem_model[i]) $fatal(1, "##### ERROR ##### \n incorrect mem at addr %h", i);
+                if (mem_unit !== mem_model[i]) $fatal(1, "\n##### ERROR ##### \nTEST: %s \nincorrect mem at addr %h", test_name, i);
         end
 
         

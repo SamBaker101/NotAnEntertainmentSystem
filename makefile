@@ -12,6 +12,7 @@ LOGOUT = Out/log.txt
 
 ####### TOOLS #######
 COMPILER = iverilog
+GEN = 2012
 SIMULATOR = vvp
 VIEWER = gtkwave
 
@@ -31,20 +32,26 @@ TEST_LIST = NOOPP \
 			ALU_LOG \
 			ALU_ASL \
 			ALU_LSR \
-			ALU_INC
+			ALU_INC \
+			ALU_DEC
 
+ifndef DEPTH
+	DEPTH = 	"MEM_DEPTH='h01FF" 
+endif
 
-DUMP = MEM_DUMP
-#DUMP = NO_DUMP
+ifndef INST_BASE
+	INST_BASE = "INSTRUCTION_BASE='h0150"
+endif
 
-DEPTH = 	"MEM_DEPTH='h01FF" 
-INST_BASE = "INSTRUCTION_BASE='h0150"
+ifndef SEED
+	SEED = SEED=58585
+endif
 
-BUILD_DEFINES = -D $(DEPTH) -D $(INST_BASE) -D $(DUMP) -D $(TEST_STRING)
+BUILD_DEFINES = -g $(GEN) -D $(DEPTH) -D $(INST_BASE) -D MEM_DUMP -D $(TEST_STRING) -D $(SEED)
 
 ### BASE DIRECTIVES #####
 make :  $(TB) $(SRC)
-	$(COMPILER) -o  Out/$(TEST).vvp $(TB) $(SRC) 
+	$(COMPILER) -g $(GEN) -D $(DEPTH) -D $(INST_BASE) -D "SELECT_TEST=\`TEST_$(TEST)" -D $(SEED) -o  Out/$(TEST).vvp $(TB) $(SRC) 
 
 build : $(TB) $(SRC)
 	$(COMPILER) $(BUILD_DEFINES) -o Out/$(TEST).vvp $(TB) $(SRC) 
@@ -60,10 +67,9 @@ run: build sim
 
 runall :   $(TB) $(SRC)
 	$(foreach test, $(TEST_LIST), 																				\
-		$(COMPILER) -D $(DEPTH) -D $(INST_BASE) -D "SELECT_TEST=\`TEST_$(test)" -o  Out/$(test).vvp $(TB) $(SRC);)   \
+		$(COMPILER) -g $(GEN) -D $(DEPTH) -D $(INST_BASE) -D "SELECT_TEST=\`TEST_$(test)" -D $(SEED) -o  Out/$(test).vvp $(TB) $(SRC);)   \
 	$(foreach test, $(TEST_LIST), 																				\
 		$(SIMULATOR) Out/$(test).vvp;)																			\
-
 
 clean : 
 	rm -f Out/*.vvp Out/*.vcd 
