@@ -178,7 +178,17 @@ module decoder(
 
                         end	
 	                    `OPP_STA: begin 
-                            if (instruction[4:2] == `AM3_ADD) begin
+                                if (decode_counter == 0) begin
+                                    we[`WE_DOUT] = 1'b1;
+                                    mem_selector = `SELECTOR_ADD;
+                                end else if (decode_counter == 1) begin
+                                    we = 0;
+                                    opp_code = 0;
+                                    instruction_done = 1'b1;
+                                end
+                        end
+                        `OPP_STY: begin  
+                            if (instruction[4:2] == `AM3_ADD) begin   //DEY
                                 if (decode_counter == 0) begin
                                     alu0_selector = `SELECTOR_Y;
                                     alu1_selector = `SELECTOR_FF;
@@ -192,22 +202,12 @@ module decoder(
                             end else begin
                                 if (decode_counter == 0) begin
                                     we[`WE_DOUT] = 1'b1;
-                                    mem_selector = `SELECTOR_ADD;
+                                    mem_selector = `SELECTOR_Y;
                                 end else if (decode_counter == 1) begin
                                     we = 0;
                                     opp_code = 0;
                                     instruction_done = 1'b1;
                                 end
-                            end    
-                        end
-                        `OPP_STY: begin  
-                            if (decode_counter == 0) begin
-                                we[`WE_DOUT] = 1'b1;
-                                mem_selector = `SELECTOR_Y;
-                            end else if (decode_counter == 1) begin
-                                we = 0;
-                                opp_code = 0;
-                                instruction_done = 1'b1;
                             end
                         end		
 	                    `OPP_STX: begin  
@@ -261,8 +261,8 @@ module decoder(
                                     alu_update_status = 1'b0;
                                     opp = `SUM;
                                 end else if (alu_done == 1) begin
-                                    x_selector = `SELECTOR_ALU_0;
-                                    we[`WE_X] = 1'b1;
+                                    add_selector = `SELECTOR_ALU_0;
+                                    we[`WE_ADD] = 1'b1;
                                     instruction_done = 1'b1;
                                 end    
                             end else begin
