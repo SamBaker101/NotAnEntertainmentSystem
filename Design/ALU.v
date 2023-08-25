@@ -32,7 +32,8 @@ module ALU(
 	reg negative_out;
 	
 	//STATUS ASSIGNS
-
+	//always @(posedge phi1) wout = 1'b0;
+	
 	always @(wout) begin
 		status_out = status_in;
 
@@ -58,6 +59,10 @@ module ALU(
 			status_out = 8'h00;
 			carry_out = 1'b0;
 
+		end else if (func == `NO_OPP) begin
+			wout = 1'b0;
+			dout = 8'hZZ;
+
 		end else if (wout == 0) begin
 			if (func == `SUM) begin
 				if (carry_in)						//I know it's wierd, don't ask
@@ -76,7 +81,10 @@ module ALU(
 				wout = 1'b1;
 			end else if (func == `SR) begin
 				carry_out = a[0];
-				dout = a >> 1;		
+				if (carry_in)
+					dout = (a >> 1) + 8'h80;
+				else
+					dout = (a >> 1);
 				wout = 1'b1;
 			end else begin
 				dout = 8'hZZ;

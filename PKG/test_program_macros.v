@@ -288,8 +288,8 @@
                             mem_model[16'h0004] = (8'hA1 - 2);     \
 
 
-`define TEST_ALU_ROL        $display("LOADING TEST: ALU_ROL"); \
-                            test_name = "ALU_ROL";            \
+`define TEST_ALU_ROT        $display("LOADING TEST: ALU_ROT"); \
+                            test_name = "ALU_ROT";            \
                                                             \
                             inst_list[0]    = 8'hA9;        \   //  LDA #   
                             inst_list[1]    = 8'hF0;        \   //  xA4
@@ -297,9 +297,16 @@
                             inst_list[3]    = 8'h2A;        \   //  LSR A 
                             inst_list[4]    = 8'h85;        \   //  STA ZPG 1000 0101
                             inst_list[5]    = 8'h03;        \   //  x03     00 1010 0001
+                                                            \                                                          
+                            inst_list[6]    = 8'hA9;        \   //  LDA #   
+                            inst_list[7]    = 8'h0F;        \   //  xA4
+                            inst_list[8]    = 8'h6A;        \   //  LSR A
+                            inst_list[9]    = 8'h85;        \   //  STA ZPG 1000 0101
+                            inst_list[10]   = 8'h04;        \   //  x03     00 1010 0001
                                                             \
                             test_carry = 1'b1;              \
                                                             \
                             mem_model[16'h0003] = (8'hC1);     \    // 0 1111 0000 >> 1 1110 0000 >> 1 1100 0001 
+                            mem_model[16'h0004] = (8'h87);     \ 
 
 `endif 

@@ -73,6 +73,7 @@ module decoder(
             stat_selector = `SELECTOR_STAT; 
             we = 0;
             carry_in = 1'b0;
+            opp = `NO_OPP;
         end
 
         always @(posedge reset_n) instruction_done = 1'b1;
@@ -80,6 +81,7 @@ module decoder(
         always @(posedge clk) begin
             we = 0;
             alu_update_status = 1'b0;
+
 
             if (!reset_n) begin
                 opp = 0;
@@ -163,10 +165,12 @@ module decoder(
 	                    `OPP_LSR: begin  
                             if (decode_counter == 0) begin
                                 alu0_selector = `SELECTOR_ADD;
+                                carry_in = 1'b0;
                                 opp = `SR;
                             end else if (decode_counter == 1) begin
                                 add_selector = `SELECTOR_ALU_0;
                                 we[`WE_ADD] = 1'b1;
+                                we[`WE_STAT] = 1'b1;
                                 alu_update_status = 1'b1;
                                 instruction_done = 1'b1;
                             end
@@ -185,7 +189,17 @@ module decoder(
                             end
                         end	
 	                    `OPP_ROR: begin  
-
+                            if (decode_counter == 0) begin
+                                alu0_selector = `SELECTOR_ADD;
+                                carry_in = status_in[`CARRY];
+                                opp = `SR;
+                            end else if (decode_counter == 1) begin
+                                add_selector = `SELECTOR_ALU_0;
+                                we[`WE_ADD] = 1'b1;
+                                we[`WE_STAT] = 1'b1;
+                                alu_update_status = 1'b1;
+                                instruction_done = 1'b1;
+                            end
                         end	
 	                    `OPP_STA: begin 
                                 if (decode_counter == 0) begin
