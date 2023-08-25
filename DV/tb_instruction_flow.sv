@@ -19,19 +19,6 @@
 `define SEED   		        33551
 `define CYCLES 		        75
 
-//`define MEM_DUMP
-
-//`define SELECT_TEST `TEST_NOOPP
-//`define SELECT_TEST `TEST_LDAZPG
-//`define SELECT_TEST `TEST_LDAABS
-//`define SELECT_TEST `TEST_LDYSTY
-//`define SELECT_TEST `TEST_INDXY     
-//`define SELECT_TEST `TEST_ADC
-//`define SELECT_TEST `TEST_ALU_LOG
-//`define SELECT_TEST `TEST_ALU_ASL
-//`define SELECT_TEST `TEST_ALU_LSR
-//`define SELECT_TEST `TEST_ALU_INC
-
 module tb_iflow;
 
     ////////////////////////
@@ -410,7 +397,7 @@ module tb_iflow;
 
         $display("");
 
-        if (test_carry !== oSTATUS[`CARRY]) $fatal(1, "Error: Carry is %d should be %d", oSTATUS[`CARRY], test_carry);
+        if (test_carry !== oSTATUS[`CARRY]) $fatal(1, "##### ERROR ##### \n Carry is %d should be %d", oSTATUS[`CARRY], test_carry);
         //Checks
         //Check that model matches mem
         for (i = 0; i < `INSTRUCTION_BASE; i++) begin
@@ -424,7 +411,7 @@ module tb_iflow;
 
                 mem_unit    = d_from_mem;
 
-                if (mem_unit !== mem_model[i]) $fatal(1, "Error: incorrect mem at addr %h", i);
+                if (mem_unit !== mem_model[i]) $fatal(1, "##### ERROR ##### \n incorrect mem at addr %h", i);
         end
 
         

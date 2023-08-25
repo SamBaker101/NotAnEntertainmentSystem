@@ -16,28 +16,22 @@ SIMULATOR = vvp
 VIEWER = gtkwave
 
 #### DEFINES ####
-TEST_NAME = TEST_NOOPP
-TEST_STRING = "SELECT_TEST=\`$(TEST_NAME)"
-#TEST_STRING = "SELECT_TEST \`TEST_LDAZPG"
-#TEST_STRING = "SELECT_TEST \`TEST_LDAABS"
-#TEST_STRING = "SELECT_TEST \`TEST_LDYSTY"
-#TEST_STRING = "SELECT_TEST \`TEST_INDXY"     
-#TEST_STRING = "SELECT_TEST \`TEST_ADC"
-#TEST_STRING = "SELECT_TEST \`TEST_ALU_LOG"
-#TEST_STRING = "SELECT_TEST \`TEST_ALU_ASL"
-#TEST_STRING = "SELECT_TEST \`TEST_ALU_LSR"
-#TEST_STRING = "SELECT_TEST \`TEST_ALU_INC"
+ifndef TEST
+	TEST = NOOPP
+endif
 
-TEST_LIST = TEST_NOOPP \
-			TEST_LDAZPG \
-			TEST_LDAABS \
-			TEST_LDYSTY \
-			TEST_INDXY \
-			TEST_ADC \
-			TEST_ALU_LOG \
-			TEST_ALU_ASL \
-			TEST_ALU_LSR \
-			TEST_ALU_INC
+TEST_STRING = "SELECT_TEST=\`TEST_$(TEST)"
+
+TEST_LIST = NOOPP \
+			LDAZPG \
+			LDAABS \
+			LDYSTY \
+			INDXY \
+			ADC \
+			ALU_LOG \
+			ALU_ASL \
+			ALU_LSR \
+			ALU_INC
 
 
 DUMP = MEM_DUMP
@@ -50,24 +44,26 @@ BUILD_DEFINES = -D $(DEPTH) -D $(INST_BASE) -D $(DUMP) -D $(TEST_STRING)
 
 ### BASE DIRECTIVES #####
 make :  $(TB) $(SRC)
-	$(COMPILER) -o  Out/$(TEST_NAME).vvp $(TB) $(SRC) 
+	$(COMPILER) -o  Out/$(TEST).vvp $(TB) $(SRC) 
 
 build : $(TB) $(SRC)
-	$(COMPILER) $(BUILD_DEFINES) -o Out/$(TEST_NAME).vvp $(TB) $(SRC) 
+	$(COMPILER) $(BUILD_DEFINES) -o Out/$(TEST).vvp $(TB) $(SRC) 
 
 sim: 
-	$(SIMULATOR) $(TBOUT)
+	$(SIMULATOR) Out/$(TEST).vvp
 		
 view:
 	$(VIEWER) $(SIMOUT)
 
 ### DERIVED DIRECTIVES ###
-go: build sim
+run: build sim
 
 runall :   $(TB) $(SRC)
 	$(foreach test, $(TEST_LIST), 																				\
-		$(COMPILER) -D $(DEPTH) -D $(INST_BASE) -D "SELECT_TEST=\`$(test)" -o  Out/$(test).vvp $(TB) $(SRC);)   \
+		$(COMPILER) -D $(DEPTH) -D $(INST_BASE) -D "SELECT_TEST=\`TEST_$(test)" -o  Out/$(test).vvp $(TB) $(SRC);)   \
 	$(foreach test, $(TEST_LIST), 																				\
 		$(SIMULATOR) Out/$(test).vvp;)																			\
 
 
+clean : 
+	rm -f Out/*.vvp Out/*.vcd 
