@@ -33,7 +33,7 @@ module ALU(
 	
 	//STATUS ASSIGNS
 
-	always @(phi2) begin
+	always @(wout) begin
 		status_out = status_in;
 
 		status_out[`CARRY] 		= (carry_out 			=== 1'b1);
@@ -61,7 +61,7 @@ module ALU(
 		end else if (wout == 0) begin
 			if (func == `SUM) begin
 				if (carry_in)						//I know it's wierd, don't ask
-					{carry_out, dout} = a + b + 1;	//This is lazy but it'll do for now
+					{carry_out, dout} = a + b + 1;	
 				else
 					{carry_out, dout} = a + b;
 				wout = 1'b1;

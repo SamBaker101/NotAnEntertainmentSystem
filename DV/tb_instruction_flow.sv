@@ -198,6 +198,7 @@ module tb_iflow;
 		.instruction_ready(instruction_ready),
 		.instruction_done(instruction_done),
         .alu_done(alu_done),
+        .status_in(oSTATUS),
         //Selectors
         .pc_selector(pc_selector),  
         .sp_selector(sp_selector), 

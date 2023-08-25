@@ -69,9 +69,9 @@
 	`define OPP_ILLEGAL 5'bXXX_11 //LB 3, 7, B, F
 
 	`define	OPP_ORA 	5'b000_01
-	`define OPP_ASL		5'b000_10
+	`define OPP_ASL		5'b000_10 
 	`define OPP_AND		5'b001_01
-	`define OPP_ROL		5'b001_10
+	`define OPP_ROL		5'b001_10 //0010 1010
 	`define OPP_EOR		5'b010_01
 	`define OPP_LSR		5'b010_10
 	`define OPP_ADC		5'b011_01
