@@ -68,6 +68,8 @@
 	`define OPP_SPECIAL 5'bXXX_00 //LB 0, 4, 8, C
 	`define OPP_ILLEGAL 5'bXXX_11 //LB 3, 7, B, F
 
+	
+
 	`define	OPP_ORA 	5'b000_01
 	`define OPP_ASL		5'b000_10 
 	`define OPP_AND		5'b001_01
@@ -84,7 +86,7 @@
 	`define OPP_LDX		5'b101_10
 	`define OPP_INY     5'b110_00   
 	`define OPP_CMP		5'b110_01
-	`define OPP_DEC		5'b110_10   //CA = 110 010 10     88 = 100 010 00
+	`define OPP_DEC		5'b110_10   
 	`define OPP_SBC		5'b111_01
 	`define OPP_INC		5'b111_10
 	`define OPP_INX  	5'b111_00

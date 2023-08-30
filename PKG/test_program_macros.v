@@ -4,6 +4,9 @@
 //Instruction sets for test benches
 //Macros will give instructions and expected modifications to mem
 
+//FIXME: This is getting tedious to deal with, find a compiler and set up firmware loader to read hex files
+
+
 `ifndef INST_MACROS
 `define INST_MACROS
 
@@ -308,5 +311,20 @@
                                                             \
                             mem_model[16'h0003] = (8'hC1);     \    // 0 1111 0000 >> 1 1110 0000 >> 1 1100 0001 
                             mem_model[16'h0004] = (8'h87);     \ 
+
+
+`define TEST_ALU_SBC           $display("LOADING TEST: SBC"); \ //This could be more robust
+                            test_name = "SBC";            \
+                                                            \
+                            inst_list[0]    = 8'hA9;        \   //  LDA #   
+                            inst_list[1]    = 8'h0F;        \   //  x04
+                            inst_list[2]    = 8'hE9;        \   //  ADC # 
+                            inst_list[3]    = 8'h02;        \   //  x02
+                            inst_list[4]    = 8'h85;        \   //  STA ZPG 
+                            inst_list[5]    = 8'h03;        \   //  x03
+                                                            \
+                            test_carry = 1'b0;              \
+                                                            \
+                            mem_model[16'h0003] = 8'h0D;       
 
 `endif 

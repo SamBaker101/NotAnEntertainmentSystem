@@ -33,14 +33,14 @@ module ALU(
 	//--//
 	reg overflow_out;
 	reg negative_out;
-	
-	assign b = (invert) ? !b_in : b_in;
+
+	assign b = (invert) ? (b_in ^ {`REG_WIDTH{1'b1}}) : b_in;
 	assign a = a_in;
 
 	always @(wout) begin
 		status_out = status_in;
 
-		status_out[`CARRY] 		= (carry_out 			=== 1'b1);
+		status_out[`CARRY] 		= (invert)? !(carry_out === 1'b1) : (carry_out === 1'b1);
 		status_out[`ZERO] 		= (dout 				=== `REG_WIDTH'h0);
 		status_out[`INT_DIS] 	= (interrupt_mask_out 	=== 1'b1);
 		status_out[`DEC] 		= (decimal_out 			=== 1'b1);
@@ -68,7 +68,7 @@ module ALU(
 
 		end else if (wout == 0) begin
 			if (func == `SUM) begin
-				if (carry_in)						//I know it's wierd, don't ask
+				if (carry_in != invert)						//I know it's wierd, don't ask
 					{carry_out, dout} = a + b + 1;	
 				else
 					{carry_out, dout} = a + b;

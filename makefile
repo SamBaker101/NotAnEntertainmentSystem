@@ -34,7 +34,8 @@ TEST_LIST = NOOPP \
 			ALU_LSR \
 			ALU_INC \
 			ALU_DEC \
-			ALU_ROT
+			ALU_ROT \
+			ALU_SBC
 
 ifndef DEPTH
 	DEPTH = 	"MEM_DEPTH='h01FF" 
@@ -48,7 +49,7 @@ ifndef SEED
 	SEED = SEED=58585
 endif
 
-BUILD_DEFINES = -g $(GEN) -D $(DEPTH) -D $(INST_BASE) -D MEM_DUMP -D $(TEST_STRING) -D $(SEED)
+BUILD_DEFINES = -g $(GEN) -D $(DEPTH) -D $(INST_BASE) -D "SELECT_TEST=\`TEST_$(TEST)" -D $(SEED) -D MEM_DUMP 
 
 ### BASE DIRECTIVES #####
 make :  $(TB) $(SRC)
