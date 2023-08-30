@@ -6,7 +6,9 @@
 
 //FIXME: This is getting tedious to deal with, find a compiler and set up firmware loader to read hex files
 
-
+//FIXME: Tests missing : 
+//                  CMP CPX CPY test
+//                  Transfer test (TSX, TAX, TYA ect)
 `ifndef INST_MACROS
 `define INST_MACROS
 

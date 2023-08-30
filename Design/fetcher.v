@@ -30,7 +30,6 @@ module fetcher(
         /////////////////////////////
 
         reg [2:0] add_mode;
-        reg [4:0] opp_code;
         reg [ADDR_WIDTH - 1: 0] addr_reg;
 
         reg [2:0] fetch_counter; 
@@ -224,7 +223,7 @@ module fetcher(
                             end  
                         end
                         `AM3_ABS_X  : begin  
-                            if ({instruction_in[7:5], instruction_in[1:0]} == `OPP_LDX) begin
+                            if ({instruction_out[7:5], instruction_out[1:0]} == `OPP_LDX) begin
                                 if (fetch_counter == 0) begin 
                                     fetch_selector = `SELECTOR_MEM;
                                 end 

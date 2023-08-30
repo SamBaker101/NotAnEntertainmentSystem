@@ -6,6 +6,7 @@
 `define DECODE
 
 //TODO: find a more graceful way to handle this 
+
 `define ADDR_MODE_SELECTOR  (add_mode == `AM3_ADD)   ? ((instruction_in[0] == 1) ? `SELECTOR_IMM: `SELECTOR_ADD):  \
                             (add_mode == `AM3_ZPG)   ? `SELECTOR_MEM:   \
                             (add_mode == `AM3_ZPG_X) ? `SELECTOR_MEM:   \
@@ -108,8 +109,6 @@ module decoder(
                     //  CLD: D8
                     //  CLI: 58
                     //  CLV: B8
-                    //  CPX: E0 E4 EC   - 111 000 00 - 111 001 00 - 111 011 00 Shares with inx E8
-                    //  CPY: C0 C4 CC   - 110 000 00   110 001 00   110 011 00 Shares with Iny C8
                     //  JMP: 4C 6C
                     //  JSR: 20
                     //  PHA: 48 
@@ -121,12 +120,10 @@ module decoder(
                     //  SEC: 38
                     //  SED: F8
                     //  SEI: 78
-                    //  TAX: AA
-                    //  TAY: A8
-                    //  TSX: BA
-                    //  TXA: 8A
-                    //  TXS: 9A
-                    //  TYA: 98
+                    //  TAY: A8 - 101 010 00
+                    //  TXA: 8A - 100 010 10
+                    //  TXS: 9A - 100 110 10
+                    //  TYA: 98 - 100 110 00
 
                     case(opp_code) //This is gonna be a bit of a mess for a while
                     	5'bXXXXX: ;
@@ -303,7 +300,10 @@ module decoder(
 	                    `OPP_LDX: begin  
                             if (decode_counter == 0) begin
                                 we[`WE_X] = 1'b1;
-                                x_selector =  `ADDR_MODE_SELECTOR
+                                if (add_mode == `AM3_ABS_Y) 
+                                    x_selector = `SELECTOR_SP;
+                                else
+                                    x_selector =  `ADDR_MODE_SELECTOR
                             end else if (decode_counter == 1) begin
                                 we = 0;
                                 opp_code = 0;
