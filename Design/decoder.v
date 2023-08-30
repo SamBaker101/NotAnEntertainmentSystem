@@ -94,15 +94,39 @@ module decoder(
                 if (instruction_ready) begin 
                     
                     //UNIMPLEMENTED INSTRUCTIONS:
-                    //  BCC BVS  
-                    //  BIT BBRK
-                    //  CLC CLD CLI CLV
-                    //  CPX CPY
-                    //  JMP JSR
-                    //  PHA PHP PLA PLP
-                    //  RTI RTS
-                    //  SEC SED SEI
-                    //  TAX TAY TSX TXA TXS TYA 
+                    //  BCC: 90
+                    //  BCS: B0 
+                    //  BEQ: F0
+                    //  BMI: 30
+                    //  BNE: D0
+                    //  BPL: 10
+                    //  BVC: 50
+                    //  BVS: 70 
+                    //  BIT: 24, 2C 
+                    //  BRK: 00
+                    //  CLC: 18 
+                    //  CLD: D8
+                    //  CLI: 58
+                    //  CLV: B8
+                    //  CPX: E0 E4 EC
+                    //  CPY: C0 C4 CC
+                    //  JMP: 4C 6C
+                    //  JSR: 20
+                    //  PHA: 48 
+                    //  PHP: 08
+                    //  PLA: 68
+                    //  PLP: 28
+                    //  RTI: 40
+                    //  RTS: 60
+                    //  SEC: 38
+                    //  SED: F8
+                    //  SEI: 78
+                    //  TAX: AA
+                    //  TAY: A8
+                    //  TSX: BA
+                    //  TXA: 8A
+                    //  TXS: 9A
+                    //  TYA: 98
 
                     case(opp_code) //This is gonna be a bit of a mess for a while
                     	5'bXXXXX: ;
