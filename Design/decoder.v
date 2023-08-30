@@ -276,10 +276,19 @@ module decoder(
                             end
                         end	
 	                    `OPP_CMP: begin  
-/////////////////////////////////////////////////////////////
-
- 
-
+                            if (decode_counter == 0) begin
+                                alu0_selector = `SELECTOR_ADD;
+                                alu1_selector = `ADDR_MODE_SELECTOR;
+                                carry_in = 1'b0;
+                                invert_alu_b = 1'b1;
+                                opp = `SUM;
+                            end else if (decode_counter == 1) begin
+                                add_selector = `SELECTOR_ALU_0;
+                                we[`WE_ADD] = 1'b0;
+                                we[`WE_STAT] = 1'b1;
+                                alu_update_status = 1'b1;
+                                instruction_done = 1'b1;
+                            end
                         end	
 	                    `OPP_DEC: begin  
                             if (instruction[4:2] == `AM3_ADD) begin

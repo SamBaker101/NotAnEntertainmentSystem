@@ -313,7 +313,7 @@
                             mem_model[16'h0004] = (8'h87);     \ 
 
 
-`define TEST_ALU_SBC           $display("LOADING TEST: SBC"); \ //This could be more robust
+`define TEST_ALU_SBC        $display("LOADING TEST: SBC"); \ //This could be more robust
                             test_name = "SBC";            \
                                                             \
                             inst_list[0]    = 8'hA9;        \   //  LDA #   
