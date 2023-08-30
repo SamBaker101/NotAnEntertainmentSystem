@@ -120,10 +120,6 @@ module decoder(
                     //  SEC: 38
                     //  SED: F8
                     //  SEI: 78
-                    //  TAY: A8 - 101 010 00
-                    //  TXA: 8A - 100 010 10
-                    //  TXS: 9A - 100 110 10
-                    //  TYA: 98 - 100 110 00
 
                     case(opp_code) //This is gonna be a bit of a mess for a while
                     	5'bXXXXX: ;
@@ -245,6 +241,7 @@ module decoder(
                                 end
                         end
                         `OPP_STY: begin  
+                                                //  TYA: 98 - 100 110 00
                             if (instruction[4:2] == `AM3_ADD) begin   //DEY
                                 if (decode_counter == 0) begin
                                     alu0_selector = `SELECTOR_Y;
@@ -258,8 +255,13 @@ module decoder(
                                 end
                             end else begin
                                 if (decode_counter == 0) begin
-                                    we[`WE_DOUT] = 1'b1;
-                                    mem_selector = `SELECTOR_Y;
+                                    if (add_mode == `AM3_ABS_Y) begin
+                                        we[`WE_ADD] = 1'b1;
+                                        add_selector = `SELECTOR_Y;
+                                    end else begin    
+                                        we[`WE_DOUT] = 1'b1;
+                                        mem_selector = `SELECTOR_Y;
+                                    end
                                 end else if (decode_counter == 1) begin
                                     we = 0;
                                     opp_code = 0;
@@ -269,8 +271,16 @@ module decoder(
                         end		
 	                    `OPP_STX: begin  
                             if (decode_counter == 0) begin
-                                we[`WE_DOUT] = 1'b1;
-                                mem_selector = `SELECTOR_X;
+                                if (add_mode == `AM3_ADD) begin
+                                    we[`WE_ADD] = 1'b1;
+                                    add_selector = `SELECTOR_X;    
+                                end else if (add_mode == `AM3_ABS_Y) begin
+                                    we[`WE_SP] = 1'b1;
+                                    sp_selector = `SELECTOR_X;
+                                end else begin  
+                                    we[`WE_DOUT] = 1'b1;
+                                    mem_selector = `SELECTOR_X;
+                                end
                             end else if (decode_counter == 1) begin
                                 we = 0;
                                 opp_code = 0;

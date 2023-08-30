@@ -65,10 +65,7 @@
 	`define NEG			7
 
 	//Opp Code
-	`define OPP_SPECIAL 5'bXXX_00 //LB 0, 4, 8, C
 	`define OPP_ILLEGAL 5'bXXX_11 //LB 3, 7, B, F
-
-	
 
 	`define	OPP_ORA 	5'b000_01
 	`define OPP_ASL		5'b000_10 
@@ -100,11 +97,11 @@
 	//Address Modes
 	`define AM3_X_IND	3'b000 
 	`define AM3_ZPG		3'b001
-	`define AM3_ADD		3'b010  
+	`define AM3_ADD		3'b010  //TAX
 	`define AM3_ABS		3'b011
-	`define AM3_IND_Y	3'b100
+	`define AM3_IND_Y	3'b100  //BD  111
 	`define AM3_ZPG_X	3'b101
-	`define AM3_ABS_Y	3'b110
+	`define AM3_ABS_Y	3'b110  //TSX
 	`define AM3_ABS_X	3'b111
 
 `include "Design/data_bus.v"

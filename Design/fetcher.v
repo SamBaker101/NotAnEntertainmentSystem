@@ -202,7 +202,7 @@ module fetcher(
                                 pc_wait = 1'b0;
                             end      
                         end
-                        `AM3_ABS_Y  : begin   
+                        `AM3_ABS_Y  : begin    
                             if (fetch_counter == 0) begin 
                                 fetch_selector = `SELECTOR_MEM;
                             end 
