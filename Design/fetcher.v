@@ -223,25 +223,46 @@ module fetcher(
                                 pc_wait = 1'b0;
                             end  
                         end
-                        `AM3_ABS_X  : begin   
-                            if (fetch_counter == 0) begin 
-                                fetch_selector = `SELECTOR_MEM;
-                            end 
-                            if (fetch_counter == 1) begin
-                                addr_reg[7:0] = data_in;
-                                fetch_selector = `SELECTOR_MEM;
+                        `AM3_ABS_X  : begin  
+                            if ({instruction_in[7:5], instruction_in[1:0]} == `OPP_LDX) begin
+                                if (fetch_counter == 0) begin 
+                                    fetch_selector = `SELECTOR_MEM;
+                                end 
+                                if (fetch_counter == 1) begin
+                                    addr_reg[7:0] = data_in;
+                                    fetch_selector = `SELECTOR_MEM;
+                                end
+                                if (fetch_counter == 2) begin 
+                                    addr_reg[15:8] = data_in;
+                                    fetch_selector = `SELECTOR_Y;
+                                    pc_wait = 1'b1;
+                                end
+                                if (fetch_counter == 3) begin
+                                    addr_reg += data_in;
+                                    addr = addr_reg;
+                                    instruction_ready = 1'b1;
+                                    pc_wait = 1'b0;
+                                end  
+                            end else begin        
+                                if (fetch_counter == 0) begin 
+                                    fetch_selector = `SELECTOR_MEM;
+                                end 
+                                if (fetch_counter == 1) begin
+                                    addr_reg[7:0] = data_in;
+                                    fetch_selector = `SELECTOR_MEM;
+                                end
+                                if (fetch_counter == 2) begin 
+                                    addr_reg[15:8] = data_in;
+                                    fetch_selector = `SELECTOR_X;
+                                    pc_wait = 1'b1;
+                                end
+                                if (fetch_counter == 3) begin
+                                    addr_reg += data_in;
+                                    addr = addr_reg;
+                                    instruction_ready = 1'b1;
+                                    pc_wait = 1'b0;
+                                end    
                             end
-                            if (fetch_counter == 2) begin 
-                                addr_reg[15:8] = data_in;
-                                fetch_selector = `SELECTOR_X;
-                                pc_wait = 1'b1;
-                            end
-                            if (fetch_counter == 3) begin
-                                addr_reg += data_in;
-                                addr = addr_reg;
-                                instruction_ready = 1'b1;
-                                pc_wait = 1'b0;
-                            end    
                         end
                     endcase
                 fetch_counter++; 
