@@ -94,11 +94,11 @@ module decoder(
                 if (instruction_ready) begin 
                     
                     //UNIMPLEMENTED INSTRUCTIONS:
-                    //  BCC: 90
-                    //  BCS: B0 
-                    //  BEQ: F0
-                    //  BMI: 30
-                    //  BNE: D0
+                    //  BCC: 90 - 100 100 00
+                    //  BCS: B0 - 101 100 00
+                    //  BEQ: F0 - 111 100 00
+                    //  BMI: 30 - 001 100 00
+                    //  BNE: D0 - 110 100 00
                     //  BPL: 10
                     //  BVC: 50
                     //  BVS: 70 
@@ -108,8 +108,8 @@ module decoder(
                     //  CLD: D8
                     //  CLI: 58
                     //  CLV: B8
-                    //  CPX: E0 E4 EC
-                    //  CPY: C0 C4 CC
+                    //  CPX: E0 E4 EC   - 111 000 00 - 111 001 00 - 111 011 00 Shares with inx E8
+                    //  CPY: C0 C4 CC   - 110 000 00   110 001 00   110 011 00 Shares with Iny C8
                     //  JMP: 4C 6C
                     //  JSR: 20
                     //  PHA: 48 
@@ -381,33 +381,65 @@ module decoder(
                                 instruction_done = 1'b1;
                             end
                         end
-                        `OPP_INX: begin  
-                            if (decode_counter == 0) begin
-                                alu0_selector = `SELECTOR_X;
-                                alu1_selector = `SELECTOR_ZERO;
-                                carry_in = 1'b1;
-                                opp = `SUM;
-                            end else if (alu_done == 1) begin
-                                add_selector = `SELECTOR_ALU_0;
-                                we[`WE_ADD] = 1'b1;
-                                we[`WE_STAT] = 1'b1;
-                                alu_update_status = 1'b1;
-                                instruction_done = 1'b1;
-                            end
+                        `OPP_INX: begin  //also CPX
+                            if (instruction == 8'hE8) begin //INX
+                                if (decode_counter == 0) begin
+                                    alu0_selector = `SELECTOR_X;
+                                    alu1_selector = `SELECTOR_ZERO;
+                                    carry_in = 1'b1;
+                                    opp = `SUM;
+                                end else if (alu_done == 1) begin
+                                    add_selector = `SELECTOR_ALU_0;
+                                    we[`WE_ADD] = 1'b1;
+                                    we[`WE_STAT] = 1'b1;
+                                    alu_update_status = 1'b1;
+                                    instruction_done = 1'b1;
+                                end
+                            end else begin //CPX
+                                if (decode_counter == 0) begin
+                                    alu0_selector = `SELECTOR_X;
+                                    alu1_selector = `ADDR_MODE_SELECTOR;
+                                    carry_in = 1'b0;
+                                    invert_alu_b = 1'b1;
+                                    opp = `SUM;
+                                end else if (decode_counter == 1) begin
+                                    add_selector = `SELECTOR_ALU_0;
+                                    we[`WE_ADD] = 1'b0;
+                                    we[`WE_STAT] = 1'b1;
+                                    alu_update_status = 1'b1;
+                                    instruction_done = 1'b1;
+                                end
+                            end    
                         end	
             	        `OPP_INY: begin  
-                            if (decode_counter == 0) begin
-                                alu0_selector = `SELECTOR_Y;
-                                alu1_selector = `SELECTOR_ZERO;
-                                carry_in = 1'b1;
-                                opp = `SUM;
-                            end else if (alu_done == 1) begin
-                                add_selector = `SELECTOR_ALU_0;
-                                we[`WE_ADD] = 1'b1;
-                                we[`WE_STAT] = 1'b1;
-                                alu_update_status = 1'b1;
-                                instruction_done = 1'b1;
-                            end
+                            if (instruction == 8'hC8) begin //INY
+                                if (decode_counter == 0) begin
+                                    alu0_selector = `SELECTOR_Y;
+                                    alu1_selector = `SELECTOR_ZERO;
+                                    carry_in = 1'b1;
+                                    opp = `SUM;
+                                end else if (alu_done == 1) begin
+                                    add_selector = `SELECTOR_ALU_0;
+                                    we[`WE_ADD] = 1'b1;
+                                    we[`WE_STAT] = 1'b1;
+                                    alu_update_status = 1'b1;
+                                    instruction_done = 1'b1;
+                                end
+                            end else begin //CPY
+                                if (decode_counter == 0) begin
+                                    alu0_selector = `SELECTOR_Y;
+                                    alu1_selector = `ADDR_MODE_SELECTOR;
+                                    carry_in = 1'b0;
+                                    invert_alu_b = 1'b1;
+                                    opp = `SUM;
+                                end else if (decode_counter == 1) begin
+                                    add_selector = `SELECTOR_ALU_0;
+                                    we[`WE_ADD] = 1'b0;
+                                    we[`WE_STAT] = 1'b1;
+                                    alu_update_status = 1'b1;
+                                    instruction_done = 1'b1;
+                                end
+                            end  
                         end	
                         
                         `OPP_ILLEGAL: begin 
