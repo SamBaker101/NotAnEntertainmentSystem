@@ -93,8 +93,19 @@ module decoder(
             end else begin
                 if (instruction_ready) begin 
                     
+                    //UNIMPLEMENTED INSTRUCTIONS:
+                    //  BCC BVS  
+                    //  BIT BBRK
+                    //  CLC CLD CLI CLV
+                    //  CPX CPY
+                    //  JMP JSR
+                    //  PHA PHP PLA PLP
+                    //  RTI RTS
+                    //  SEC SED SEI
+                    //  TAX TAY TSX TXA TXS TYA 
+
                     case(opp_code) //This is gonna be a bit of a mess for a while
-                    	5'bXXXXX: ; //FIXME workaround while mem is being loaded
+                    	5'bXXXXX: ;
                         
                         `OPP_ORA: begin  
                             if (decode_counter == 0) begin
@@ -316,7 +327,7 @@ module decoder(
                                 end
                             end
                         end	
-	                    `OPP_SBC: begin   //Im not confident in this one
+	                    `OPP_SBC: begin  
                             if (decode_counter == 0) begin
                                 alu0_selector = `SELECTOR_ADD;
                                 alu1_selector = `ADDR_MODE_SELECTOR;
