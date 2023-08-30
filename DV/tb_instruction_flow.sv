@@ -8,6 +8,7 @@
 //FIXME:
 // Remove get_next signal between decoder and fetcher (use instruction_ready toggling)
 // Set up logic such that mem can be filled with data (outside of chip logic) while chip is in reset
+// Testing currently only really tests instructions in isolation, wierd issues may appear with multiple opps in a single program
 
 `ifndef TB_IFLOW
 `define TB_IFLOW
@@ -88,7 +89,7 @@ module tb_iflow;
     wire [`REG_WIDTH - 1: 0] d_to_alu_0;
     wire [`REG_WIDTH - 1: 0] d_to_alu_1;
     wire [7:0] alu_opp;
-    wire alu_done, update_status;
+    wire alu_done, update_status, invert_alu_b;
     wire carry_in;
 
     ////////////////////////
@@ -112,7 +113,8 @@ module tb_iflow;
 
     assign get_next     = trigger_program;
     
-    always @(phi2_int) pc      = pc_next;
+    always @(phi2_int) 
+            pc = pc_next;
 
     string test_name = "UNDEF";
     ///////////////////////
@@ -199,6 +201,7 @@ module tb_iflow;
 		.instruction_done(instruction_done),
         .alu_done(alu_done),
         .status_in(oSTATUS),
+        .invert_alu_b(invert_alu_b),
         //Selectors
         .pc_selector(pc_selector),  
         .sp_selector(sp_selector), 
@@ -219,8 +222,9 @@ module tb_iflow;
         .func(alu_opp), 
         .status_in(oSTATUS),
         .carry_in(carry_in),
-        .a(d_to_alu_0), 
-        .b(d_to_alu_1), 
+        .invert(invert_alu_b),
+        .a_in(d_to_alu_0), 
+        .b_in(d_to_alu_1), 
         .dout(d_from_alu),
         .wout(alu_done),
         .status_out(status_from_alu)
@@ -379,7 +383,7 @@ module tb_iflow;
         end
 
         manual_mem = 1'b1;
-        reset_n = 1'b1;
+        reset_n = 1'b0;
 
 `ifdef MEM_DUMP
         $display("Mem Dump");
@@ -401,7 +405,7 @@ module tb_iflow;
 
         $display("");
 
-        if (test_carry !== oSTATUS[`CARRY]) $fatal(1, "\n##### ERROR ##### \nTEST: %s \nCarry is %d should be %d", test_name, oSTATUS[`CARRY], test_carry);
+        if (test_carry !== oSTATUS[`CARRY]) $fatal(1, "\n##### ERROR ##### \nTEST: %s \n Time: %d \nCarry is %d should be %d", test_name, $time, oSTATUS[`CARRY], test_carry);
         //Checks
         //Check that model matches mem
         for (i = 0; i < `INSTRUCTION_BASE; i++) begin
@@ -415,7 +419,7 @@ module tb_iflow;
 
                 mem_unit    = d_from_mem;
 
-                if (mem_unit !== mem_model[i]) $fatal(1, "\n##### ERROR ##### \nTEST: %s \nincorrect mem at addr %h", test_name, i);
+                if (mem_unit !== mem_model[i]) $fatal(1, "\n##### ERROR ##### \nTEST: %s \n Time: %d \nincorrect mem at addr %h", test_name, $time, i);
         end
 
         

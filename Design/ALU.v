@@ -8,18 +8,21 @@
 module ALU(
 	input phi1, phi2, reset_n,	
 		
-	input [`REG_WIDTH - 1 : 0] a, 
-	input [`REG_WIDTH - 1 : 0] b, 
+	input [`REG_WIDTH - 1 : 0] a_in, 
+	input [`REG_WIDTH - 1 : 0] b_in, 
 	input [`OPP_WIDTH - 1 : 0] func, 
 	input [`REG_WIDTH - 1 : 0] status_in, 
 	input carry_in, 
 	input dec_mode, 
+	input invert,
 	
 	output reg [`REG_WIDTH - 1 : 0] dout, //douter hold register
 	output reg [`REG_WIDTH - 1 : 0] status_out,
 	output reg wout
 	);
 	
+	wire [`REG_WIDTH - 1 : 0] a, b;
+
 	reg opp_reg;
 	
 	//STATUS REGS
@@ -31,9 +34,9 @@ module ALU(
 	reg overflow_out;
 	reg negative_out;
 	
-	//STATUS ASSIGNS
-	//always @(posedge phi1) wout = 1'b0;
-	
+	assign b = (invert) ? !b_in : b_in;
+	assign a = a_in;
+
 	always @(wout) begin
 		status_out = status_in;
 

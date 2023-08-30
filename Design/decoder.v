@@ -19,7 +19,7 @@
 
 module decoder(
 		clk, reset_n, addr_in, instruction_in, opp, we,
-        instruction_ready, addr, instruction_done, alu_done, carry_in, status_in,
+        instruction_ready, addr, instruction_done, alu_done, carry_in, status_in, invert_alu_b,
         
         pc_selector,  
         sp_selector, add_selector,  x_selector,  y_selector, stat_selector, mem_selector, 
@@ -52,7 +52,7 @@ module decoder(
         output reg [3:0] alu0_selector; 
         output reg [3:0] alu1_selector;      
 
-        output reg alu_update_status;
+        output reg alu_update_status, invert_alu_b;
         /////////////////////////////
 
         reg [2:0] add_mode;
@@ -74,6 +74,7 @@ module decoder(
             we = 0;
             carry_in = 1'b0;
             opp = `NO_OPP;
+            invert_alu_b = 1'b0;
         end
 
         always @(posedge reset_n) instruction_done = 1'b1;
@@ -108,7 +109,7 @@ module decoder(
                                 instruction_done = 1'b1;
                             end
                         end 
-	                    `OPP_ASL: begin  // not working
+	                    `OPP_ASL: begin  
                             if (decode_counter == 0) begin
                                 alu0_selector = `ADDR_MODE_SELECTOR;
                                 alu1_selector = `ADDR_MODE_SELECTOR;
@@ -275,6 +276,9 @@ module decoder(
                             end
                         end	
 	                    `OPP_CMP: begin  
+/////////////////////////////////////////////////////////////
+
+ 
 
                         end	
 	                    `OPP_DEC: begin  
@@ -304,6 +308,9 @@ module decoder(
                             end
                         end	
 	                    `OPP_SBC: begin  
+/////////////////////////////////////////////////////////////
+
+
 
                         end	
 	                    `OPP_INC: begin  
