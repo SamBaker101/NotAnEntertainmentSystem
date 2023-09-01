@@ -35,7 +35,10 @@ TEST_LIST = NOOPP \
 			ALU_INC \
 			ALU_DEC \
 			ALU_ROT \
-			ALU_SBC
+			ALU_SBC \
+			CMP 	\
+			CPX		\
+			CPY
 
 ifndef DEPTH
 	DEPTH = 	"MEM_DEPTH='h01FF" 

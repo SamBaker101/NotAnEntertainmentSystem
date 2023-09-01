@@ -123,19 +123,12 @@ module decoder(
                     //  CLD: D8             - 110 110 00
                     //  SED: F8             - 111 110 00  
                     //  BEQ: F0             - 111 100 00
-                    
-                    //TODO: These implementations need a serious refactor
 
                     case(opp_code) //This is gonna be a bit of a mess for a while
                     	5'bXXXXX: ;
                         `OPP_NOP: begin
-                    
-
-                    //  CLC: 18             - 000 110 00
-                    //  PHP: 08             - 000 010 00
-
                             if (instruction == 8'h00) begin             //BRK
-
+                                //This needs to do some things
                             end else if (instruction == 8'h18) begin    //CLC
                                 if (decode_counter == 0) begin
                                     we[`WE_STAT] = 1'b1;
@@ -441,7 +434,10 @@ module decoder(
                             end else begin //CPX
                                 if (decode_counter == 0) begin
                                     alu0_selector = `SELECTOR_X;
-                                    alu1_selector = `ADDR_MODE_SELECTOR;
+                                    if (instruction == 8'hE0) 
+                                        alu1_selector = `SELECTOR_IMM;
+                                    else
+                                        alu1_selector = `ADDR_MODE_SELECTOR;
                                     carry_in = 1'b0;
                                     invert_alu_b = 1'b1;
                                     opp = `SUM;
@@ -471,7 +467,10 @@ module decoder(
                             end else begin //CPY
                                 if (decode_counter == 0) begin
                                     alu0_selector = `SELECTOR_Y;
-                                    alu1_selector = `ADDR_MODE_SELECTOR;
+                                    if (instruction == 8'hC0) 
+                                        alu1_selector = `SELECTOR_IMM;
+                                    else
+                                        alu1_selector = `ADDR_MODE_SELECTOR;
                                     carry_in = 1'b0;
                                     invert_alu_b = 1'b1;
                                     opp = `SUM;

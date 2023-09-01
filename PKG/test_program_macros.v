@@ -6,8 +6,8 @@
 
 //FIXME: This is getting tedious to deal with, find a compiler and set up firmware loader to read hex files
 
-//FIXME: Tests missing : 
-//                  CMP CPX CPY test
+//FIXME: Tests missing (Some of these instructions are probably still broken): 
+//                  CPX CPY test
 //                  Transfer Test (TSX, TAX, TYA ect)
 //                  Stat Clears (CLC, )
 //                  Stack Opps (PHP, )  
@@ -151,7 +151,8 @@
                             inst_list[28]    = 8'h41;        \   //  8'h41
                             inst_list[29]    = 8'h01;        \   //  8'h01
                             \
-                            test_carry = 1'b0;              \
+                            test_stat[`CARRY] = 1'b0;              \
+                            `define TEST_CHECK_CARRY                \   
                             \
                             mem_model[16'h0141] = 8'hFF;      \
                             mem_model[16'h0142] = 8'h00;      \
@@ -184,7 +185,8 @@
                             inst_list[16]   = 8'h85;        \   //  STA ZPG 
                             inst_list[17]   = 8'h05;        \   //  x05
                                                             \
-                            test_carry = 1'b0;              \
+                            test_stat[`CARRY] = 1'b0;              \
+                            `define TEST_CHECK_CARRY                \   
                                                             \
                             mem_model[16'h0003] = 8'h06;    \
                             mem_model[16'h0004] = 8'h01;    \
@@ -230,7 +232,8 @@
                             inst_list[3]    = 8'h85;        \   //  STA ZPG 
                             inst_list[4]    = 8'h03;        \   //  x03
                                                             \
-                            test_carry = 1'b1;              \
+                            test_stat[`CARRY] = 1'b1;              \
+                            `define TEST_CHECK_CARRY                \   
                                                             \
                             mem_model[16'h0003] = (8'hA4 << 1); // 10100100 << 1 = 01001000 = 48
  
@@ -243,7 +246,8 @@
                             inst_list[3]    = 8'h85;        \   //  STA ZPG 1000 0101
                             inst_list[4]    = 8'h03;        \   //  x03     00 1010 0001
                                                             \
-                            test_carry = 1'b1;              \
+                            test_stat[`CARRY] = 1'b1;              \
+                            `define TEST_CHECK_CARRY                \   
                                                             \
                             mem_model[16'h0003] = (8'hA1 >> 1); 
 
@@ -266,7 +270,8 @@
                             inst_list[10]    = 8'hE6;        \   //  INC ZPG
                             inst_list[11]    = 8'h04;        \   //  x04  
                                                             \        
-                            test_carry = 1'b0;              \
+                            test_stat[`CARRY] = 1'b0;              \
+                            `define TEST_CHECK_CARRY                \   
                                                             \
                             mem_model[16'h0003] = (8'hA4 + 1);     \
                             mem_model[16'h0004] = (8'hA1 + 2);     \
@@ -290,7 +295,8 @@
                             inst_list[10]    = 8'hC6;        \   //  DEC ZPG
                             inst_list[11]    = 8'h04;        \   //  x04  
                                                             \        
-                            test_carry = 1'b0;              \
+                            test_stat[`CARRY] = 1'b0;              \
+                            `define TEST_CHECK_CARRY                \   
                                                             \
                             mem_model[16'h0003] = (8'hA4 - 1);     \
                             mem_model[16'h0004] = (8'hA1 - 2);     \
@@ -312,7 +318,8 @@
                             inst_list[9]    = 8'h85;        \   //  STA ZPG 1000 0101
                             inst_list[10]   = 8'h04;        \   //  x03     00 1010 0001
                                                             \
-                            test_carry = 1'b1;              \
+                            test_stat[`CARRY] = 1'b1;              \
+                            `define TEST_CHECK_CARRY                \   
                                                             \
                             mem_model[16'h0003] = (8'hC1);     \    // 0 1111 0000 >> 1 1110 0000 >> 1 1100 0001 
                             mem_model[16'h0004] = (8'h87);     \ 
@@ -328,8 +335,51 @@
                             inst_list[4]    = 8'h85;        \   //  STA ZPG 
                             inst_list[5]    = 8'h03;        \   //  x03
                                                             \
-                            test_carry = 1'b0;              \
+                            test_stat[`CARRY] = 1'b0;              \
+                            `define TEST_CHECK_CARRY                \   
                                                             \
-                            mem_model[16'h0003] = 8'h0D;       
+                            mem_model[16'h0003] = 8'h0D;     
+
+
+`define TEST_CMP           $display("LOADING TEST: CMP"); \
+                            test_name = "CMP";            \
+                                                            \
+                            inst_list[0]    = 8'hA9;        \   //  LDA #   
+                            inst_list[1]    = 8'h04;        \   //  x04
+                            inst_list[2]    = 8'hC9;        \   //  CMP #   
+                            inst_list[3]    = 8'h04;        \   //  x04
+                                                            \
+                            test_stat[`ZERO] = 1'b1;              \
+                            `define TEST_CHECK_CARRY                \
+                            `define TEST_CHECK_ZERO                \
+                            `define TEST_CHECK_NEG                \
+                
+`define TEST_CPX           $display("LOADING TEST: CPX"); \
+                            test_name = "CPX";            \
+                                                            \
+                            inst_list[0]    = 8'hA2;        \   //  LDX #   
+                            inst_list[1]    = 8'h04;        \   //  x04
+                            inst_list[2]    = 8'hE0;        \   //  CPX #   
+                            inst_list[3]    = 8'h06;        \   //  x04
+                                                            \
+                            test_stat[`CARRY] = 1'b1;              \
+                            test_stat[`NEG] = 1'b1;              \
+                            `define TEST_CHECK_CARRY                \
+                            `define TEST_CHECK_ZERO                \
+                            `define TEST_CHECK_NEG                \
+        
+`define TEST_CPY           $display("LOADING TEST: CPY"); \
+                            test_name = "CPY";            \
+                                                            \
+                            inst_list[0]    = 8'hA0;        \   //  LDA #   
+                            inst_list[1]    = 8'h04;        \   //  x04
+                            inst_list[2]    = 8'hC0;        \   //  CMP #   
+                            inst_list[3]    = 8'h04;        \   //  x04
+                                                            \
+                            test_stat[`ZERO] = 1'b1;              \
+                            `define TEST_CHECK_CARRY                \
+                            `define TEST_CHECK_ZERO                \
+                            `define TEST_CHECK_NEG                \
+        
 
 `endif 

@@ -28,7 +28,9 @@ module tb_iflow;
     reg [`ADDR_WIDTH - 1 : 0] addr_in;
     reg [`REG_WIDTH - 1 : 0] d_in;
     reg manual_mem;
-    reg test_carry;
+    
+    reg [`REG_WIDTH - 1 : 0] test_stat;
+    reg [`REG_WIDTH - 1 : 0] capture_stat;
     /////////////////////////
     ////  Top Level I/O  ////
     /////////////////////////
@@ -258,7 +260,7 @@ module tb_iflow;
 		$dumpfile("Out/iflow.vcd");
 		$dumpvars(0, tb_iflow);
         
-        test_carry = 1'b0;
+        test_stat = 8'h00;
 
         phi0 = 0;
         seed = `SEED;
@@ -297,7 +299,7 @@ module tb_iflow;
         end
 
         //Check that model matches mem
-        $display("Checking random data loaded to memory");
+        $write("Checking random data loaded to memory \t");
         for (i = 0; i < `INSTRUCTION_BASE; i++) begin
                 mem_write   = 1'b0;
                 addr_in     = i;
@@ -318,7 +320,7 @@ module tb_iflow;
                     //else $display("Match at addr %0d value %h", i, mem_model[i]);
             end
 
-        $display("Zero-ing instructions");
+        $write("Zero-ing instructions \t");
         for (i = 0; i < `MEM_DEPTH - `INSTRUCTION_BASE; i++) begin
             mem_model[i + `INSTRUCTION_BASE] = 8'h00;    
             
@@ -377,7 +379,7 @@ module tb_iflow;
         trigger_program = 1'b0;
 
         //Spin the clock
-        $display("Spinning the clock");
+        //$write("Spinning the clock \t");
         for (i = 0; i < `CYCLES; i++) begin
                     #5;
                     phi0 = 1;
@@ -385,6 +387,7 @@ module tb_iflow;
                     phi0 = 0;
         end
 
+        capture_stat = oSTATUS;    
         manual_mem = 1'b1;
         reset_n = 1'b0;
 
@@ -408,7 +411,21 @@ module tb_iflow;
 
         $display("");
 
-        if (test_carry !== oSTATUS[`CARRY]) $fatal(1, "\n##### ERROR ##### \nTEST: %s \n Time: %d \nCarry is %d should be %d", test_name, $time, oSTATUS[`CARRY], test_carry);
+
+`ifdef TEST_CHECK_CARRY        
+        if (test_stat[`CARRY] !== capture_stat[`CARRY]) $fatal(1, "\n##### ERROR ##### \tTEST: %s \t Time: %d \tCarry is %d should be %d", test_name, $time, oSTATUS[`CARRY], test_stat[`CARRY]);
+`endif
+
+`ifdef TEST_CHECK_ZERO        
+        if (test_stat[`ZERO] !== capture_stat[`ZERO]) $fatal(1, "\n##### ERROR ##### \tTEST: %s \t Time: %d \tZero is %d should be %d", test_name, $time, oSTATUS[`ZERO], test_stat[`ZERO]);
+`endif
+
+`ifdef TEST_CHECK_NEG        
+        if (test_stat[`NEG] !== capture_stat[`NEG]) $fatal(1, "\n##### ERROR ##### \tTEST: %s \t Time: %d \tNeg is %d should be %d", test_name, $time, oSTATUS[`NEG], test_stat[`NEG]);
+`endif
+
+
+
         //Checks
         //Check that model matches mem
         for (i = 0; i < `INSTRUCTION_BASE; i++) begin
