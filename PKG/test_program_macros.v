@@ -8,7 +8,9 @@
 
 //FIXME: Tests missing : 
 //                  CMP CPX CPY test
-//                  Transfer test (TSX, TAX, TYA ect)
+//                  Transfer Test (TSX, TAX, TYA ect)
+//                  Stat Clears (CLC, )
+//                  Stack Opps (PHP, )  
 
 `ifndef INST_MACROS
 `define INST_MACROS

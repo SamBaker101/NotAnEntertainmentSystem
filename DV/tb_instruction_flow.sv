@@ -76,7 +76,7 @@ module tb_iflow;
     wire [3 : 0] alu1_selector;   
     
     wire [`ADDR_WIDTH - 1: 0] /*pc,*/ pc_next;
-    wire [`REG_WIDTH - 1: 0] imm;
+    wire [`REG_WIDTH - 1: 0] imm_to_bus, imm_to_decoder;
 
     wire we_dout;
     wire [`ADDR_WIDTH - 1 : 0] fetcher_addr;
@@ -132,7 +132,7 @@ module tb_iflow;
         .y_in(oY), 
         .stat_in(oSTATUS),      
         .mem_in(d_from_mem), 
-        .imm_in(imm), 
+        .imm_in(imm_to_bus), 
         .fetch_in(d_from_fetch), 
         .decode_in(8'hzz), 
         .alu_in(d_from_alu),            
@@ -178,6 +178,7 @@ module tb_iflow;
 		.reset_n(reset_n), 
 		.get_next(get_next), 
 		.pc(pc), 
+        .sp(oSP),
 		.data_in(d_to_fetch), 
 		.instruction_out(instruction), 
 		.pc_next(pc_next), 
@@ -185,7 +186,7 @@ module tb_iflow;
 		.instruction_ready(instruction_ready),
         .instruction_done(instruction_done),
 		.reg_out(d_from_fetch),
-        .imm(imm),
+        .imm(imm_to_decoder),
 		.fetch_selector(fetch_selector)
 		);
 
@@ -202,6 +203,8 @@ module tb_iflow;
         .alu_done(alu_done),
         .status_in(oSTATUS),
         .invert_alu_b(invert_alu_b),
+        .imm_in(imm_to_decoder),
+        .imm_out(imm_to_bus),
         //Selectors
         .pc_selector(pc_selector),  
         .sp_selector(sp_selector), 

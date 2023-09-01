@@ -67,6 +67,7 @@
 	//Opp Code
 	`define OPP_ILLEGAL 5'bXXX_11 //LB 3, 7, B, F
 
+	`define OPP_NOP		5'b000_00
 	`define	OPP_ORA 	5'b000_01
 	`define OPP_ASL		5'b000_10 
 	`define OPP_AND		5'b001_01

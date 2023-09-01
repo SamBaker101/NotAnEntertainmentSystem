@@ -6,7 +6,7 @@
 `define FETCHER
 
 module fetcher(
-		phi1, phi2, reset_n, get_next, pc, data_in, instruction_out, 
+		phi1, phi2, reset_n, get_next, pc, sp, data_in, instruction_out, 
         pc_next, addr, imm, instruction_ready, reg_out, instruction_done,
         fetch_selector 
 		);
@@ -17,7 +17,8 @@ module fetcher(
 
         input instruction_done;
         input phi1, phi2, reset_n, get_next;  
-        input [ADDR_WIDTH - 1 : 0] pc; 
+        input [ADDR_WIDTH - 1 : 0] pc;
+        input [REG_WIDTH - 1 : 0] sp;  
         input [REG_WIDTH - 1 : 0] data_in;
 
         output reg instruction_ready, pc_wait;
@@ -129,10 +130,13 @@ module fetcher(
                                 if ((instruction_out[0] == 1)  ||    //TODO: Simplify this
                                     (instruction_out == 8'hA0) ||
                                     (instruction_out == 8'hA2)) begin
-                                    fetch_selector = `SELECTOR_MEM;
-                                    //pc_wait = 1'b1;
-                                    end else begin 
-                                    instruction_ready = 1'b1;
+                                        fetch_selector = `SELECTOR_MEM;
+                                    //pc_wait = 1'b1; 
+                                    end else if (instruction_out == 8'h08) begin    //PHP
+                                        addr = sp + `STACK_BASE;
+                                        instruction_ready = 1'b1; 
+                                    end else begin
+                                        instruction_ready = 1'b1;
                                 end
                             end 
                             if (fetch_counter == 1) begin

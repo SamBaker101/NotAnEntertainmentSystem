@@ -21,7 +21,8 @@
 module decoder(
 		clk, reset_n, addr_in, instruction_in, opp, we,
         instruction_ready, addr, instruction_done, alu_done, carry_in, status_in, invert_alu_b,
-        
+        imm_in, imm_out,
+
         pc_selector,  
         sp_selector, add_selector,  x_selector,  y_selector, stat_selector, mem_selector, 
         decode_selector,  alu0_selector,  alu1_selector, alu_update_status    
@@ -35,6 +36,7 @@ module decoder(
         input [ADDR_WIDTH - 1 : 0] addr_in;
         input [REG_WIDTH - 1 : 0] instruction_in, status_in;
         input instruction_ready, alu_done;
+        input [REG_WIDTH - 1 : 0] imm_in;
 
         output reg [OPP_WIDTH - 1 : 0] opp;       
         output reg instruction_done, carry_in;
@@ -53,6 +55,7 @@ module decoder(
         output reg [3:0] alu0_selector; 
         output reg [3:0] alu1_selector;      
 
+        output reg [REG_WIDTH - 1 : 0] imm_out;
         output reg alu_update_status, invert_alu_b;
         /////////////////////////////
 
@@ -83,7 +86,7 @@ module decoder(
         always @(posedge clk) begin
             we = 0;
             alu_update_status = 1'b0;
-
+            imm_out = imm_in;
 
             if (!reset_n) begin
                 opp = 0;
@@ -95,35 +98,65 @@ module decoder(
                 if (instruction_ready) begin 
                     
                     //UNIMPLEMENTED INSTRUCTIONS:
-                    //  BCC: 90 - 100 100 00
-                    //  BCS: B0 - 101 100 00
-                    //  BEQ: F0 - 111 100 00
-                    //  BMI: 30 - 001 100 00
-                    //  BNE: D0 - 110 100 00
-                    //  BPL: 10
-                    //  BVC: 50
-                    //  BVS: 70 
-                    //  BIT: 24, 2C 
-                    //  BRK: 00
-                    //  CLC: 18 
-                    //  CLD: D8
-                    //  CLI: 58
-                    //  CLV: B8
-                    //  JMP: 4C 6C
-                    //  JSR: 20
-                    //  PHA: 48 
-                    //  PHP: 08
-                    //  PLA: 68
-                    //  PLP: 28
-                    //  RTI: 40
-                    //  RTS: 60
-                    //  SEC: 38
-                    //  SED: F8
-                    //  SEI: 78
+
+                    //  BRK: 00             - 000 000 00
+                    //  BMI: 30             - 001 100 00 
+                    //  JSR: 20             - 001 000 00
+                    //  PLP: 28             - 001 010 00
+                    //  SEC: 38             - 001 110 00
+                    //  BIT: 24, 2C         - 001 001 00 - 001 011 00
+                    //  CLI: 58             - 010 110 00
+                    //  BVC: 50             - 010 100 00
+                    //  PHA: 48             - 010 010 00
+                    //  RTI: 40             - 010 000 00
+                    //  JMP: 4C             - 010 011 00
+                    //  BVS: 70             - 011 100 00
+                    //  JMP: 6C             - 011 011 00
+                    //  PLA: 68             - 011 010 00        
+                    //  RTS: 60             - 011 000 00
+                    //  SEI: 78             - 011 110 00
+                    //  BCC: 90             - 100 100 00
+                    //  BPL: 10             - 100 000 00
+                    //  BCS: B0             - 101 100 00
+                    //  CLV: B8             - 101 110 00
+                    //  BNE: D0             - 110 100 00
+                    //  CLD: D8             - 110 110 00
+                    //  SED: F8             - 111 110 00  
+                    //  BEQ: F0             - 111 100 00
+                    
+                    //TODO: These implementations need a serious refactor
 
                     case(opp_code) //This is gonna be a bit of a mess for a while
                     	5'bXXXXX: ;
-                        
+                        `OPP_NOP: begin
+                    
+
+                    //  CLC: 18             - 000 110 00
+                    //  PHP: 08             - 000 010 00
+
+                            if (instruction == 8'h00) begin             //BRK
+
+                            end else if (instruction == 8'h18) begin    //CLC
+                                if (decode_counter == 0) begin
+                                    we[`WE_STAT] = 1'b1;
+                                    stat_selector =  `SELECTOR_IMM;
+                                    imm_out = status_in && 8'b1111_1110;
+                                end else if (decode_counter == 1) begin
+                                    we = 0;
+                                    opp_code = 0;
+                                    instruction_done = 1'b1;
+                                end
+                            end else if (instruction == 8'h08) begin    //PHP
+                                if (decode_counter == 0) begin
+                                    we[`WE_DOUT] = 1'b1;
+                                    mem_selector =  `SELECTOR_STAT;
+                                end else if (decode_counter == 1) begin
+                                    we = 0;
+                                    opp_code = 0;
+                                    instruction_done = 1'b1;
+                                end    
+                            end
+                        end
                         `OPP_ORA: begin  
                             if (decode_counter == 0) begin
                                 alu0_selector = `SELECTOR_ADD;

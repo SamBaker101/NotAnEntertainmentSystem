@@ -42,18 +42,22 @@ ifndef DEPTH
 endif
 
 ifndef INST_BASE
-	INST_BASE = "INSTRUCTION_BASE='h0150"
+	INST_BASE = "INSTRUCTION_BASE='h0140"
+endif
+
+ifndef STACK_BASE
+	STACK_BASE = "STACK_BASE='h0180"
 endif
 
 ifndef SEED
 	SEED = SEED=58585
 endif
 
-BUILD_DEFINES = -g $(GEN) -D $(DEPTH) -D $(INST_BASE) -D "SELECT_TEST=\`TEST_$(TEST)" -D $(SEED) -D MEM_DUMP 
+BUILD_DEFINES = -g $(GEN) -D $(DEPTH) -D $(INST_BASE) -D $(STACK_BASE) -D "SELECT_TEST=\`TEST_$(TEST)" -D $(SEED) -D MEM_DUMP 
 
 ### BASE DIRECTIVES #####
 make :  $(TB) $(SRC)
-	$(COMPILER) -g $(GEN) -D $(DEPTH) -D $(INST_BASE) -D "SELECT_TEST=\`TEST_$(TEST)" -D $(SEED) -o  Out/$(TEST).vvp $(TB) $(SRC) 
+	$(COMPILER) -g $(GEN) -D $(DEPTH) -D $(INST_BASE) -D $(STACK_BASE) -D "SELECT_TEST=\`TEST_$(TEST)" -D $(SEED) -o  Out/$(TEST).vvp $(TB) $(SRC) 
 
 build : $(TB) $(SRC)
 	$(COMPILER) $(BUILD_DEFINES) -o Out/$(TEST).vvp $(TB) $(SRC) 
@@ -69,7 +73,7 @@ run: build sim
 
 runall :   $(TB) $(SRC)
 	$(foreach test, $(TEST_LIST), 																				\
-		$(COMPILER) -g $(GEN) -D $(DEPTH) -D $(INST_BASE) -D "SELECT_TEST=\`TEST_$(test)" -D $(SEED) -o  Out/$(test).vvp $(TB) $(SRC);)   \
+		$(COMPILER) -g $(GEN) -D $(DEPTH) -D $(INST_BASE) -D $(STACK_BASE) -D "SELECT_TEST=\`TEST_$(test)" -D $(SEED) -o  Out/$(test).vvp $(TB) $(SRC);)   \
 	$(foreach test, $(TEST_LIST), 																				\
 		$(SIMULATOR) Out/$(test).vvp;)																			\
 
