@@ -122,8 +122,7 @@ module decoder(
                     //  BPL: 10             - 100 000 00
                     //  BCS: B0             - 101 100 00
                     //  CLV: B8             - 101 110 00
-                    //  BNE: D0             - 110 100 00
-                    //  CLD: D8             - 110 110 00
+
 
                     case(opp_code) //This is gonna be a bit of a mess for a while
                     	5'bXXXXX: ;
@@ -418,10 +417,7 @@ module decoder(
                                 instruction_done = 1'b1;
                             end
                         end
-                        `OPP_INX: begin  //also CPX
-                //  SED: F8             - 111 110 00  
-                //  BEQ: F0             - 111 100 00
-
+                        `OPP_INX: begin  // CPX, SED, BEQ 
                             if (instruction == 8'hE8) begin //INX
                                 if (decode_counter == 0) begin
                                     alu0_selector = `SELECTOR_X;
@@ -439,16 +435,22 @@ module decoder(
                                 if (decode_counter == 0) begin
                                     we[`WE_STAT] = 1'b1;
                                     stat_selector =  `SELECTOR_IMM;
-                                    imm_out = status_in || (8'hFF ^ (8'h01 << `DEC));
+                                    imm_out = status_in || (8'h01 << `DEC);
                                 end else if (decode_counter == 1) begin
                                     we = 0;
                                     opp_code = 0;
                                     instruction_done = 1'b1;
                                 end
                             end else if (instruction == 8'hF0) begin //BEQ
-                                if (status_in[`ZERO] == 1'b1) begin
-                                    jump_pc = pc_in + imm_in;
-                                end
+                                if (decode_counter == 0) begin
+                                    if (status_in[`ZERO] == 1'b1) begin
+                                        jump_pc = pc_in + imm_in;
+                                    end
+                                end else begin
+                                    we = 0;
+                                    opp_code = 0;
+                                    instruction_done = 1'b1;
+                                end  
                             end else begin //CPX
                                 if (decode_counter == 0) begin
                                     alu0_selector = `SELECTOR_X;
@@ -468,7 +470,7 @@ module decoder(
                                 end
                             end    
                         end	
-            	        `OPP_INY: begin  
+            	        `OPP_INY: begin  // CPY, BNE, CLD 
                             if (instruction == 8'hC8) begin //INY
                                 if (decode_counter == 0) begin
                                     alu0_selector = `SELECTOR_Y;
@@ -480,6 +482,26 @@ module decoder(
                                     we[`WE_ADD] = 1'b1;
                                     we[`WE_STAT] = 1'b1;
                                     alu_update_status = 1'b1;
+                                    instruction_done = 1'b1;
+                                end
+                            end else if (instruction == 8'hD0) begin //BNE
+                                    if (decode_counter == 0) begin
+                                        if (status_in[`ZERO] == 1'b0) begin
+                                            jump_pc = pc_in + imm_in;
+                                        end
+                                    end else begin
+                                        we = 0;
+                                        opp_code = 0;
+                                        instruction_done = 1'b1;
+                                    end  
+                            end else if (instruction == 8'hD8) begin //CLD
+                                if (decode_counter == 0) begin
+                                    we[`WE_STAT] = 1'b1;
+                                    stat_selector =  `SELECTOR_IMM;
+                                    imm_out = status_in && (8'hFF ^ (8'h01 << `DEC));
+                                end else if (decode_counter == 1) begin
+                                    we = 0;
+                                    opp_code = 0;
                                     instruction_done = 1'b1;
                                 end
                             end else begin //CPY

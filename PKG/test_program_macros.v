@@ -8,9 +8,9 @@
 
 //FIXME: Tests missing (Some of these instructions are probably still broken, just trying to get everything roughed in): 
 //                  Transfer Test (TSX, TAX, TYA ect)
-//                  Stat Clears (CLC, )
+//                  Stat Clears (CLC, CLD, SED)
 //                  Stack Opps (PHP, )  
-//                  Branches (BEQ, )
+//                  Branches (BEQ, BNE)
 
 `ifndef INST_MACROS
 `define INST_MACROS
