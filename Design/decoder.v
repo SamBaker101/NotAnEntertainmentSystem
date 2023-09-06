@@ -120,13 +120,10 @@ module decoder(
                     //  SEI: 78             - 011 110 00
                     //  BCC: 90             - 100 100 00
                     //  BPL: 10             - 100 000 00
-                    //  BCS: B0             - 101 100 00
-                    //  CLV: B8             - 101 110 00
-
 
                     case(opp_code) //This is gonna be a bit of a mess for a while
                     	5'bXXXXX: ;
-                        `OPP_NOP: begin
+                        `OPP_NOP: begin // BRK, CLC 
                             if (instruction == 8'h00) begin             //BRK
                                 //This needs to do some things
                             end else if (instruction == 8'h18) begin    //CLC
@@ -323,14 +320,36 @@ module decoder(
                                 instruction_done = 1'b1;
                             end
                         end	
-                        `OPP_LDY: begin  
-                            if (decode_counter == 0) begin
-                                we[`WE_Y] = 1'b1;
-                                y_selector =  `ADDR_MODE_SELECTOR
-                            end else if (decode_counter == 1) begin
-                                we = 0;
-                                opp_code = 0;
-                                instruction_done = 1'b1;
+                        `OPP_LDY: begin // BCS, CLV  
+                            if (instruction == 8'hB8) begin //CLV
+                                if (decode_counter == 0) begin
+                                    we[`WE_STAT] = 1'b1;
+                                    stat_selector =  `SELECTOR_IMM;
+                                    imm_out = status_in || (8'h01 << `V_OVERFLOW);
+                                end else if (decode_counter == 1) begin
+                                    we = 0;
+                                    opp_code = 0;
+                                    instruction_done = 1'b1;
+                                end
+                            end else if (instruction == 8'hB0) begin //BCS
+                                if (decode_counter == 0) begin
+                                    if (status_in[`CARRY] == 1'b1) begin
+                                        jump_pc = pc_in + imm_in;
+                                    end
+                                end else begin
+                                    we = 0;
+                                    opp_code = 0;
+                                    instruction_done = 1'b1;
+                                end  
+                            end else begin
+                                if (decode_counter == 0) begin
+                                    we[`WE_Y] = 1'b1;
+                                    y_selector =  `ADDR_MODE_SELECTOR
+                                end else if (decode_counter == 1) begin
+                                    we = 0;
+                                    opp_code = 0;
+                                    instruction_done = 1'b1;
+                                end
                             end  
                         end	
 	                    `OPP_LDX: begin  
