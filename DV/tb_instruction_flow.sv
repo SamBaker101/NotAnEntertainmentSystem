@@ -77,14 +77,12 @@ module tb_iflow;
     wire [3 : 0] alu0_selector; 
     wire [3 : 0] alu1_selector;   
     
-    wire [`ADDR_WIDTH - 1: 0] /*pc,*/ pc_next;
+    wire [`ADDR_WIDTH - 1: 0] pc, pc_next, jump_pc;
     wire [`REG_WIDTH - 1: 0] imm_to_bus, imm_to_decoder;
 
     wire we_dout;
     wire [`ADDR_WIDTH - 1 : 0] fetcher_addr;
     wire [`REG_WIDTH - 1: 0] d_to_mem1;
-
-    reg [`ADDR_WIDTH - 1 : 0] pc;
 
     wire [`REG_WIDTH - 1: 0] d_from_alu;
     wire [`REG_WIDTH - 1: 0] status_from_alu, status_from_bus;
@@ -115,7 +113,7 @@ module tb_iflow;
 
     assign get_next     = trigger_program;
     
-    assign iPC = pc_next;
+    assign iPC = (jump_pc) ? jump_pc : pc_next;
 
     string test_name = "UNDEF";
     ///////////////////////
@@ -218,7 +216,8 @@ module tb_iflow;
         .decode_selector(decode_selector),  
         .alu0_selector(alu0_selector),  
         .alu1_selector(alu1_selector),
-        .alu_update_status(update_status)    
+        .alu_update_status(update_status),   
+        .jump_pc(jump_pc) 
         );
 
     ALU alu(.reset_n(reset_n), 

@@ -21,7 +21,7 @@
 module decoder(
 		clk, reset_n, addr_in, instruction_in, opp, we,
         instruction_ready, addr, instruction_done, alu_done, carry_in, status_in, invert_alu_b,
-        imm_in, imm_out, pc_in,
+        imm_in, imm_out, pc_in, jump_pc,
 
         pc_selector,  
         sp_selector, add_selector,  x_selector,  y_selector, stat_selector, mem_selector, 
@@ -41,7 +41,7 @@ module decoder(
         output reg [OPP_WIDTH - 1 : 0] opp;       
         output reg instruction_done, carry_in;
 
-        output reg [ADDR_WIDTH - 1: 0] addr;
+        output reg [ADDR_WIDTH - 1: 0] addr, jump_pc;
         output reg [`WE_WIDTH - 1 : 0] we;
 
         output reg [3:0] pc_selector; 
@@ -79,6 +79,7 @@ module decoder(
             carry_in = 1'b0;
             opp = `NO_OPP;
             invert_alu_b = 1'b0;
+            
         end
 
         always @(posedge reset_n) instruction_done = 1'b1;
@@ -88,6 +89,7 @@ module decoder(
             
             alu_update_status = 1'b0;
             imm_out = imm_in;
+            jump_pc = 0;
 
             if (!reset_n) begin
                 opp = 0;
