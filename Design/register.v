@@ -5,20 +5,20 @@
 `ifndef REG
 `define REG
 
-module register(
+module register #(parameter BIT_WIDTH = `REG_WIDTH,
+                    parameter RESET_VECTOR = {BIT_WIDTH{1'b0}})
+        (
 		clk, reset_n, we, din, valid, dout
 		);
 	
-        parameter REG_WIDTH = `REG_WIDTH;
-
         input clk, reset_n, we;
-		input  [REG_WIDTH - 1 : 0] din;
+		input  [BIT_WIDTH - 1 : 0] din;
         output valid;
-        output reg [REG_WIDTH - 1 : 0] dout;
+        output reg [BIT_WIDTH - 1 : 0] dout;
 
 	always @(posedge clk) begin
         if (reset_n == 0)
-            dout = 0;
+            dout = RESET_VECTOR;
         else if (we)
             dout = din;
         else   

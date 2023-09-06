@@ -7,7 +7,6 @@
 //FIXME: This is getting tedious to deal with, find a compiler and set up firmware loader to read hex files
 
 //FIXME: Tests missing (Some of these instructions are probably still broken): 
-//                  CPX CPY test
 //                  Transfer Test (TSX, TAX, TYA ect)
 //                  Stat Clears (CLC, )
 //                  Stack Opps (PHP, )  

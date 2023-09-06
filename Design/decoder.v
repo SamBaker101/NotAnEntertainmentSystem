@@ -21,7 +21,7 @@
 module decoder(
 		clk, reset_n, addr_in, instruction_in, opp, we,
         instruction_ready, addr, instruction_done, alu_done, carry_in, status_in, invert_alu_b,
-        imm_in, imm_out,
+        imm_in, imm_out, pc_in,
 
         pc_selector,  
         sp_selector, add_selector,  x_selector,  y_selector, stat_selector, mem_selector, 
@@ -36,7 +36,7 @@ module decoder(
         input [ADDR_WIDTH - 1 : 0] addr_in;
         input [REG_WIDTH - 1 : 0] instruction_in, status_in;
         input instruction_ready, alu_done;
-        input [REG_WIDTH - 1 : 0] imm_in;
+        input [REG_WIDTH - 1 : 0] imm_in, pc_in;
 
         output reg [OPP_WIDTH - 1 : 0] opp;       
         output reg instruction_done, carry_in;
@@ -85,6 +85,7 @@ module decoder(
 
         always @(posedge clk) begin
             we = 0;
+            
             alu_update_status = 1'b0;
             imm_out = imm_in;
 
@@ -121,8 +122,6 @@ module decoder(
                     //  CLV: B8             - 101 110 00
                     //  BNE: D0             - 110 100 00
                     //  CLD: D8             - 110 110 00
-                    //  SED: F8             - 111 110 00  
-                    //  BEQ: F0             - 111 100 00
 
                     case(opp_code) //This is gonna be a bit of a mess for a while
                     	5'bXXXXX: ;
@@ -418,6 +417,9 @@ module decoder(
                             end
                         end
                         `OPP_INX: begin  //also CPX
+                //  SED: F8             - 111 110 00  
+                //  BEQ: F0             - 111 100 00
+
                             if (instruction == 8'hE8) begin //INX
                                 if (decode_counter == 0) begin
                                     alu0_selector = `SELECTOR_X;
@@ -430,6 +432,20 @@ module decoder(
                                     we[`WE_STAT] = 1'b1;
                                     alu_update_status = 1'b1;
                                     instruction_done = 1'b1;
+                                end
+                            end else if (instruction == 8'hF8) begin //SED
+                                if (decode_counter == 0) begin
+                                    we[`WE_STAT] = 1'b1;
+                                    stat_selector =  `SELECTOR_IMM;
+                                    imm_out = status_in && (8'hFF ^ (8'h01 << `DEC));
+                                end else if (decode_counter == 1) begin
+                                    we = 0;
+                                    opp_code = 0;
+                                    instruction_done = 1'b1;
+                                end
+                            end else if (instruction == 8'hF0) begin //BEQ
+                                if (status_in[`ZERO] == 1'b1) begin
+                                    //FIXME: pc = pc + imm
                                 end
                             end else begin //CPX
                                 if (decode_counter == 0) begin
@@ -492,6 +508,7 @@ module decoder(
                       end
                   endcase
                   decode_counter ++;
+                  we[`WE_PC] = 1'b1;
                 end
             end
         end

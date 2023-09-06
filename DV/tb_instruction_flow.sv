@@ -57,7 +57,7 @@ module tb_iflow;
     wire [`WE_WIDTH - 1 : 0] we;
     wire we_pc, we_sp, we_add, we_x, we_y, we_stat;
 	
-	wire [`REG_WIDTH - 1: 0] iPC, oPC;
+	wire [`ADDR_WIDTH - 1: 0] iPC, oPC;
 	wire [`REG_WIDTH - 1: 0] iSP, oSP;
 	wire [`REG_WIDTH - 1: 0] iADD, oADD;
 	wire [`REG_WIDTH - 1: 0] iX, oX;
@@ -97,7 +97,7 @@ module tb_iflow;
     ////////////////////////
     ////   TL Assigns   ////
     ////////////////////////
-    assign we_pc 	= we[`WE_PC];
+    assign we_pc 	= 1'b1;
 	assign we_sp 	= we[`WE_SP];
 	assign we_add 	= we[`WE_ADD];
 	assign we_x 	= we[`WE_X];
@@ -115,8 +115,7 @@ module tb_iflow;
 
     assign get_next     = trigger_program;
     
-    always @(phi2_int) 
-            pc = pc_next;
+    assign iPC = pc_next;
 
     string test_name = "UNDEF";
     ///////////////////////
@@ -127,7 +126,7 @@ module tb_iflow;
         //IN
         .clk(phi2_int), 
         .reset_n(reset_n),
-        .pc_in(oPC), 
+        .pc_in(oPC[7:0]), 
         .sp_in(oSP), 
         .add_in(oADD), 
         .x_in(oX), 
@@ -151,7 +150,7 @@ module tb_iflow;
         .alu0_selector(alu0_selector), 
         .alu1_selector(alu1_selector),   
         //OUT
-        .pc_out(iPC), 
+        //.pc_out(iPC), 
         .sp_out(iSP), 
         .add_out(iADD), 
         .x_out(iX), 
@@ -179,7 +178,7 @@ module tb_iflow;
         .phi2(phi2_int), 
 		.reset_n(reset_n), 
 		.get_next(get_next), 
-		.pc(pc), 
+		.pc(oPC), 
         .sp(oSP),
 		.data_in(d_to_fetch), 
 		.instruction_out(instruction), 
@@ -207,6 +206,7 @@ module tb_iflow;
         .invert_alu_b(invert_alu_b),
         .imm_in(imm_to_decoder),
         .imm_out(imm_to_bus),
+        .pc_in(oPC[7:0]),
         //Selectors
         .pc_selector(pc_selector),  
         .sp_selector(sp_selector), 
@@ -236,7 +236,7 @@ module tb_iflow;
         );
 
 	//Regs
-	register PC(.clk(phi2_int), .reset_n(reset_n), .we(we_pc), .din(iPC), .dout(oPC));
+	register  #(.BIT_WIDTH(16), .RESET_VECTOR(`INSTRUCTION_BASE)) PC (.clk(phi2_int), .reset_n(reset_n), .we(we_pc), .din(iPC), .dout(oPC));
 	register SP(.clk(phi2_int), .reset_n(reset_n), .we(we_sp), .din(iSP), .dout(oSP));
 	register ADD(.clk(phi2_int), .reset_n(reset_n), .we(we_add), .din(iADD), .dout(oADD));
 	register X(.clk(phi2_int), .reset_n(reset_n), .we(we_x), .din(iX), .dout(oX));
@@ -368,6 +368,7 @@ module tb_iflow;
         end
       
         manual_mem = 1'b0;
+        #5;
         reset_n = 1'b1;
 
         trigger_program = 1'b1;

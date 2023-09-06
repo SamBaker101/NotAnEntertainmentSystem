@@ -50,7 +50,7 @@ module fetcher(
             if (!reset_n) begin
                 fetch_counter = 0;
                 instruction_ready = 1'b1;
-                pc_next = `INSTRUCTION_BASE;             //This is not the right reset_vector, left here for testing
+                pc_next = `INSTRUCTION_BASE;            
                 pc_wait = 1'b1;
             end else begin 
       //This logic is a mess, try again          
@@ -160,35 +160,44 @@ module fetcher(
                             end
                         end
                         `AM3_IND_Y  : begin
-                            if (fetch_counter == 0) begin 
-                                fetch_selector = `SELECTOR_MEM;
-                            end 
-                            if (fetch_counter == 1) begin
-                                addr_reg[7:0] = data_in;
-                                fetch_selector = `SELECTOR_MEM;
+                            if (instruction_out == 8'hF0) begin //BEQ
+                                if (fetch_counter == 0) begin 
+                                    fetch_selector = `SELECTOR_MEM;
+                                end else if (fetch_counter == 1) begin
+                                    imm = data_in;
+                                    instruction_ready = 1'b1;
+                                end
+                            end else begin
+                                if (fetch_counter == 0) begin 
+                                    fetch_selector = `SELECTOR_MEM;
+                                end 
+                                if (fetch_counter == 1) begin
+                                    addr_reg[7:0] = data_in;
+                                    fetch_selector = `SELECTOR_MEM;
+                                end
+                                if (fetch_counter == 2) begin 
+                                    addr_reg[15:8] = data_in;
+                                    fetch_selector = `SELECTOR_MEM;
+                                    addr = addr_reg;
+                                    pc_wait = 1'b1;
+                                end
+                                if (fetch_counter == 3) begin
+                                    addr = addr_reg + 1;
+                                    addr_reg[7:0] = data_in;
+                                    fetch_selector = `SELECTOR_MEM;
+                                end
+                                if (fetch_counter == 4) begin 
+                                    addr_reg[15:8] = data_in;
+                                    addr = addr_reg;
+                                    fetch_selector = `SELECTOR_Y;
+                                end
+                                if (fetch_counter == 5) begin
+                                    addr_reg += data_in;
+                                    addr = addr_reg;
+                                    instruction_ready = 1'b1;
+                                    pc_wait = 1'b0;
+                                end  
                             end
-                            if (fetch_counter == 2) begin 
-                                addr_reg[15:8] = data_in;
-                                fetch_selector = `SELECTOR_MEM;
-                                addr = addr_reg;
-                                pc_wait = 1'b1;
-                            end
-                            if (fetch_counter == 3) begin
-                                addr = addr_reg + 1;
-                                addr_reg[7:0] = data_in;
-                                fetch_selector = `SELECTOR_MEM;
-                            end
-                            if (fetch_counter == 4) begin 
-                                addr_reg[15:8] = data_in;
-                                addr = addr_reg;
-                                fetch_selector = `SELECTOR_Y;
-                            end
-                            if (fetch_counter == 5) begin
-                                addr_reg += data_in;
-                                addr = addr_reg;
-                                instruction_ready = 1'b1;
-                                pc_wait = 1'b0;
-                            end  
                         end
                         `AM3_ZPG_X  : begin
                             if (fetch_counter == 0) begin 
