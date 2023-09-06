@@ -74,11 +74,13 @@ view:
 ### DERIVED DIRECTIVES ###
 run: build sim
 
-runall :   $(TB) $(SRC)
+clean : 
+	rm -f Out/*.vvp Out/*.vcd 
+
+runall : clean $(TB) $(SRC)																																		
 	$(foreach test, $(TEST_LIST), 																				\
 		$(COMPILER) -g $(GEN) -D $(DEPTH) -D $(INST_BASE) -D $(STACK_BASE) -D "SELECT_TEST=\`TEST_$(test)" -D $(SEED) -o  Out/$(test).vvp $(TB) $(SRC);)   \
 	$(foreach test, $(TEST_LIST), 																				\
 		$(SIMULATOR) Out/$(test).vvp;)																			\
 
-clean : 
-	rm -f Out/*.vvp Out/*.vcd 
+

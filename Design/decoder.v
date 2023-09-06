@@ -33,10 +33,10 @@ module decoder(
         parameter OPP_WIDTH = `OPP_WIDTH;
 
         input clk, reset_n;
-        input [ADDR_WIDTH - 1 : 0] addr_in;
+        input [ADDR_WIDTH - 1 : 0] addr_in, pc_in;
         input [REG_WIDTH - 1 : 0] instruction_in, status_in;
         input instruction_ready, alu_done;
-        input [REG_WIDTH - 1 : 0] imm_in, pc_in;
+        input [REG_WIDTH - 1 : 0] imm_in; 
 
         output reg [OPP_WIDTH - 1 : 0] opp;       
         output reg instruction_done, carry_in;
@@ -439,7 +439,7 @@ module decoder(
                                 if (decode_counter == 0) begin
                                     we[`WE_STAT] = 1'b1;
                                     stat_selector =  `SELECTOR_IMM;
-                                    imm_out = status_in && (8'hFF ^ (8'h01 << `DEC));
+                                    imm_out = status_in || (8'hFF ^ (8'h01 << `DEC));
                                 end else if (decode_counter == 1) begin
                                     we = 0;
                                     opp_code = 0;
@@ -447,7 +447,7 @@ module decoder(
                                 end
                             end else if (instruction == 8'hF0) begin //BEQ
                                 if (status_in[`ZERO] == 1'b1) begin
-                                    //FIXME: pc = pc + imm
+                                    jump_pc = pc_in + imm_in;
                                 end
                             end else begin //CPX
                                 if (decode_counter == 0) begin

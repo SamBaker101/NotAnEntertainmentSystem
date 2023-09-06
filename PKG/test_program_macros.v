@@ -6,10 +6,11 @@
 
 //FIXME: This is getting tedious to deal with, find a compiler and set up firmware loader to read hex files
 
-//FIXME: Tests missing (Some of these instructions are probably still broken): 
+//FIXME: Tests missing (Some of these instructions are probably still broken, just trying to get everything roughed in): 
 //                  Transfer Test (TSX, TAX, TYA ect)
 //                  Stat Clears (CLC, )
 //                  Stack Opps (PHP, )  
+//                  Branches (BEQ, )
 
 `ifndef INST_MACROS
 `define INST_MACROS

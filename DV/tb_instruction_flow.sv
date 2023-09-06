@@ -112,7 +112,7 @@ module tb_iflow;
     assign we[`WE_DOUT] = manual_mem ? mem_write : we_dout;
 
     assign get_next     = trigger_program;
-    
+
     assign iPC = (jump_pc) ? jump_pc : pc_next;
 
     string test_name = "UNDEF";
@@ -204,7 +204,7 @@ module tb_iflow;
         .invert_alu_b(invert_alu_b),
         .imm_in(imm_to_decoder),
         .imm_out(imm_to_bus),
-        .pc_in(oPC[7:0]),
+        .pc_in(oPC),
         //Selectors
         .pc_selector(pc_selector),  
         .sp_selector(sp_selector), 
@@ -217,7 +217,7 @@ module tb_iflow;
         .alu0_selector(alu0_selector),  
         .alu1_selector(alu1_selector),
         .alu_update_status(update_status),   
-        .jump_pc(jump_pc) 
+        .jump_pc(jump_pc)                             //FIXME: There should be a seperate address bus that handles this and addr
         );
 
     ALU alu(.reset_n(reset_n), 
