@@ -101,7 +101,6 @@ module decoder(
                 if (instruction_ready) begin 
                     
                     //UNIMPLEMENTED INSTRUCTIONS:
-
                     //  BRK: 00             - 000 000 00
                     //  BMI: 30             - 001 100 00 
                     //  JSR: 20             - 001 000 00
@@ -118,8 +117,6 @@ module decoder(
                     //  PLA: 68             - 011 010 00        
                     //  RTS: 60             - 011 000 00
                     //  SEI: 78             - 011 110 00
-                    //  BCC: 90             - 100 100 00
-                    //  BPL: 10             - 100 000 00
 
                     case(opp_code) //This is gonna be a bit of a mess for a while
                     	5'bXXXXX: ;
@@ -263,9 +260,28 @@ module decoder(
                                     instruction_done = 1'b1;
                                 end
                         end
-                        `OPP_STY: begin  
-                                                //  TYA: 98 - 100 110 00
-                            if (instruction[4:2] == `AM3_ADD) begin   //DEY
+                        `OPP_STY: begin // BCC, BPL, TYA, DEY   
+                            if (instruction == 8'h90) begin   //BCC
+                                if (decode_counter == 0) begin
+                                    if (status_in[`CARRY] == 1'b0) begin
+                                        jump_pc = pc_in + imm_in;
+                                    end
+                                end else begin
+                                    we = 0;
+                                    opp_code = 0;
+                                    instruction_done = 1'b1;
+                                end  
+                            end if (instruction == 8'h10) begin   //BPL
+                                if (decode_counter == 0) begin
+                                    if (status_in[`NEG] == 1'b0) begin
+                                        jump_pc = pc_in + imm_in;
+                                    end
+                                end else begin
+                                    we = 0;
+                                    opp_code = 0;
+                                    instruction_done = 1'b1;
+                                end  
+                            end if (instruction[4:2] == `AM3_ADD) begin   //DEY
                                 if (decode_counter == 0) begin
                                     alu0_selector = `SELECTOR_Y;
                                     alu1_selector = `SELECTOR_FF;
