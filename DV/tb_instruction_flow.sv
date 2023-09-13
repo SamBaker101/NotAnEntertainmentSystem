@@ -97,15 +97,12 @@ module tb_iflow;
     wire [`ADDR_WIDTH - 1: 0] sp_to_abus;
     wire [`ADDR_WIDTH - 1: 0] addr_from_fetch;
     wire [`ADDR_WIDTH - 1: 0] addr_from_decode;
+
     //SEL
     wire [3 : 0] in_selector; 
     wire [3 : 0] out_selector; 
     //OUT
-    wire [`ADDR_WIDTH - 1: 0] addr_to_pc;
-    wire [`ADDR_WIDTH - 1: 0] addr_to_sp;
-    wire [`ADDR_WIDTH - 1: 0] addr_to_mem; 
-    wire [`ADDR_WIDTH - 1: 0] addr_to_fetch;
-    wire [`ADDR_WIDTH - 1: 0] addr_to_decode;
+    wire [`ADDR_WIDTH - 1: 0] addr_from_bus;
 
     assign sp_to_abus = oSP + `STACK_BASE;
     
@@ -125,7 +122,7 @@ module tb_iflow;
     ////   TB Assigns   ////
     ////////////////////////
     assign d_to_mem1    = manual_mem ? d_in       : d_to_mem;
-    assign addr_to_mem_with_mm  = manual_mem ? addr_in    : addr_to_mem;
+    assign addr_to_mem_with_mm  = manual_mem ? addr_in    : addr_from_bus;
     assign we[`WE_DOUT] = manual_mem ? mem_write : we_dout;
 
     assign get_next     = trigger_program;
@@ -151,11 +148,8 @@ module tb_iflow;
         .alu_in({8'h00, d_from_alu}),    //Other
         //SEL
         .in_selector(in_selector), 
-        .out_selector(out_selector), 
         //OUT
-        .mem_out(addr_to_mem), 
-        .fetch_out(addr_to_fetch), 
-        .decode_out(addr_to_decode)
+        .out(addr_from_bus)
 		);
 
     data_bus bus(
@@ -230,7 +224,7 @@ module tb_iflow;
 	decoder decode(
 		.clk(phi1_int), 
 		.reset_n(reset_n), 
-        .addr_in(addr_to_decode),
+        .addr_in(addr_from_bus),
 		.instruction_in(instruction), 
 		.opp(alu_opp),
 		.we({we_dout, we[5:0]}),    //dont ask, Ill fix this in a minute
@@ -256,7 +250,6 @@ module tb_iflow;
         .alu1_selector(alu1_selector),
 
         .addr_in_selector(in_selector), 
-        .addr_out_selector(out_selector), 
 
         .alu_update_status(update_status),   
         .jump_pc(jump_pc)                             //FIXME: There should be a seperate address bus that handles this and addr

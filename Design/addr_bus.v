@@ -26,23 +26,6 @@
                     .in14(16'hzzzz),           \
                     .in15(16'hzzzz)     
 
-`define OUTPUT_BUS  .out0(),             \
-                    .out1(pc_out),            \
-                    .out2(sp_out),            \
-                    .out3(),           \
-                    .out4(),             \    
-                    .out5(),             \ 
-                    .out6(),          \
-                    .out7(mem_out),           \
-                    .out8(),           \
-                    .out9(fetch_out),         \
-                    .out10(decode_out),       \
-                    .out11(),          \
-                    .out12(),           \ 
-                    .out13(),           \ 
-                    .out14(),           \
-                    .out15()     
-
 module addr_bus(
         //IN
         clk, reset_n,
@@ -50,7 +33,7 @@ module addr_bus(
         //SEL
         in_selector, out_selector, 
         //OUT
-        pc_out, sp_out, mem_out, fetch_out, decode_out
+        out
 		);
 	
 		parameter SIGNAL_WIDTH = `ADDR_WIDTH;
@@ -72,17 +55,9 @@ module addr_bus(
         input [SELECTOR_WIDTH - 1 : 0] out_selector;   
         
         //OUT
-        output [SIGNAL_WIDTH - 1 : 0] pc_out; 
-        output [SIGNAL_WIDTH - 1 : 0] sp_out; 
-        output [SIGNAL_WIDTH - 1 : 0] mem_out; 
-        output [SIGNAL_WIDTH - 1 : 0] fetch_out;
-        output [SIGNAL_WIDTH - 1 : 0] decode_out; 
+        output [SIGNAL_WIDTH - 1 : 0] out;
 
-        wire [SIGNAL_WIDTH - 1 : 0] connect;
-
-        mux831 #(.SIGNAL_WIDTH(`ADDR_WIDTH)) input_mux   (.clk(clk), .out(connect), .selector(in_selector),  `INPUT_BUS); 
-        fan138 #(.SIGNAL_WIDTH(`ADDR_WIDTH)) output_mux  (.clk(clk), .in(connect),  .selector(out_selector), `OUTPUT_BUS);
-
+        mux831 #(.SIGNAL_WIDTH(`ADDR_WIDTH)) input_mux   (.clk(clk), .out(out), .selector(in_selector),  `INPUT_BUS); 
 endmodule
 
 `endif

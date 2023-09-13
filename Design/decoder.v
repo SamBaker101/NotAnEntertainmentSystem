@@ -41,7 +41,8 @@ module decoder(
         output reg [OPP_WIDTH - 1 : 0] opp;       
         output reg instruction_done, carry_in;
 
-        output reg [ADDR_WIDTH - 1: 0] addr, jump_pc;
+        output reg [ADDR_WIDTH - 1: 0] addr;
+        output reg [ADDR_WIDTH - 1: 0] jump_pc;
         output reg [`WE_WIDTH - 1 : 0] we;
 
         output reg [3:0] pc_selector; 
@@ -271,10 +272,17 @@ module decoder(
                                     opp_code = 0;
                                     instruction_done = 1'b1;
                                 end  
-                            end if (instruction == 8'h6C) begin   //JMP ind
-
+                            end if (instruction == 8'h6C) begin   //JMP ind 011 011 00
+                                if (decode_counter == 0) begin
+                                        addr_in_selector = `SELECTOR_FETCH;
+                                end else begin
+                                    jump_pc = addr_in;
+                                    we = 0;
+                                    opp_code = 0;
+                                    instruction_done = 1'b1;
+                                end  
                             end if (instruction == 8'h68) begin   //PLA
-                            
+
                             end if (instruction == 8'h60) begin   //RTS
                             
                             end if (instruction == 8'h78) begin   //SEI

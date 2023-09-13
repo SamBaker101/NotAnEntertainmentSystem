@@ -146,17 +146,34 @@ module fetcher(
                             end
                         end
                         `AM3_ABS	: begin
-                            if (fetch_counter == 0) begin 
-                                fetch_selector = `SELECTOR_MEM;
-                            end 
-                            if (fetch_counter == 1) begin
-                                addr_reg[7:0] = data_in;
-                                fetch_selector = `SELECTOR_MEM;
-                            end
-                            if (fetch_counter == 2) begin 
-                                addr_reg[15:8] = data_in;
-                                addr = addr_reg;
-                                instruction_ready = 1'b1;
+                            if (instruction_out == 8'h6C) begin
+                                if (fetch_counter == 0) begin 
+                                    fetch_selector = `SELECTOR_MEM;
+                                end 
+                                if (fetch_counter == 1) begin
+                                    addr_reg[7:0] = data_in;
+                                    fetch_selector = `SELECTOR_MEM;
+                                end
+                                if (fetch_counter == 2) begin 
+                                    addr_reg[15:8] = data_in;
+                                    fetch_selector = `SELECTOR_MEM;
+                                    addr = addr_reg;
+                                    pc_wait = 1'b1;
+                                
+                                end
+                            end else begin
+                                if (fetch_counter == 0) begin 
+                                    fetch_selector = `SELECTOR_MEM;
+                                end 
+                                if (fetch_counter == 1) begin
+                                    addr_reg[7:0] = data_in;
+                                    fetch_selector = `SELECTOR_MEM;
+                                end
+                                if (fetch_counter == 2) begin 
+                                    addr_reg[15:8] = data_in;
+                                    addr = addr_reg;
+                                    instruction_ready = 1'b1;
+                                end
                             end
                         end
                         `AM3_IND_Y  : begin
