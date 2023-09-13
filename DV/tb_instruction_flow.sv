@@ -48,7 +48,7 @@ module tb_iflow;
     wire phi1_int, phi2_int;
 
     wire [`REG_WIDTH - 1 : 0] d_to_mem, d_from_mem;
-    wire [`ADDR_WIDTH - 1 : 0] addr;
+    wire [`ADDR_WIDTH - 1 : 0] addr_to_mem_with_mm;
     wire [`REG_WIDTH - 1 : 0] d_to_fetch, d_from_fetch;
 
     wire get_next, ask_next, instruction_done;
@@ -81,7 +81,6 @@ module tb_iflow;
     wire [`REG_WIDTH - 1: 0] imm_to_bus, imm_to_decoder;
 
     wire we_dout;
-    wire [`ADDR_WIDTH - 1 : 0] fetcher_addr;
     wire [`REG_WIDTH - 1: 0] d_to_mem1;
 
     wire [`REG_WIDTH - 1: 0] d_from_alu;
@@ -126,7 +125,7 @@ module tb_iflow;
     ////   TB Assigns   ////
     ////////////////////////
     assign d_to_mem1    = manual_mem ? d_in       : d_to_mem;
-    assign addr         = manual_mem ? addr_in    : fetcher_addr;
+    assign addr_to_mem_with_mm  = manual_mem ? addr_in    : addr_to_mem;
     assign we[`WE_DOUT] = manual_mem ? mem_write : we_dout;
 
     assign get_next     = trigger_program;
@@ -154,8 +153,6 @@ module tb_iflow;
         .in_selector(in_selector), 
         .out_selector(out_selector), 
         //OUT
-        .pc_out(addr_to_pc), 
-        .sp_out(addr_to_sp), 
         .mem_out(addr_to_mem), 
         .fetch_out(addr_to_fetch), 
         .decode_out(addr_to_decode)
@@ -207,7 +204,7 @@ module tb_iflow;
 		.clk(phi2_int), 
         .reset_n(reset_n), 
         .we(we[`WE_DOUT]), 
-        .addr(addr), 
+        .addr(addr_to_mem_with_mm), 
         .din(d_to_mem1), 
         .dout(d_from_mem)
 		);
@@ -222,7 +219,7 @@ module tb_iflow;
 		.data_in(d_to_fetch), 
 		.instruction_out(instruction), 
 		.pc_next(pc_next), 
-		.addr(fetcher_addr), 
+		.addr(addr_from_fetch), 
 		.instruction_ready(instruction_ready),
         .instruction_done(instruction_done),
 		.reg_out(d_from_fetch),
@@ -233,7 +230,7 @@ module tb_iflow;
 	decoder decode(
 		.clk(phi1_int), 
 		.reset_n(reset_n), 
-        .addr_in(fetcher_addr),
+        .addr_in(addr_to_decode),
 		.instruction_in(instruction), 
 		.opp(alu_opp),
 		.we({we_dout, we[5:0]}),    //dont ask, Ill fix this in a minute
@@ -257,6 +254,10 @@ module tb_iflow;
         .decode_selector(decode_selector),  
         .alu0_selector(alu0_selector),  
         .alu1_selector(alu1_selector),
+
+        .addr_in_selector(in_selector), 
+        .addr_out_selector(out_selector), 
+
         .alu_update_status(update_status),   
         .jump_pc(jump_pc)                             //FIXME: There should be a seperate address bus that handles this and addr
         );

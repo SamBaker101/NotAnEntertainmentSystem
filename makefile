@@ -72,7 +72,7 @@ view:
 	$(VIEWER) $(SIMOUT)
 
 ### DERIVED DIRECTIVES ###
-run: build sim
+run: clean build sim
 
 clean : 
 	rm -f Out/*.vvp Out/*.vcd 

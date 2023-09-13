@@ -25,7 +25,7 @@ module decoder(
 
         pc_selector,  
         sp_selector, add_selector,  x_selector,  y_selector, stat_selector, mem_selector, 
-        decode_selector,  alu0_selector,  alu1_selector, alu_update_status    
+        decode_selector,  alu0_selector,  alu1_selector, alu_update_status, addr_in_selector, addr_out_selector    
         );
 	
         parameter REG_WIDTH = `REG_WIDTH;
@@ -53,7 +53,10 @@ module decoder(
         output reg [3:0] mem_selector; 
         output reg [3:0] decode_selector; 
         output reg [3:0] alu0_selector; 
-        output reg [3:0] alu1_selector;      
+        output reg [3:0] alu1_selector;    
+
+        output reg [3:0] addr_in_selector; 
+        output reg [3:0] addr_out_selector;    
 
         output reg [REG_WIDTH - 1 : 0] imm_out;
         output reg alu_update_status, invert_alu_b;
@@ -87,6 +90,8 @@ module decoder(
         always @(posedge clk) begin
             we = 0;
             
+            addr_in_selector =  `SELECTOR_FETCH; 
+            addr_out_selector = `SELECTOR_MEM;    
             alu_update_status = 1'b0;
             imm_out = imm_in;
             jump_pc = 0;
