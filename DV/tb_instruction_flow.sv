@@ -92,6 +92,22 @@ module tb_iflow;
     wire alu_done, update_status, invert_alu_b;
     wire carry_in;
 
+
+    //addr_bus connections
+    //IN
+    wire [`ADDR_WIDTH - 1: 0] sp_to_abus;
+    wire [`ADDR_WIDTH - 1: 0] imm_to_abus;
+    wire [`ADDR_WIDTH - 1: 0] alu_to_abus; 
+    //SEL
+    wire [3 : 0] in_selector; 
+    wire [3 : 0] out_selector; 
+    //OUT
+    wire [`ADDR_WIDTH - 1: 0] addr_to_pc;
+    wire [`ADDR_WIDTH - 1: 0] addr_to_sp;
+    wire [`ADDR_WIDTH - 1: 0] addr_to_mem; 
+    wire [`ADDR_WIDTH - 1: 0] addr_to_fetch;
+    wire [`ADDR_WIDTH - 1: 0] addr_to_decode;
+
     ////////////////////////
     ////   TL Assigns   ////
     ////////////////////////
@@ -121,18 +137,28 @@ module tb_iflow;
     ////    Modules    ////
     ///////////////////////
 
-    mux831 #(
-    )    
-    addr_bus(
-        .clk(phi2_int), 
-        .in0(), 
-        .in1(), 
-        .in2(), 
-        .in3(),  
-        .in4(),
-        .selector(), 
-        .out()
-);
+    addr_bus abus(
+        //IN
+        .clk(phi1_int), 
+        .reset_n(reset_n),
+        .pc_in(oPC), 
+        .sp_in({8'h00, oSP}), 
+        .mem_in(), 
+        .imm_in(), 
+        .fetch_in(), 
+        .decode_in(), 
+        .alu_in(),    //Other
+        //SEL
+        .in_selector(), 
+        .out_selector(), 
+        //OUT
+        .pc_out(), 
+        .sp_out(), 
+        .mem_out(), 
+        .fetch_out(), 
+        .decode_out()
+		);
+    //IN
 
     data_bus bus(
         //IN

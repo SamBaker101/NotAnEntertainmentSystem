@@ -117,6 +117,7 @@
 `include "Design/ALU.v"
 `include "Design/6502_top.v"
 `include "Design/switch.v"
+`include "Design/addr_bus.v"
 
 
 

@@ -1,47 +1,47 @@
 //Sam Baker
 //07/2023
-//Data Bus
+//Addr Bus
 
 //This isn't correct but should keep things straightforward and uniform 
 //until I get the logic correct.
 
-`ifndef BUS
-`define BUS
+`ifndef ABUS
+`define ABUS
 
 //This makes life easier :)
-`define INPUT_BUS   .in0(8'h0),             \
+`define INPUT_BUS   .in0(16'h0),             \
                     .in1(pc_in),            \
                     .in2(sp_in),            \
-                    .in3(38'hzz),           \
-                    .in4(8'hzz),             \    
-                    .in5(8'hzz),             \ 
-                    .in6(8'hzz),          \
+                    .in3(16'hzzzz),           \
+                    .in4(16'hzzzz),             \    
+                    .in5(16'hzzzz),             \ 
+                    .in6(16'hzzzz),          \
                     .in7(mem_in),           \
                     .in8(imm_in),           \
                     .in9(fetch_in),         \
                     .in10(decode_in),       \
                     .in11(alu_in),          \
-                    .in12(8'hzz),           \ 
-                    .in13(8'hFF),           \ 
-                    .in14(8'hzz),           \
-                    .in15(8'hzz)     
+                    .in12(16'hzzzz),           \ 
+                    .in13(16'hFFFF),           \ 
+                    .in14(16'hzzzz),           \
+                    .in15(16'hzzzz)     
 
-`define OUTPUT_BUS     .out0(8'h0),             \
+`define OUTPUT_BUS  .out0(),             \
                     .out1(pc_out),            \
                     .out2(sp_out),            \
-                    .out3(38'hzz),           \
-                    .out4(8'hzz),             \    
-                    .out5(8'hzz),             \ 
-                    .out6(8'hzz),          \
+                    .out3(),           \
+                    .out4(),             \    
+                    .out5(),             \ 
+                    .out6(),          \
                     .out7(mem_out),           \
-                    .out8(8'hzz),           \
+                    .out8(),           \
                     .out9(fetch_out),         \
                     .out10(decode_out),       \
-                    .out11(8'hzz),          \
-                    .out12(8'hzz),           \ 
-                    .out13(8'hFF),           \ 
-                    .out14(8'hzz),           \
-                    .out15(8'hzz)     
+                    .out11(),          \
+                    .out12(),           \ 
+                    .out13(),           \ 
+                    .out14(),           \
+                    .out15()     
 
 module addr_bus(
         //IN
@@ -65,7 +65,8 @@ module addr_bus(
         input [SIGNAL_WIDTH - 1 : 0] imm_in;
         input [SIGNAL_WIDTH - 1 : 0] fetch_in;
         input [SIGNAL_WIDTH - 1 : 0] decode_in;
-        
+        input [SIGNAL_WIDTH - 1 : 0] alu_in;
+
         //SEL
         input [SELECTOR_WIDTH - 1 : 0] in_selector; 
         input [SELECTOR_WIDTH - 1 : 0] out_selector;   
@@ -77,11 +78,10 @@ module addr_bus(
         output [SIGNAL_WIDTH - 1 : 0] fetch_out;
         output [SIGNAL_WIDTH - 1 : 0] decode_out; 
 
-
         wire [SIGNAL_WIDTH - 1 : 0] connect;
 
-        mux831 input_mux    (.clk(clk), .out(connect), .selector(in_selector),  `INPUT_BUS); 
-        fan138 output_mux   (.clk(clk), .in(connect),  .selector(out_selector), `OUTPUT_BUS);
+        mux831 #(.SIGNAL_WIDTH(`ADDR_WIDTH)) input_mux   (.clk(clk), .out(connect), .selector(in_selector),  `INPUT_BUS); 
+        fan138 #(.SIGNAL_WIDTH(`ADDR_WIDTH)) output_mux  (.clk(clk), .in(connect),  .selector(out_selector), `OUTPUT_BUS);
 
 endmodule
 
