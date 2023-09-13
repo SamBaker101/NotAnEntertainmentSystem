@@ -58,7 +58,7 @@ module tb_iflow;
     wire we_pc, we_sp, we_add, we_x, we_y, we_stat;
 	
 	wire [`ADDR_WIDTH - 1: 0] iPC, oPC;
-	wire [`REG_WIDTH - 1: 0] iSP, oSP;
+	wire [`REG_WIDTH - 1: 0] iSP, oSP, sp_from_bus;
 	wire [`REG_WIDTH - 1: 0] iADD, oADD;
 	wire [`REG_WIDTH - 1: 0] iX, oX;
 	wire [`REG_WIDTH - 1: 0] iY, oY;
@@ -114,11 +114,25 @@ module tb_iflow;
     assign get_next     = trigger_program;
 
     assign iPC = (jump_pc) ? jump_pc : pc_next;
+    assign iSP = sp_from_bus + `STACK_BASE;
 
     string test_name = "UNDEF";
     ///////////////////////
     ////    Modules    ////
     ///////////////////////
+
+    mux831 #(
+    )    
+    addr_bus(
+        .clk(phi2_int), 
+        .in0(), 
+        .in1(), 
+        .in2(), 
+        .in3(),  
+        .in4(),
+        .selector(), 
+        .out()
+);
 
     data_bus bus(
         //IN
@@ -235,7 +249,7 @@ module tb_iflow;
         );
 
 	//Regs
-	register  #(.BIT_WIDTH(16), .RESET_VECTOR(`INSTRUCTION_BASE)) PC (.clk(phi2_int), .reset_n(reset_n), .we(we_pc), .din(iPC), .dout(oPC));
+	register #(.BIT_WIDTH(16), .RESET_VECTOR(`INSTRUCTION_BASE)) PC (.clk(phi2_int), .reset_n(reset_n), .we(we_pc), .din(iPC), .dout(oPC));
 	register SP(.clk(phi2_int), .reset_n(reset_n), .we(we_sp), .din(iSP), .dout(oSP));
 	register ADD(.clk(phi2_int), .reset_n(reset_n), .we(we_add), .din(iADD), .dout(oADD));
 	register X(.clk(phi2_int), .reset_n(reset_n), .we(we_x), .din(iX), .dout(oX));

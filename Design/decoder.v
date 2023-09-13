@@ -112,15 +112,10 @@ module decoder(
                     //  PHA: 48             - 010 010 00
                     //  RTI: 40             - 010 000 00
                     //  JMP: 4C             - 010 011 00
-                    //  BVS: 70             - 011 100 00
-                    //  JMP: 6C             - 011 011 00
-                    //  PLA: 68             - 011 010 00        
-                    //  RTS: 60             - 011 000 00
-                    //  SEI: 78             - 011 110 00
 
                     case(opp_code) //This is gonna be a bit of a mess for a while
                     	5'bXXXXX: ;
-                        `OPP_NOP: begin // BRK, CLC 
+                        `OPP_NOP: begin // BRK, CLC, PHP 
                             if (instruction == 8'h00) begin             //BRK
                                 //This needs to do some things
                             end else if (instruction == 8'h18) begin    //CLC
@@ -137,12 +132,22 @@ module decoder(
                                 if (decode_counter == 0) begin
                                     we[`WE_DOUT] = 1'b1;
                                     mem_selector =  `SELECTOR_STAT;
-                                end else if (decode_counter == 1) begin
+                                    add_selector = `SELECTOR_SP;
+                                end if (decode_counter == 1) begin
+                                    alu0_selector = `SELECTOR_SP;
+                                    alu1_selector = `SELECTOR_ZERO;
+                                    carry_in = 1'b1;
+                                    we[`WE_DOUT] = 1'b0;
+                                    opp = `SUM;
+                                end else if (decode_counter == 2) begin
+                                    sp_selector = `SELECTOR_ALU_0;
+                                    we[`WE_SP] = 1'b1;
+                                end else if (decode_counter == 3) begin
                                     we = 0;
                                     opp_code = 0;
                                     instruction_done = 1'b1;
-                                end    
-                            end
+                                end  
+                            end 
                         end
                         `OPP_ORA: begin  
                             if (decode_counter == 0) begin
@@ -248,6 +253,26 @@ module decoder(
                                 we[`WE_STAT] = 1'b1;
                                 alu_update_status = 1'b1;
                                 instruction_done = 1'b1;
+                            end
+                        end	
+                        `OPP_RTS: begin // BVS, JMP(ind), PLA, SEI  
+                            if (instruction == 8'h70) begin   //BVS
+                                if (decode_counter == 0) begin
+                                    if (status_in[`V_OVERFLOW] == 1'b1) begin
+                                        jump_pc = pc_in + imm_in;
+                                    end
+                                end else begin
+                                    we = 0;
+                                    opp_code = 0;
+                                    instruction_done = 1'b1;
+                                end  
+                            end if (instruction == 8'h6C) begin   //JMP ind
+
+                            end if (instruction == 8'h68) begin   //PLA
+                            
+                            end if (instruction == 8'h60) begin   //RTS
+                            
+                            end if (instruction == 8'h78) begin   //SEI
                             end
                         end	
 	                    `OPP_STA: begin 

@@ -76,6 +76,7 @@
 	`define OPP_LSR		5'b010_10
 	`define OPP_ADC		5'b011_01
 	`define OPP_ROR		5'b011_10
+	`define OPP_RTS		5'b011_00 // 0100
 	`define OPP_STA		5'b100_01
 	`define OPP_STY		5'b100_00
 	`define OPP_STX		5'b100_10    
