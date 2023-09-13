@@ -96,8 +96,8 @@ module tb_iflow;
     //addr_bus connections
     //IN
     wire [`ADDR_WIDTH - 1: 0] sp_to_abus;
-    wire [`ADDR_WIDTH - 1: 0] imm_to_abus;
-    wire [`ADDR_WIDTH - 1: 0] alu_to_abus; 
+    wire [`ADDR_WIDTH - 1: 0] addr_from_fetch;
+    wire [`ADDR_WIDTH - 1: 0] addr_from_decode;
     //SEL
     wire [3 : 0] in_selector; 
     wire [3 : 0] out_selector; 
@@ -108,6 +108,8 @@ module tb_iflow;
     wire [`ADDR_WIDTH - 1: 0] addr_to_fetch;
     wire [`ADDR_WIDTH - 1: 0] addr_to_decode;
 
+    assign sp_to_abus = oSP + `STACK_BASE;
+    
     ////////////////////////
     ////   TL Assigns   ////
     ////////////////////////
@@ -142,23 +144,22 @@ module tb_iflow;
         .clk(phi1_int), 
         .reset_n(reset_n),
         .pc_in(oPC), 
-        .sp_in({8'h00, oSP}), 
-        .mem_in(), 
-        .imm_in(), 
-        .fetch_in(), 
-        .decode_in(), 
-        .alu_in(),    //Other
+        .sp_in(sp_to_abus), 
+        .mem_in({8'h00, d_from_mem}), 
+        .imm_in({8'h00, imm_to_bus}), 
+        .fetch_in(addr_from_fetch), 
+        .decode_in(addr_from_decode), 
+        .alu_in({8'h00, d_from_alu}),    //Other
         //SEL
-        .in_selector(), 
-        .out_selector(), 
+        .in_selector(in_selector), 
+        .out_selector(out_selector), 
         //OUT
-        .pc_out(), 
-        .sp_out(), 
-        .mem_out(), 
-        .fetch_out(), 
-        .decode_out()
+        .pc_out(addr_to_pc), 
+        .sp_out(addr_to_sp), 
+        .mem_out(addr_to_mem), 
+        .fetch_out(addr_to_fetch), 
+        .decode_out(addr_to_decode)
 		);
-    //IN
 
     data_bus bus(
         //IN
