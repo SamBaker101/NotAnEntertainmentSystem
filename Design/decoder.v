@@ -107,11 +107,6 @@ module decoder(
                     
                     //UNIMPLEMENTED INSTRUCTIONS:
                     //  BRK: 00             - 000 000 00
-                    //  BMI: 30             - 001 100 00 
-                    //  JSR: 20             - 001 000 00
-                    //  PLP: 28             - 001 010 00
-                    //  SEC: 38             - 001 110 00
-                    //  BIT: 24, 2C         - 001 001 00 - 001 011 00
 
 
                     case(opp_code) //This is gonna be a bit of a mess for a while
@@ -204,6 +199,13 @@ module decoder(
                                 instruction_done = 1'b1;
                             end
                         end	
+                        `OPP_BIT: begin
+                            //  BMI: 30             - 001 100 00 
+                            //  JSR: 20             - 001 000 00
+                            //  PLP: 28             - 001 010 00
+                            //  SEC: 38             - 001 110 00
+                            //  BIT: 24, 2C         - 001 001 00 - 001 011 00
+                        end
 	                    `OPP_EOR: begin  
                             if (decode_counter == 0) begin
                                 alu0_selector = `SELECTOR_ADD;

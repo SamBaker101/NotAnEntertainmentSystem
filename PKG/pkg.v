@@ -72,8 +72,10 @@
 	`define OPP_ASL		5'b000_10 
 	`define OPP_AND		5'b001_01
 	`define OPP_ROL		5'b001_10 //0010 1010
+	`define OPP_BIT		5'b001_00
 	`define OPP_EOR		5'b010_01
 	`define OPP_LSR		5'b010_10
+	`define OPP_CLI		5'b010_00
 	`define OPP_ADC		5'b011_01
 	`define OPP_ROR		5'b011_10
 	`define OPP_RTS		5'b011_00 // 0100
