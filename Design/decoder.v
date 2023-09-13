@@ -21,7 +21,7 @@
 module decoder(
 		clk, reset_n, addr_in, instruction_in, opp, we,
         instruction_ready, addr, instruction_done, alu_done, carry_in, status_in, invert_alu_b,
-        imm_in, imm_out, pc_in, jump_pc,
+        imm_in, imm_out, pc_in, jump_pc, data_in,
 
         pc_selector,  
         sp_selector, add_selector,  x_selector,  y_selector, stat_selector, mem_selector, 
@@ -34,7 +34,7 @@ module decoder(
 
         input clk, reset_n;
         input [ADDR_WIDTH - 1 : 0] addr_in, pc_in;
-        input [REG_WIDTH - 1 : 0] instruction_in, status_in;
+        input [REG_WIDTH - 1 : 0] instruction_in, status_in, data_in;
         input instruction_ready, alu_done;
         input [REG_WIDTH - 1 : 0] imm_in; 
 
@@ -65,6 +65,7 @@ module decoder(
         reg [2:0] add_mode;
         reg [4:0] opp_code;
         reg [REG_WIDTH - 1 : 0] instruction;
+        reg [ADDR_WIDTH - 1 : 0] addr_reg;
 
         reg [REG_WIDTH - 1 : 0] decode_counter;
 
@@ -299,8 +300,45 @@ module decoder(
                                     instruction_done = 1'b1;
                                 end
                             end if (instruction == 8'h60) begin   //RTS
-                            
+                                if (decode_counter == 0) begin
+                                    addr_in_selector = `SELECTOR_SP;
+                                    decode_selector = `SELECTOR_MEM;
+                                end else if (decode_counter == 1) begin
+                                    addr_reg[7:0] = data_in;
+                                    alu0_selector = `SELECTOR_SP;
+                                    alu1_selector = `SELECTOR_FF;
+                                    alu_update_status = 1'b0;
+                                    opp = `SUM;
+                                end else if (decode_counter == 2) begin
+                                    sp_selector = `SELECTOR_ALU_0;
+                                    we[`WE_SP] = 1'b1;
+                                end else if (decode_counter == 3) begin
+                                    addr_reg[15:8] = data_in;
+                                    jump_pc = addr_reg;
+                                    we[`WE_SP] = 1'b0;
+                                end else if (decode_counter == 4) begin
+                                    alu0_selector = `SELECTOR_SP;
+                                    alu1_selector = `SELECTOR_FF;
+                                    alu_update_status = 1'b0;
+                                    opp = `SUM;
+                                end else if (decode_counter == 5) begin
+                                    sp_selector = `SELECTOR_ALU_0;
+                                    we[`WE_SP] = 1'b1;
+                                end else if (decode_counter == 6) begin
+                                    we = 0;
+                                    opp_code = 0;
+                                    instruction_done = 1'b1;
+                                end
                             end if (instruction == 8'h78) begin   //SEI
+                                if (decode_counter == 0) begin
+                                    we[`WE_STAT] = 1'b1;
+                                    stat_selector =  `SELECTOR_IMM;
+                                    imm_out = status_in || (8'h01 << `INT_DIS);
+                                end else if (decode_counter == 1) begin
+                                    we = 0;
+                                    opp_code = 0;
+                                    instruction_done = 1'b1;
+                                end
                             end
                         end	
 	                    `OPP_STA: begin 

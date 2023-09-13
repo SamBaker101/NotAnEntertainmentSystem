@@ -87,6 +87,7 @@ module tb_iflow;
     wire [`REG_WIDTH - 1: 0] status_from_alu, status_from_bus;
     wire [`REG_WIDTH - 1: 0] d_to_alu_0;
     wire [`REG_WIDTH - 1: 0] d_to_alu_1;
+    wire [`REG_WIDTH - 1: 0] d_to_decode;
     wire [7:0] alu_opp;
     wire alu_done, update_status, invert_alu_b;
     wire carry_in;
@@ -188,7 +189,7 @@ module tb_iflow;
         .stat_out(status_from_bus), 
         .mem_out(d_to_mem), 
         .fetch_out(d_to_fetch), 
-        .decode_out(), 
+        .decode_out(d_to_decode), 
         .alu0_out(d_to_alu_0), 
         .alu1_out(d_to_alu_1) 
 		);
@@ -237,6 +238,7 @@ module tb_iflow;
         .imm_in(imm_to_decoder),
         .imm_out(imm_to_bus),
         .pc_in(oPC),
+        .data_in(d_to_decode),
         //Selectors
         .pc_selector(pc_selector),  
         .sp_selector(sp_selector), 
