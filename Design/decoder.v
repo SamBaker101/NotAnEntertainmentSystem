@@ -112,11 +112,7 @@ module decoder(
                     //  PLP: 28             - 001 010 00
                     //  SEC: 38             - 001 110 00
                     //  BIT: 24, 2C         - 001 001 00 - 001 011 00
-                    //  CLI: 58             - 010 110 00
-                    //  BVC: 50             - 010 100 00
-                    //  PHA: 48             - 010 010 00
-                    //  RTI: 40             - 010 000 00
-                    //  JMP: 4C             - 010 011 00
+
 
                     case(opp_code) //This is gonna be a bit of a mess for a while
                     	5'bXXXXX: ;
@@ -127,7 +123,7 @@ module decoder(
                                 if (decode_counter == 0) begin
                                     we[`WE_STAT] = 1'b1;
                                     stat_selector =  `SELECTOR_IMM;
-                                    imm_out = status_in && 8'b1111_1110;
+                                    imm_out = status_in && (8'hFF ^ (8'h01 << `CARRY));
                                 end else if (decode_counter == 1) begin
                                     we = 0;
                                     opp_code = 0;
@@ -234,6 +230,86 @@ module decoder(
                                 instruction_done = 1'b1;
                             end
                         end	
+                        `OPP_CLI: begin // BVC, PHA, RTI, JMP(Abs)
+                            if (instruction == 8'h58) begin   //CLI
+                                if (decode_counter == 0) begin
+                                    we[`WE_STAT] = 1'b1;
+                                    stat_selector =  `SELECTOR_IMM;
+                                    imm_out = status_in && (8'hFF ^ (8'h01 << `INT_DIS));
+                                end else if (decode_counter == 1) begin
+                                    we = 0;
+                                    opp_code = 0;
+                                    instruction_done = 1'b1;
+                                end
+                            end else if (instruction == 8'h50) begin   //BVC
+                                if (decode_counter == 0) begin
+                                    if (status_in[`V_OVERFLOW] == 1'b0) begin
+                                        jump_pc = pc_in + imm_in;
+                                    end
+                                end else begin
+                                    we = 0;
+                                    opp_code = 0;
+                                    instruction_done = 1'b1;
+                                end  
+                            end else if (instruction == 8'h48) begin   //PHA
+                                if (decode_counter == 0) begin
+                                    we[`WE_DOUT] = 1'b1;
+                                    mem_selector = `SELECTOR_ADD;
+                                    addr_in_selector = `SELECTOR_SP;
+                                end else if (decode_counter == 4) begin
+                                    alu0_selector = `SELECTOR_SP;
+                                    alu1_selector = `SELECTOR_ZERO;
+                                    carry_in = 1'b1;
+                                    opp = `SUM;
+                                end else if (decode_counter == 5) begin
+                                    sp_selector = `SELECTOR_ALU_0;
+                                    we[`WE_SP] = 1'b1;    
+                                end else if (decode_counter == 1) begin
+                                    we = 0;
+                                    opp_code = 0;
+                                    instruction_done = 1'b1;
+                                end
+                            end else if (instruction == 8'h40) begin   //RTI
+                                if (decode_counter == 0) begin
+                                    addr_in_selector = `SELECTOR_SP;
+                                    decode_selector = `SELECTOR_MEM;
+                                end else if (decode_counter == 1) begin
+                                    addr_reg[7:0] = data_in;
+                                    alu0_selector = `SELECTOR_SP;
+                                    alu1_selector = `SELECTOR_FF;
+                                    carry_in = 1'b0;
+                                    opp = `SUM;
+                                end else if (decode_counter == 2) begin
+                                    sp_selector = `SELECTOR_ALU_0;
+                                    we[`WE_SP] = 1'b1;
+                                end else if (decode_counter == 3) begin
+                                    addr_reg[15:8] = data_in;
+                                    jump_pc = addr_reg;
+                                    we[`WE_SP] = 1'b0;
+                                end else if (decode_counter == 4) begin
+                                    alu0_selector = `SELECTOR_SP;
+                                    alu1_selector = `SELECTOR_FF;
+                                    carry_in = 1'b0;
+                                    opp = `SUM;
+                                end else if (decode_counter == 5) begin
+                                    sp_selector = `SELECTOR_ALU_0;
+                                    we[`WE_SP] = 1'b1;
+                                end else if (decode_counter == 6) begin
+                                    we = 0;
+                                    opp_code = 0;
+                                    instruction_done = 1'b1;
+                                end
+                            end else if (instruction == 8'h4C) begin   //JMP (Abs) 
+                                if (decode_counter == 0) begin
+                                    addr_in_selector = `SELECTOR_FETCH;
+                                end else begin
+                                    jump_pc = addr_in;
+                                    we = 0;
+                                    opp_code = 0;
+                                    instruction_done = 1'b1;
+                                end  
+                            end
+                        end
 	                    `OPP_ADC: begin  
                             if (decode_counter == 0) begin
                                 alu0_selector = `SELECTOR_ADD;
@@ -273,7 +349,7 @@ module decoder(
                                 end  
                             end if (instruction == 8'h6C) begin   //JMP ind 011 011 00
                                 if (decode_counter == 0) begin
-                                        addr_in_selector = `SELECTOR_FETCH;
+                                    addr_in_selector = `SELECTOR_FETCH;
                                 end else begin
                                     jump_pc = addr_in;
                                     we = 0;
