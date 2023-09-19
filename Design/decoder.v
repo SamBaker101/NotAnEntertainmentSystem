@@ -113,7 +113,29 @@ module decoder(
                     	5'bXXXXX: ;
                         `OPP_NOP: begin // BRK, CLC, PHP 
                             if (instruction == 8'h00) begin             //BRK
-                                //This needs to do some things
+                                if (decode_counter == 0) begin
+                                    we[`WE_DOUT] = 1'b1;
+                                    mem_selector = `SELECTOR_PC;
+                                    addr_in_selector = `SELECTOR_SP;
+                                end else if (decode_counter == 1) begin
+                                    we[`WE_DOUT] = 1'b1;
+                                    alu0_selector = `SELECTOR_SP;
+                                    alu1_selector = `SELECTOR_ZERO;
+                                    carry_in = 1'b1;
+                                    opp = `SUM;
+                                end else if (decode_counter == 2) begin
+                                    sp_selector = `SELECTOR_ALU_0;
+                                    we[`WE_SP] = 1'b1;    
+                                end else if (decode_counter == 3) begin
+                                    we[`WE_SP] = 1'b0;
+                                    we[`WE_STAT] = 1'b1;
+                                    stat_selector =  `SELECTOR_IMM;
+                                    imm_out = status_in || (8'h01 << `INT_DIS);
+                                end else if (decode_counter == 1) begin
+                                    we = 0;
+                                    opp_code = 0;
+                                    instruction_done = 1'b1;
+                                end  
                             end else if (instruction == 8'h18) begin    //CLC
                                 if (decode_counter == 0) begin
                                     we[`WE_STAT] = 1'b1;
