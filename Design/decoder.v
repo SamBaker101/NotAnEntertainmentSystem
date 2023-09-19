@@ -200,11 +200,71 @@ module decoder(
                             end
                         end	
                         `OPP_BIT: begin
-                            //  BMI: 30             - 001 100 00 
-                            //  JSR: 20             - 001 000 00
-                            //  PLP: 28             - 001 010 00
-                            //  SEC: 38             - 001 110 00
-                            //  BIT: 24, 2C         - 001 001 00 - 001 011 00
+                            if (instruction == 8'h30) begin   //BMI
+                                if (decode_counter == 0) begin
+                                    if (status_in[`NEG] == 1'b1) begin
+                                        jump_pc = pc_in + imm_in;
+                                    end
+                                end else begin
+                                    we = 0;
+                                    opp_code = 0;
+                                    instruction_done = 1'b1;
+                                end  
+                            end else if (instruction == 8'h20) begin   //JSR 
+                                if (decode_counter == 0) begin
+                                    we[`WE_DOUT] = 1'b1;
+                                    mem_selector = `SELECTOR_PC;
+                                    addr_in_selector = `SELECTOR_SP;
+                                end else if (decode_counter == 1) begin
+                                    we[`WE_DOUT] = 1'b1;
+                                    alu0_selector = `SELECTOR_SP;
+                                    alu1_selector = `SELECTOR_ZERO;
+                                    carry_in = 1'b1;
+                                    opp = `SUM;
+                                end else if (decode_counter == 2) begin
+                                    sp_selector = `SELECTOR_ALU_0;
+                                    we[`WE_SP] = 1'b1;    
+                                end else if (decode_counter == 3) begin
+                                    we[`WE_SP] = 1'b0;
+                                    addr_in_selector = `SELECTOR_FETCH;
+                                end else begin
+                                    jump_pc = addr_in;
+                                    we = 0;
+                                    opp_code = 0;
+                                    instruction_done = 1'b1;
+                                end  
+                            end else if (instruction == 8'h28) begin   //PLP
+                                if (decode_counter == 0) begin
+                                    we[`WE_STAT] = 1'b1;
+                                    add_selector =  `ADDR_MODE_SELECTOR
+                                    addr_in_selector = `SELECTOR_SP;
+                                end else if (decode_counter == 1) begin
+                                    we[`WE_STAT] = 1'b0;
+                                    alu0_selector = `SELECTOR_SP;
+                                    alu1_selector = `SELECTOR_FF;
+                                    carry_in = 1'b0;
+                                    opp = `SUM;
+                                end else if (decode_counter == 2) begin
+                                    sp_selector = `SELECTOR_ALU_0;
+                                    we[`WE_SP] = 1'b1;
+                                end else if (decode_counter == 3) begin
+                                    we = 0;
+                                    opp_code = 0;
+                                    instruction_done = 1'b1;
+                                end
+                            end else if (instruction == 8'h38) begin   //SEC
+                                if (decode_counter == 0) begin
+                                    we[`WE_STAT] = 1'b1;
+                                    stat_selector =  `SELECTOR_IMM;
+                                    imm_out = status_in || (8'h01 << `CARRY);
+                                end else if (decode_counter == 1) begin
+                                    we = 0;
+                                    opp_code = 0;
+                                    instruction_done = 1'b1;
+                                end
+                            end else begin                             //BIT (24, 2C)
+                            
+                            end
                         end
 	                    `OPP_EOR: begin  
                             if (decode_counter == 0) begin
@@ -258,15 +318,15 @@ module decoder(
                                     we[`WE_DOUT] = 1'b1;
                                     mem_selector = `SELECTOR_ADD;
                                     addr_in_selector = `SELECTOR_SP;
-                                end else if (decode_counter == 4) begin
+                                end else if (decode_counter == 1) begin
                                     alu0_selector = `SELECTOR_SP;
                                     alu1_selector = `SELECTOR_ZERO;
                                     carry_in = 1'b1;
                                     opp = `SUM;
-                                end else if (decode_counter == 5) begin
+                                end else if (decode_counter == 2) begin
                                     sp_selector = `SELECTOR_ALU_0;
                                     we[`WE_SP] = 1'b1;    
-                                end else if (decode_counter == 1) begin
+                                end else if (decode_counter == 3) begin
                                     we = 0;
                                     opp_code = 0;
                                     instruction_done = 1'b1;
@@ -366,8 +426,8 @@ module decoder(
                                 end else if (decode_counter == 1) begin
                                     we[`WE_ADD] = 1'b0;
                                     alu0_selector = `SELECTOR_SP;
-                                    alu1_selector = `SELECTOR_ZERO;
-                                    carry_in = 1'b1;
+                                    alu1_selector = `SELECTOR_FF;
+                                    carry_in = 1'b0;
                                     opp = `SUM;
                                 end else if (decode_counter == 2) begin
                                     sp_selector = `SELECTOR_ALU_0;
