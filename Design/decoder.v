@@ -263,7 +263,27 @@ module decoder(
                                     instruction_done = 1'b1;
                                 end
                             end else begin                             //BIT (24, 2C)
-                            
+                                if (decode_counter == 0) begin
+                                alu0_selector = `SELECTOR_STAT;
+                                alu1_selector = `ADDR_MODE_SELECTOR;
+                                opp = `AND;
+                            end else if (alu_done == 1) begin
+                                stat_selector = `SELECTOR_ALU_0;
+                                we[`WE_STAT] = 1'b1;
+                                alu_update_status = 1'b0;
+                            end else if (alu_done == 1) begin
+                                we[`WE_STAT] = 1'b1;
+                                stat_selector =  `SELECTOR_IMM;
+                                if (status_in[`NEG] && status_in[`V_OVERFLOW]) begin                         
+                                    imm_out = status_in || (8'h01 << `ZERO);
+                                end else begin
+                                    imm_out = status_in && (8'hFF ^ (8'h01 << `ZERO));
+                                end 
+                            end else if (decode_counter == 1) begin
+                                we = 0;
+                                opp_code = 0;
+                                instruction_done = 1'b1;
+                            end
                             end
                         end
 	                    `OPP_EOR: begin  
