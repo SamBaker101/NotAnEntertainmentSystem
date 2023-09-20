@@ -5,53 +5,44 @@
 `ifndef DECODE
 `define DECODE
 
-//TODO: find a more graceful way to handle this 
-
 `define ADDR_MODE_SELECTOR  (add_mode == `AM3_ADD) ? ((instruction_in[0] == 1) ? `SELECTOR_IMM: `SELECTOR_ADD): `SELECTOR_MEM;
 
 
 module decoder(
-		clk, reset_n, addr_in, instruction_in, opp, we,
-        instruction_ready, addr, instruction_done, alu_done, carry_in, status_in, invert_alu_b,
-        imm_in, imm_out, pc_in, jump_pc, data_in,
+        input clk, reset_n,
+        input [ADDR_WIDTH - 1 : 0] addr_in, pc_in,
+        input [REG_WIDTH - 1 : 0] instruction_in, status_in, data_in,
+        input instruction_ready, alu_done,
+        input [REG_WIDTH - 1 : 0] imm_in,
 
-        pc_selector,  
-        sp_selector, add_selector,  x_selector,  y_selector, stat_selector, mem_selector, 
-        decode_selector,  alu0_selector,  alu1_selector, alu_update_status, addr_in_selector   
+        output reg [OPP_WIDTH - 1 : 0] opp,       
+        output reg instruction_done, carry_in,
+
+        output reg [ADDR_WIDTH - 1: 0] addr,
+        output reg [ADDR_WIDTH - 1: 0] jump_pc,
+        output reg [`WE_WIDTH - 1 : 0] we,
+
+        output reg [3:0] pc_selector,
+        output reg [3:0] sp_selector, 
+        output reg [3:0] add_selector, 
+        output reg [3:0] x_selector, 
+        output reg [3:0] y_selector, 
+        output reg [3:0] stat_selector,    
+        output reg [3:0] mem_selector, 
+        output reg [3:0] decode_selector, 
+        output reg [3:0] alu0_selector, 
+        output reg [3:0] alu1_selector,    
+
+        output reg [3:0] addr_in_selector,   
+
+        output reg [REG_WIDTH - 1 : 0] imm_out,
+        output reg alu_update_status, invert_alu_b
         );
 	
         parameter REG_WIDTH = `REG_WIDTH;
         parameter ADDR_WIDTH = `ADDR_WIDTH;
         parameter OPP_WIDTH = `OPP_WIDTH;
 
-        input clk, reset_n;
-        input [ADDR_WIDTH - 1 : 0] addr_in, pc_in;
-        input [REG_WIDTH - 1 : 0] instruction_in, status_in, data_in;
-        input instruction_ready, alu_done;
-        input [REG_WIDTH - 1 : 0] imm_in; 
-
-        output reg [OPP_WIDTH - 1 : 0] opp;       
-        output reg instruction_done, carry_in;
-
-        output reg [ADDR_WIDTH - 1: 0] addr;
-        output reg [ADDR_WIDTH - 1: 0] jump_pc;
-        output reg [`WE_WIDTH - 1 : 0] we;
-
-        output reg [3:0] pc_selector; 
-        output reg [3:0] sp_selector; 
-        output reg [3:0] add_selector; 
-        output reg [3:0] x_selector; 
-        output reg [3:0] y_selector; 
-        output reg [3:0] stat_selector;    
-        output reg [3:0] mem_selector; 
-        output reg [3:0] decode_selector; 
-        output reg [3:0] alu0_selector; 
-        output reg [3:0] alu1_selector;    
-
-        output reg [3:0] addr_in_selector;   
-
-        output reg [REG_WIDTH - 1 : 0] imm_out;
-        output reg alu_update_status, invert_alu_b;
         /////////////////////////////
 
         reg [2:0] add_mode;

@@ -6,35 +6,32 @@
 `ifndef MUX
 `define MUX
 
-module mux831(clk, in0, in1, in2, in3,  in4, in5, in6, in7, 
-				in8, in9, in10, in11, in12, in13, in14, in15,
-				selector, out
+module mux831(
+		input clk,
+		input [SIGNAL_WIDTH - 1 : 0] in0,
+		input [SIGNAL_WIDTH - 1 : 0] in1,
+		input [SIGNAL_WIDTH - 1 : 0] in2,
+		input [SIGNAL_WIDTH - 1 : 0] in3,
+		input [SIGNAL_WIDTH - 1 : 0] in4,
+		input [SIGNAL_WIDTH - 1 : 0] in5,
+		input [SIGNAL_WIDTH - 1 : 0] in6,
+		input [SIGNAL_WIDTH - 1 : 0] in7,
+		input [SIGNAL_WIDTH - 1 : 0] in8,
+		input [SIGNAL_WIDTH - 1 : 0] in9,
+		input [SIGNAL_WIDTH - 1 : 0] in10,
+		input [SIGNAL_WIDTH - 1 : 0] in11,
+		input [SIGNAL_WIDTH - 1 : 0] in12,
+		input [SIGNAL_WIDTH - 1 : 0] in13,
+		input [SIGNAL_WIDTH - 1 : 0] in14,
+		input [SIGNAL_WIDTH - 1 : 0] in15,
+
+		input [SELECTOR_WIDTH - 1 : 0] selector,
+
+		output [SIGNAL_WIDTH - 1 : 0] out
 		);
 	
 		parameter SIGNAL_WIDTH = `REG_WIDTH;
 		parameter SELECTOR_WIDTH = 4;
-
-		input clk;
-		input [SIGNAL_WIDTH - 1 : 0] in0;
-		input [SIGNAL_WIDTH - 1 : 0] in1;
-		input [SIGNAL_WIDTH - 1 : 0] in2;
-		input [SIGNAL_WIDTH - 1 : 0] in3;
-		input [SIGNAL_WIDTH - 1 : 0] in4;
-		input [SIGNAL_WIDTH - 1 : 0] in5;
-		input [SIGNAL_WIDTH - 1 : 0] in6;
-		input [SIGNAL_WIDTH - 1 : 0] in7;
-		input [SIGNAL_WIDTH - 1 : 0] in8;
-		input [SIGNAL_WIDTH - 1 : 0] in9;
-		input [SIGNAL_WIDTH - 1 : 0] in10;
-		input [SIGNAL_WIDTH - 1 : 0] in11;
-		input [SIGNAL_WIDTH - 1 : 0] in12;
-		input [SIGNAL_WIDTH - 1 : 0] in13;
-		input [SIGNAL_WIDTH - 1 : 0] in14;
-		input [SIGNAL_WIDTH - 1 : 0] in15;
-
-		input [SELECTOR_WIDTH - 1 : 0] selector;
-
-		output [SIGNAL_WIDTH - 1 : 0] out;
 
 		assign out = (selector == 4'b0000) ? in0:
 					 (selector == 4'b0001) ? in1:

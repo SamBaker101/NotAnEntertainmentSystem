@@ -28,34 +28,28 @@
 
 module addr_bus(
         //IN
-        clk, reset_n,
-        pc_in, sp_in, mem_in, imm_in, fetch_in, decode_in, alu_in,    //Other
+        input clk, reset_n,
+
+        input [SIGNAL_WIDTH - 1 : 0] pc_in, 
+        input [SIGNAL_WIDTH - 1 : 0] sp_in, 
+        input [SIGNAL_WIDTH - 1 : 0] mem_in, 
+        input [SIGNAL_WIDTH - 1 : 0] imm_in,
+        input [SIGNAL_WIDTH - 1 : 0] fetch_in,
+        input [SIGNAL_WIDTH - 1 : 0] decode_in,
+        input [SIGNAL_WIDTH - 1 : 0] alu_in,
+
         //SEL
-        in_selector, out_selector, 
+        input [SELECTOR_WIDTH - 1 : 0] in_selector, 
+        input [SELECTOR_WIDTH - 1 : 0] out_selector,   
+        
         //OUT
-        out
+        output [SIGNAL_WIDTH - 1 : 0] out
 		);
 	
 		parameter SIGNAL_WIDTH = `ADDR_WIDTH;
 		parameter SELECTOR_WIDTH = 4;
 
-        //IN
-        input clk, reset_n;
 
-        input [SIGNAL_WIDTH - 1 : 0] pc_in; 
-        input [SIGNAL_WIDTH - 1 : 0] sp_in; 
-        input [SIGNAL_WIDTH - 1 : 0] mem_in; 
-        input [SIGNAL_WIDTH - 1 : 0] imm_in;
-        input [SIGNAL_WIDTH - 1 : 0] fetch_in;
-        input [SIGNAL_WIDTH - 1 : 0] decode_in;
-        input [SIGNAL_WIDTH - 1 : 0] alu_in;
-
-        //SEL
-        input [SELECTOR_WIDTH - 1 : 0] in_selector; 
-        input [SELECTOR_WIDTH - 1 : 0] out_selector;   
-        
-        //OUT
-        output [SIGNAL_WIDTH - 1 : 0] out;
 
         mux831 #(.SIGNAL_WIDTH(`ADDR_WIDTH)) input_mux   (.clk(clk), .out(out), .selector(in_selector),  `INPUT_BUS); 
 endmodule

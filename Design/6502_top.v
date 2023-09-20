@@ -134,7 +134,7 @@ module cpu_top(
 			.wout(we_add),
 			.carry_out(carry_out)
 			);
-	*/
+*/	
 endmodule
 
 `endif

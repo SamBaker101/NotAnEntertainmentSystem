@@ -6,27 +6,23 @@
 `define FETCHER
 
 module fetcher(
-		phi1, phi2, reset_n, get_next, pc, sp, data_in, instruction_out, 
-        pc_next, addr, imm, instruction_ready, reg_out, instruction_done,
-        fetch_selector 
+        input instruction_done,
+        input phi1, phi2, reset_n, get_next,  
+        input [ADDR_WIDTH - 1 : 0] pc,
+        input [REG_WIDTH - 1 : 0] sp,
+        input [REG_WIDTH - 1 : 0] data_in,
+
+        output reg instruction_ready, pc_wait,
+        output reg [ADDR_WIDTH - 1: 0] addr, pc_next,
+        output reg [REG_WIDTH - 1 : 0] imm,
+        output reg [`REG_WIDTH - 1 : 0] instruction_out, reg_out,
+
+        output reg [3 : 0] fetch_selector
 		);
 	
         parameter REG_WIDTH = `REG_WIDTH;
         parameter ADDR_WIDTH = `ADDR_WIDTH;
         parameter OPP_WIDTH = `OPP_WIDTH;
-
-        input instruction_done;
-        input phi1, phi2, reset_n, get_next;  
-        input [ADDR_WIDTH - 1 : 0] pc;
-        input [REG_WIDTH - 1 : 0] sp;  
-        input [REG_WIDTH - 1 : 0] data_in;
-
-        output reg instruction_ready, pc_wait;
-        output reg [ADDR_WIDTH - 1: 0] addr, pc_next;
-        output reg [REG_WIDTH - 1 : 0] imm;
-        output reg [`REG_WIDTH - 1 : 0] instruction_out, reg_out;
-
-        output reg [3 : 0] fetch_selector;
 
         /////////////////////////////
 

@@ -5,34 +5,32 @@
 `ifndef FAN
 `define FAN
 
-module fan138(clk, in, out0, out1, out2, out3, out4, out5, out6, out7, out8, 
-			  out9, out10, out11, out12, out13, out14, out15 , selector
+module fan138(
+		input clk,
+		input [SIGNAL_WIDTH - 1 : 0] in,
+
+		input [3:0] selector,
+
+		output [SIGNAL_WIDTH - 1 : 0] out0,
+        output [SIGNAL_WIDTH - 1 : 0] out1,
+        output [SIGNAL_WIDTH - 1 : 0] out2,
+        output [SIGNAL_WIDTH - 1 : 0] out3,
+        output [SIGNAL_WIDTH - 1 : 0] out4,
+        output [SIGNAL_WIDTH - 1 : 0] out5,
+        output [SIGNAL_WIDTH - 1 : 0] out6,
+        output [SIGNAL_WIDTH - 1 : 0] out7,
+		output [SIGNAL_WIDTH - 1 : 0] out8,
+        output [SIGNAL_WIDTH - 1 : 0] out9,
+        output [SIGNAL_WIDTH - 1 : 0] out10,
+        output [SIGNAL_WIDTH - 1 : 0] out11,
+        output [SIGNAL_WIDTH - 1 : 0] out12,
+        output [SIGNAL_WIDTH - 1 : 0] out13,
+        output [SIGNAL_WIDTH - 1 : 0] out14,
+        output [SIGNAL_WIDTH - 1 : 0] out15
 		);
 
 		parameter SIGNAL_WIDTH = `REG_WIDTH;
 		
-		input clk;
-		input [SIGNAL_WIDTH - 1 : 0] in;
-
-		input [3:0] selector;
-
-		output [SIGNAL_WIDTH - 1 : 0] out0;
-        output [SIGNAL_WIDTH - 1 : 0] out1;
-        output [SIGNAL_WIDTH - 1 : 0] out2;
-        output [SIGNAL_WIDTH - 1 : 0] out3;
-        output [SIGNAL_WIDTH - 1 : 0] out4;
-        output [SIGNAL_WIDTH - 1 : 0] out5;
-        output [SIGNAL_WIDTH - 1 : 0] out6;
-        output [SIGNAL_WIDTH - 1 : 0] out7;
-		output [SIGNAL_WIDTH - 1 : 0] out8;
-        output [SIGNAL_WIDTH - 1 : 0] out9;
-        output [SIGNAL_WIDTH - 1 : 0] out10;
-        output [SIGNAL_WIDTH - 1 : 0] out11;
-        output [SIGNAL_WIDTH - 1 : 0] out12;
-        output [SIGNAL_WIDTH - 1 : 0] out13;
-        output [SIGNAL_WIDTH - 1 : 0] out14;
-        output [SIGNAL_WIDTH - 1 : 0] out15;
-
 		assign out0  = (selector == 4'b0000) ? in : {SIGNAL_WIDTH{1'bz}};
 		assign out1  = (selector == 4'b0001) ? in : {SIGNAL_WIDTH{1'bz}};
 		assign out2  = (selector == 4'b0010) ? in : {SIGNAL_WIDTH{1'bz}};
