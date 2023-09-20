@@ -7,16 +7,8 @@
 
 //TODO: find a more graceful way to handle this 
 
-`define ADDR_MODE_SELECTOR  (add_mode == `AM3_ADD)   ? ((instruction_in[0] == 1) ? `SELECTOR_IMM: `SELECTOR_ADD):  \
-                            (add_mode == `AM3_ZPG)   ? `SELECTOR_MEM:   \
-                            (add_mode == `AM3_ZPG_X) ? `SELECTOR_MEM:   \
-                            (add_mode == `AM3_ABS)   ? `SELECTOR_MEM:   \
-                            (add_mode == `AM3_ABS_X) ? `SELECTOR_MEM:   \
-                            (add_mode == `AM3_ABS_Y) ? `SELECTOR_MEM:   \
-                            (add_mode == `AM3_X_IND) ? ((instruction_in == 8'hA0)||                                 \
-                                                        (instruction_in == 8'hA2) ? `SELECTOR_IMM : `SELECTOR_MEM):  \
-                            (add_mode == `AM3_IND_Y) ? `SELECTOR_MEM:   \
-                            {ADDR_WIDTH{1'bz}};
+`define ADDR_MODE_SELECTOR  (add_mode == `AM3_ADD) ? ((instruction_in[0] == 1) ? `SELECTOR_IMM: `SELECTOR_ADD): `SELECTOR_MEM;
+
 
 module decoder(
 		clk, reset_n, addr_in, instruction_in, opp, we,
@@ -631,7 +623,10 @@ module decoder(
                             end else begin
                                 if (decode_counter == 0) begin
                                     we[`WE_Y] = 1'b1;
-                                    y_selector =  `ADDR_MODE_SELECTOR
+                                    if (instruction_in == 8'hA0)  
+                                        y_selector = `SELECTOR_IMM;
+                                    else
+                                        y_selector =  `ADDR_MODE_SELECTOR
                                 end else if (decode_counter == 1) begin
                                     we = 0;
                                     opp_code = 0;
@@ -644,7 +639,9 @@ module decoder(
                                 we[`WE_X] = 1'b1;
                                 if (add_mode == `AM3_ABS_Y) 
                                     x_selector = `SELECTOR_SP;
-                                else
+                                else if  (instruction_in == 8'hA2)
+                                    x_selector = `SELECTOR_IMM;
+                                else 
                                     x_selector =  `ADDR_MODE_SELECTOR
                             end else if (decode_counter == 1) begin
                                 we = 0;
