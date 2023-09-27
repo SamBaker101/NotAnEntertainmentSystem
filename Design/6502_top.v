@@ -51,6 +51,7 @@ module cpu_top(
     
     wire [`ADDR_WIDTH - 1: 0] pc, pc_next;
     wire [`REG_WIDTH - 1: 0] imm;
+
     ////////////////////////
     ////   TL Assigns   ////
     ////////////////////////
@@ -73,68 +74,152 @@ module cpu_top(
 	assign we[0] = (pc != pc_next) ? 1'b1 : 0;
 	assign iPC 	 = (pc != pc_next) ? pc_next : pc;
 
-
-//This module needs updating to use the data bus, 
-//will do so once tb_instruction_flow is passing again
-
-/*
-	fetcher fetch(
-		.phi1(phi1_int), 
-		.phi2(phi2_int),
-		.reset_n(reset_n), 
-		.get_next(get_next), 
-		.pc(pc), 
-		.data_in(d_to_fetch), 
-		.instruction_out(instruction), 
-		.pc_next(pc_next), 
-		.addr(addr), 
-		.imm(imm),
-		.instruction_ready(instruction_ready),
-		.reg_out(d_from_fetch),
-		.fetch_source_selector(fetch_selector)
-		);
-
-	decoder decode(
-		.clk(phi1_int), 
-		.reset_n(reset_n), 
-		.address_in(addr),
-		.instruction_in(instruction), 
-		.opp(),
-		.we(we),
-		.source_selector_0(source_selector_0),
-		.target_selector_0(target_selector_0),
-		.source_selector_1(source_selector_1),
-		.target_selector_1(target_selector_1),
-		.instruction_ready(instruction_ready)
-		);
-
+    ////////////////////////
+    ////     Modules    ////
+    ////////////////////////
 	//Regs
-	register PC(.clk(phi2_int), .reset_n(reset_n), .we(we_pc), .din(iPC), .dout(oPC));
+	register #(.BIT_WIDTH(16), .RESET_VECTOR(`INSTRUCTION_BASE)) PC (.clk(phi2_int), .reset_n(reset_n), .we(we_pc), .din(iPC), .dout(oPC));
 	register SP(.clk(phi2_int), .reset_n(reset_n), .we(we_sp), .din(iSP), .dout(oSP));
 	register ADD(.clk(phi2_int), .reset_n(reset_n), .we(we_add), .din(iADD), .dout(oADD));
 	register X(.clk(phi2_int), .reset_n(reset_n), .we(we_x), .din(iX), .dout(oX));
 	register Y(.clk(phi2_int), .reset_n(reset_n), .we(we_y), .din(iY), .dout(oY));
 	register STAT(.clk(phi2_int), .reset_n(reset_n), .we(we_stat), .din(iSTATUS), .dout(oSTATUS));	
 
+	addr_bus abus(
+        //IN
+        .clk(), 
+		.reset_n(),
+        .pc_in(), 
+        .sp_in(), 
+        .mem_in(), 
+        .imm_in(),
+        .fetch_in(),
+        .decode_in(),
+        .alu_in(),
 
-	clock_module clk_mod(
-			.phi0(phi0),
-			.phi1(phi1_int),
-			.phi2(phi2_int)
-			);
-	
-	ALU alu(.reset_n(reset_n), 
-			.phi1(phi1_int),
-			.phi2(phi2_int),
-			.func(opp), 
-			.carry_in(carry_in),
-			.a(ialu_a), 
-			.b(ialu_b), 
-			.add(iADD),
-			.wout(we_add),
-			.carry_out(carry_out)
-			);
-*/	
+        //SEL
+        .in_selector(), 
+        .out_selector(),   
+        
+        //OUT
+        .out()
+		);
+
+    data_bus bus(
+        //IN
+        .clk(), 
+        .reset_n(),
+        .pc_in(), 
+        .sp_in(), 
+        .add_in(), 
+        .x_in(), 
+        .y_in(), 
+        .stat_in(),      
+        .mem_in(), 
+        .imm_in(), 
+        .fetch_in(), 
+        .decode_in(), 
+        .alu_in(),            
+        //SEL
+        .pc_selector(), 
+        .sp_selector(), 
+        .add_selector(), 
+        .x_selector(),
+        .y_selector(), 
+        .stat_selector(),         
+        .mem_selector(), 
+        .fetch_selector(), 
+        .decode_selector(), 
+        .alu0_selector(), 
+        .alu1_selector(),   
+        //OUT
+        //.pc_out(iPC), 
+        .sp_out(), 
+        .add_out(), 
+        .x_out(), 
+        .y_out(), 
+        .stat_out(), 
+        .mem_out(), 
+        .fetch_out(), 
+        .decode_out(), 
+        .alu0_out(), 
+        .alu1_out() 
+		);
+
+	fetcher fetch(
+        .instruction_done(),
+        .phi1(), 
+		.phi2(), 
+		.reset_n(), 
+		.get_next(),  
+        .pc(),
+        .sp(),
+        .data_in(),
+
+        .instruction_ready(), 
+		.pc_wait(),
+        .addr(), 
+		.pc_next(),
+        .imm(),
+        .instruction_out(), 
+		.reg_out(),
+
+        .fetch_selector()
+		);
+
+	decoder decode(
+        .clk(), 
+		.reset_n(),
+        .addr_in(), 
+		.pc_in(),
+        .instruction_in(), 
+		.status_in(), 
+		.data_in(),
+        .instruction_ready(), 
+		.alu_done(),
+        .imm_in(),
+
+        .opp(),       
+        .instruction_done(), 
+		.carry_in(),
+
+        .addr(),
+        .jump_pc(),
+        .we(),
+
+        .pc_selector(),
+        .sp_selector(), 
+        .add_selector(), 
+        .x_selector(), 
+        .y_selector(), 
+        .stat_selector(),     
+        .mem_selector(), 
+        .decode_selector(), 
+        .alu0_selector(), 
+        .alu1_selector(),    
+		.addr_in_selector(),   
+
+        .imm_out(),
+        .alu_update_status(), 
+		.invert_alu_b()
+        );
+
+	ALU alu0(
+		.phi1(), 
+		.phi2(), 
+		.reset_n(),	
+		.a_in(), 
+		.b_in(), 
+		.func(), 
+		.status_in(), 
+		.carry_in(), 
+		.dec_mode(), 
+		.invert(),
+		.dout(), 
+		.status_out(),
+		.wout()
+		);
+
 endmodule
 
 `endif
