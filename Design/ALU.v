@@ -13,7 +13,6 @@ module ALU(
 	input [`OPP_WIDTH - 1 : 0] func, 
 	input [`REG_WIDTH - 1 : 0] status_in, 
 	input carry_in, 
-	input dec_mode, 
 	input invert,
 	
 	output reg [`REG_WIDTH - 1 : 0] dout, //douter hold register

@@ -43,7 +43,7 @@ module cpu_top(
 
     wire [`REG_WIDTH - 1 : 0] d_to_fetch, d_from_fetch;
     wire [`REG_WIDTH - 1 : 0] d_to_mem, d_from_mem, d_to_decode;
-    wire [`REG_WIDTH - 1 : 0] status_from_bus;
+    wire [`REG_WIDTH - 1 : 0] status_from_bus, status_from_alu;
     wire [`REG_WIDTH - 1: 0] d_to_alu_0, d_to_alu_1, d_from_alu; 
 
     wire carry_in, invert_alu_b, update_status;
@@ -242,16 +242,15 @@ module cpu_top(
 		.phi1(phi1_int), 
 		.phi2(phi2_int), 
 		.reset_n(reset_n),	
-		.a_in(), 
-		.b_in(), 
-		.func(), 
-		.status_in(), 
-		.carry_in(), 
-		.dec_mode(), 
-		.invert(),
-		.dout(), 
-		.status_out(),
-		.wout()
+		.a_in(d_to_alu_0), 
+		.b_in(d_to_alu_1), 
+		.func(opp_to_alu), 
+		.status_in(oSTATUS), 
+		.carry_in(carry_in), 
+		.invert(invert_alu_b),
+		.dout(d_from_alu), 
+		.status_out(status_from_alu),
+		.wout(alu_done)
 		);
 
 endmodule
