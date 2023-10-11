@@ -5,10 +5,13 @@ SHELL = /bin/sh
 
 ####### FILES #######
 SRC = PKG/test_program_macros.v PKG/pkg.v Design/*
-TB = DV/tb_instruction_flow.sv
 TBOUT = Out/tb.vvp
 SIMOUT = Out/iflow.vcd
 LOGOUT = Out/log.txt
+
+ifndef TB
+	TB = DV/tb_6502_top.sv
+endif
 
 ####### TOOLS #######
 COMPILER = iverilog

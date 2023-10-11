@@ -41,7 +41,7 @@ module cpu_top(
     wire [`WE_WIDTH - 1 : 0] we;
     wire we_pc, we_sp, we_add, we_x, we_y, we_stat;
 	
-	wire [`REG_WIDTH - 1: 0] iPC, oPC;
+	wire [`ADDR_WIDTH - 1: 0] iPC, oPC;
 	wire [`REG_WIDTH - 1: 0] iSP, oSP;
 	wire [`REG_WIDTH - 1: 0] iADD, oADD;
 	wire [`REG_WIDTH - 1: 0] iX, oX;

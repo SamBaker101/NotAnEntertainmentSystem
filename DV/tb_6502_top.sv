@@ -45,9 +45,13 @@ module tb_6502_top;
 		$dumpfile("Out/6502_test_out.vcd");
 		$dumpvars(0, tb_6502_top);
 	
+        $write("Starting tb_6502_top \t");
+
         phi0 = 1'b1;
-
-
+        reset_n = 1'b0;
+        #50;
+        reset_n = 1'b1;
+        #500;
     
     end
 
