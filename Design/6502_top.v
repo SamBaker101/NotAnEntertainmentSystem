@@ -77,6 +77,13 @@ module cpu_top(
     ////////////////////////
     ////     Modules    ////
     ////////////////////////
+	clock_module clk_mod(
+			.phi0(phi0),
+			.phi1(phi1_int),
+			.phi2(phi2_int)
+			);
+
+
 	//Regs
 	register #(.BIT_WIDTH(16), .RESET_VECTOR(`INSTRUCTION_BASE)) PC (.clk(phi2_int), .reset_n(reset_n), .we(we_pc), .din(iPC), .dout(oPC));
 	register SP(.clk(phi2_int), .reset_n(reset_n), .we(we_sp), .din(iSP), .dout(oSP));
@@ -87,8 +94,8 @@ module cpu_top(
 
 	addr_bus abus(
         //IN
-        .clk(), 
-		.reset_n(),
+        .clk(phi1_int), 
+		.reset_n(reset_n),
         .pc_in(), 
         .sp_in(), 
         .mem_in(), 
@@ -107,8 +114,8 @@ module cpu_top(
 
     data_bus bus(
         //IN
-        .clk(), 
-        .reset_n(),
+        .clk(phi2_int), 
+        .reset_n(reset_n),
         .pc_in(), 
         .sp_in(), 
         .add_in(), 
@@ -147,15 +154,15 @@ module cpu_top(
 		);
 
 	fetcher fetch(
-        .instruction_done(),
-        .phi1(), 
-		.phi2(), 
-		.reset_n(), 
+        .phi1(phi1_int), 
+		.phi2(phi2_int), 
+		.reset_n(reset_n), 
 		.get_next(),  
         .pc(),
         .sp(),
         .data_in(),
 
+        .instruction_done(),
         .instruction_ready(), 
 		.pc_wait(),
         .addr(), 
@@ -168,8 +175,8 @@ module cpu_top(
 		);
 
 	decoder decode(
-        .clk(), 
-		.reset_n(),
+        .clk(phi1_int), 
+		.reset_n(reset_n),
         .addr_in(), 
 		.pc_in(),
         .instruction_in(), 
@@ -205,9 +212,9 @@ module cpu_top(
         );
 
 	ALU alu0(
-		.phi1(), 
-		.phi2(), 
-		.reset_n(),	
+		.phi1(phi1_int), 
+		.phi2(phi2_int), 
+		.reset_n(reset_n),	
 		.a_in(), 
 		.b_in(), 
 		.func(), 

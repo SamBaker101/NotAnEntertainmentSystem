@@ -27,7 +27,7 @@ module decoder(
         output reg [3:0] add_selector, 
         output reg [3:0] x_selector, 
         output reg [3:0] y_selector, 
-        output reg [3:0] stat_selector,    
+        output reg [3:0] stat_selector,     
         output reg [3:0] mem_selector, 
         output reg [3:0] decode_selector, 
         output reg [3:0] alu0_selector, 
