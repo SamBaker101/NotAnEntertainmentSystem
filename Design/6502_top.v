@@ -43,8 +43,9 @@ module cpu_top(
 
     wire [`REG_WIDTH - 1 : 0] d_to_fetch, d_from_fetch;
     wire [`REG_WIDTH - 1 : 0] d_to_mem, d_from_mem;
-
-    wire [`REG_WIDTH - 1: 0] ialu_a, ialu_b, d_from_alu;
+    wire [`REG_WIDTH - 1 : 0] d_to_decode;
+    wire [`REG_WIDTH - 1 : 0] status_from_bus;
+    wire [`REG_WIDTH - 1: 0] d_to_alu_0, d_to_alu_1, d_from_alu;
     
     //ENABLES
     wire [`WE_WIDTH - 1 : 0] we;
@@ -64,6 +65,18 @@ module cpu_top(
 
     //SELECTORS
     wire [3 : 0]    addr_bus_selector;
+
+    wire [3 : 0] pc_selector; 
+    wire [3 : 0] sp_selector; 
+    wire [3 : 0] add_selector; 
+    wire [3 : 0] x_selector; 
+    wire [3 : 0] y_selector; 
+    wire [3 : 0] stat_selector;    
+    wire [3 : 0] mem_selector; 
+    wire [3 : 0] fetch_selector;
+    wire [3 : 0] decode_selector; 
+    wire [3 : 0] alu0_selector; 
+    wire [3 : 0] alu1_selector;   
 
     ////////////////////////
     ////   TL Assigns   ////
@@ -130,41 +143,41 @@ module cpu_top(
         //IN
         .clk(phi2_int), 
         .reset_n(reset_n),
-        .pc_in(), 
-        .sp_in(), 
-        .add_in(), 
-        .x_in(), 
-        .y_in(), 
-        .stat_in(),      
-        .mem_in(), 
-        .imm_in(), 
-        .fetch_in(), 
-        .decode_in(), 
-        .alu_in(),            
+        .pc_in(oPC[7:0]), 
+        .sp_in(oSP), 
+        .add_in(oADD), 
+        .x_in(oX), 
+        .y_in(oY), 
+        .stat_in(oSTATUS),      
+        .mem_in(d_from_mem), 
+        .imm_in(imm_to_bus), 
+        .fetch_in(d_from_fetch), 
+        .decode_in(8'hzz), 
+        .alu_in(d_from_alu),            
         //SEL
-        .pc_selector(), 
-        .sp_selector(), 
-        .add_selector(), 
-        .x_selector(),
-        .y_selector(), 
-        .stat_selector(),         
-        .mem_selector(), 
-        .fetch_selector(), 
-        .decode_selector(), 
-        .alu0_selector(), 
-        .alu1_selector(),   
+        .pc_selector(pc_selector), 
+        .sp_selector(sp_selector), 
+        .add_selector(add_selector), 
+        .x_selector(x_selector),
+        .y_selector(y_selector), 
+        .stat_selector(stat_selector),         
+        .mem_selector(mem_selector), 
+        .fetch_selector(fetch_selector), 
+        .decode_selector(decode_selector), 
+        .alu0_selector(alu0_selector), 
+        .alu1_selector(alu1_selector),   
         //OUT
         //.pc_out(iPC), 
-        .sp_out(), 
-        .add_out(), 
-        .x_out(), 
-        .y_out(), 
-        .stat_out(), 
-        .mem_out(), 
-        .fetch_out(), 
-        .decode_out(), 
-        .alu0_out(), 
-        .alu1_out() 
+        .sp_out(iSP), 
+        .add_out(iADD), 
+        .x_out(iX), 
+        .y_out(iY), 
+        .stat_out(status_from_bus), 
+        .mem_out(d_to_mem), 
+        .fetch_out(d_to_fetch), 
+        .decode_out(d_to_decode), 
+        .alu0_out(d_to_alu_0), 
+        .alu1_out(d_to_alu_1) 
 		);
 
 	fetcher fetch(
