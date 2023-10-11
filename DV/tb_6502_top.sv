@@ -73,17 +73,18 @@ module tb_6502_top;
 		$dumpfile("Out/6502_test_out.vcd");
 		$dumpvars(0, tb_6502_top);
 	
-        $write("Starting tb_6502_top \t");
+        $display("Starting tb_6502_top \t");
 
         phi0 = 1'b1;
         reset_n = 1'b0;
         #50;
+        zero_mem_model();
+        randomize_mem_model(0, `INSTRUCTION_BASE);
+        override_real_mem();
+
         reset_n = 1'b1;
         #500;
         
-        mem_model[0] = 8'h4A;
-        zero_mem_model();
-        randomize_mem_model(0, `INSTRUCTION_BASE);
         dump_mem(0, 64);
 
     end
@@ -96,12 +97,24 @@ module tb_6502_top;
         end
     endtask : zero_mem_model
 
+
     task randomize_mem_model(int start = 0, int finish = `MEM_DEPTH);
         int i;
         for (i = start; i < finish; i++) begin
             mem_model[i] = $urandom(); 
         end
     endtask : randomize_mem_model
+
+
+    task override_real_mem();
+        if (reset_n) $display("ERROR: cannot overwrite mem while not in reset");
+        else begin
+            override_mem = 1'b1;
+            #20;
+            override_mem = 1'b0;
+        end
+    endtask : override_real_mem
+
 
     task dump_mem(int start = 0, int finish = `MEM_DEPTH);
         int i;
