@@ -42,7 +42,7 @@ TEST_LIST = NOOPP \
 			CMP 	\
 			CPX		\
 			CPY
-
+ 
 ifndef DEPTH
 	DEPTH = 	"MEM_DEPTH='h01FF" 
 endif

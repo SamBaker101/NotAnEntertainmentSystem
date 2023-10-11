@@ -40,7 +40,6 @@ module addr_bus(
 
         //SEL
         input [SELECTOR_WIDTH - 1 : 0] in_selector, 
-        input [SELECTOR_WIDTH - 1 : 0] out_selector,   
         
         //OUT
         output [SIGNAL_WIDTH - 1 : 0] out
@@ -48,8 +47,6 @@ module addr_bus(
 	
 		parameter SIGNAL_WIDTH = `ADDR_WIDTH;
 		parameter SELECTOR_WIDTH = 4;
-
-
 
         mux831 #(.SIGNAL_WIDTH(`ADDR_WIDTH)) input_mux   (.clk(clk), .out(out), .selector(in_selector),  `INPUT_BUS); 
 endmodule

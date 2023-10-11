@@ -29,18 +29,28 @@ module cpu_top(
 
 	wire phi1_int, phi2_int;
 	wire [`OPP_WIDTH - 1 : 0] opp;
-	wire [`REG_WIDTH - 1: 0] ialu_a, ialu_b;
+	
+    wire get_next;
+    wire instruction_ready;
+    
+    //BUS AND DATA SIGNALS
+    wire [`ADDR_WIDTH - 1 : 0] addr_from_bus;
+    wire [`ADDR_WIDTH- 1 : 0] addr_from_fetch;
+    wire [`ADDR_WIDTH- 1 : 0] addr_from_decode;
 
-    wire [`ADDR_WIDTH - 1 : 0] addr;
+    wire [`ADDR_WIDTH - 1 : 0] sp_to_abus;
+    wire [`REG_WIDTH - 1 : 0] imm_to_bus;
+
     wire [`REG_WIDTH - 1 : 0] d_to_fetch, d_from_fetch;
     wire [`REG_WIDTH - 1 : 0] d_to_mem, d_from_mem;
 
-    wire get_next;
-    wire instruction_ready;
-
+    wire [`REG_WIDTH - 1: 0] ialu_a, ialu_b, d_from_alu;
+    
+    //ENABLES
     wire [`WE_WIDTH - 1 : 0] we;
     wire we_pc, we_sp, we_add, we_x, we_y, we_stat;
 	
+    //REGS
 	wire [`ADDR_WIDTH - 1: 0] iPC, oPC;
 	wire [`REG_WIDTH - 1: 0] iSP, oSP;
 	wire [`REG_WIDTH - 1: 0] iADD, oADD;
@@ -52,12 +62,15 @@ module cpu_top(
     wire [`ADDR_WIDTH - 1: 0] pc, pc_next;
     wire [`REG_WIDTH - 1: 0] imm;
 
+    //SELECTORS
+    wire [3 : 0]    addr_bus_selector;
+
     ////////////////////////
     ////   TL Assigns   ////
     ////////////////////////
 
 	//Pin assignments
-	assign A = addr;
+	assign A = addr_from_bus;
 	assign D = d_to_mem;
 	assign d_from_mem = D;
 	assign R_W_n = !we[6];
@@ -73,6 +86,8 @@ module cpu_top(
 	assign pc = oPC;
 	assign we[0] = (pc != pc_next) ? 1'b1 : 0;
 	assign iPC 	 = (pc != pc_next) ? pc_next : pc;
+
+    assign sp_to_abus = oSP + `STACK_BASE;
 
     ////////////////////////
     ////     Modules    ////
@@ -96,20 +111,19 @@ module cpu_top(
         //IN
         .clk(phi1_int), 
 		.reset_n(reset_n),
-        .pc_in(), 
-        .sp_in(), 
-        .mem_in(), 
-        .imm_in(),
-        .fetch_in(),
-        .decode_in(),
-        .alu_in(),
+        .pc_in(oPC), 
+        .sp_in(sp_to_abus), 
+        .mem_in({8'h00, d_from_mem}), 
+        .imm_in({8'h00, imm_to_bus}),
+        .fetch_in(addr_from_fetch),
+        .decode_in(addr_from_decode),
+        .alu_in({8'h00, d_from_alu}),
 
         //SEL
-        .in_selector(), 
-        .out_selector(),   
+        .in_selector(addr_bus_selector), 
         
         //OUT
-        .out()
+        .out(addr_from_bus)
 		);
 
     data_bus bus(
