@@ -254,7 +254,7 @@ module tb_iflow;
         .addr_in_selector(in_selector), 
 
         .alu_update_status(update_status),   
-        .jump_pc(jump_pc)                             //FIXME: There should be a seperate address bus that handles this and addr
+        .jump_pc(jump_pc)                       
         );
 
     ALU alu(.reset_n(reset_n), 

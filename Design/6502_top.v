@@ -100,7 +100,8 @@ module cpu_top(
 	assign pc = oPC;
 	assign we[0] = (pc != pc_next) ? 1'b1 : 0;
 	assign iPC =   (jump_pc) ? jump_pc : pc_next;
-
+    assign iSTATUS = update_status ? status_from_alu : status_from_bus;
+    
     assign sp_to_abus = oSP + `STACK_BASE;
 
     ////////////////////////
