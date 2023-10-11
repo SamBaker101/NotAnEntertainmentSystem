@@ -39,14 +39,14 @@ module cpu_top(
     wire [`ADDR_WIDTH- 1 : 0] addr_from_decode;
 
     wire [`ADDR_WIDTH - 1 : 0] sp_to_abus;
-    wire [`REG_WIDTH - 1 : 0] imm_to_bus;
+    wire [`REG_WIDTH - 1 : 0] imm_to_bus, imm_to_decoder, imm_from_decoder;
 
     wire [`REG_WIDTH - 1 : 0] d_to_fetch, d_from_fetch;
-    wire [`REG_WIDTH - 1 : 0] d_to_mem, d_from_mem;
-    wire [`REG_WIDTH - 1 : 0] d_to_decode;
+    wire [`REG_WIDTH - 1 : 0] d_to_mem, d_from_mem, d_to_decode;
     wire [`REG_WIDTH - 1 : 0] status_from_bus;
-    wire [`REG_WIDTH - 1: 0] d_to_alu_0, d_to_alu_1, d_from_alu;
-    
+    wire [`REG_WIDTH - 1: 0] d_to_alu_0, d_to_alu_1, d_from_alu; 
+
+    wire carry_in, invert_alu_b, update_status;
     //ENABLES
     wire [`WE_WIDTH - 1 : 0] we;
     wire we_pc, we_sp, we_add, we_x, we_y, we_stat;
@@ -60,11 +60,12 @@ module cpu_top(
 	wire [`REG_WIDTH - 1: 0] iSTATUS, oSTATUS;
     wire [`REG_WIDTH - 1: 0] instruction;
     
-    wire [`ADDR_WIDTH - 1: 0] pc, pc_next;
-    wire [`REG_WIDTH - 1: 0] imm;
+    wire [`ADDR_WIDTH - 1: 0] pc, pc_next, jump_pc;
 
     //SELECTORS
     wire [3 : 0]    addr_bus_selector;
+
+    wire [`OPP_WIDTH - 1 : 0] opp_to_alu;
 
     wire [3 : 0] pc_selector; 
     wire [3 : 0] sp_selector; 
@@ -98,7 +99,7 @@ module cpu_top(
 
 	assign pc = oPC;
 	assign we[0] = (pc != pc_next) ? 1'b1 : 0;
-	assign iPC 	 = (pc != pc_next) ? pc_next : pc;
+	assign iPC =   (jump_pc) ? jump_pc : pc_next;
 
     assign sp_to_abus = oSP + `STACK_BASE;
 
@@ -184,58 +185,57 @@ module cpu_top(
         .phi1(phi1_int), 
 		.phi2(phi2_int), 
 		.reset_n(reset_n), 
-		.get_next(),  
-        .pc(),
-        .sp(),
-        .data_in(),
+        .pc(oPC),
+        .sp(oSP),
+        .data_in(d_to_fetch),
 
-        .instruction_done(),
-        .instruction_ready(), 
-		.pc_wait(),
-        .addr(), 
-		.pc_next(),
-        .imm(),
-        .instruction_out(), 
-		.reg_out(),
+        .instruction_done(instruction_done),
+        .instruction_ready(instruction_ready), 
+        .addr(addr_from_fetch), 
+		.pc_next(pc_next),
+        .imm(imm_to_decoder),
+        .instruction_out(instruction), 
+		.reg_out(d_from_fetch),
 
-        .fetch_selector()
+        .fetch_selector(fetch_selector)
 		);
 
 	decoder decode(
         .clk(phi1_int), 
 		.reset_n(reset_n),
-        .addr_in(), 
-		.pc_in(),
-        .instruction_in(), 
-		.status_in(), 
-		.data_in(),
-        .instruction_ready(), 
-		.alu_done(),
-        .imm_in(),
+        .addr_in(addr_from_bus), 
+		.pc_in(oPC),
+        .instruction_in(instruction), 
+		.status_in(oSTATUS), 
+		.data_in(d_to_decode),
+        .imm_in(imm_to_decoder),
 
-        .opp(),       
-        .instruction_done(), 
-		.carry_in(),
+        .instruction_ready(instruction_ready),
+        .instruction_done(instruction_done),  
+		.alu_done(alu_done),
 
-        .addr(),
-        .jump_pc(),
-        .we(),
+		.carry_in(carry_in),
 
-        .pc_selector(),
-        .sp_selector(), 
-        .add_selector(), 
-        .x_selector(), 
-        .y_selector(), 
-        .stat_selector(),     
-        .mem_selector(), 
-        .decode_selector(), 
-        .alu0_selector(), 
-        .alu1_selector(),    
-		.addr_in_selector(),   
+        .jump_pc(jump_pc),
+        .we(we),
 
-        .imm_out(),
-        .alu_update_status(), 
-		.invert_alu_b()
+        .pc_selector(pc_selector),
+        .sp_selector(sp_selector), 
+        .add_selector(add_selector), 
+        .x_selector(x_selector), 
+        .y_selector(y_selector), 
+        .stat_selector(stat_selector),     
+        .mem_selector(mem_selector), 
+        .decode_selector(decode_selector), 
+        .alu0_selector(alu0_selector), 
+        .alu1_selector(alu1_selector),    
+		.addr_in_selector(addr_bus_selector),   
+
+        .opp(opp_to_alu),
+
+        .imm_out(imm_to_decoder),
+        .alu_update_status(update_status), 
+		.invert_alu_b(invert_alu_b)
         );
 
 	ALU alu0(

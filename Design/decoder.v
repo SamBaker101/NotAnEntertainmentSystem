@@ -14,11 +14,9 @@ module decoder(
         input [REG_WIDTH - 1 : 0] instruction_in, status_in, data_in,
         input instruction_ready, alu_done,
         input [REG_WIDTH - 1 : 0] imm_in,
-
-        output reg [OPP_WIDTH - 1 : 0] opp,       
+      
         output reg instruction_done, carry_in,
 
-        output reg [ADDR_WIDTH - 1: 0] addr,
         output reg [ADDR_WIDTH - 1: 0] jump_pc,
         output reg [`WE_WIDTH - 1 : 0] we,
 
@@ -36,7 +34,8 @@ module decoder(
         output reg [3:0] addr_in_selector,   
 
         output reg [REG_WIDTH - 1 : 0] imm_out,
-        output reg alu_update_status, invert_alu_b
+        output reg alu_update_status, invert_alu_b,
+        output reg [`OPP_WIDTH - 1 : 0] opp
         );
 	
         parameter REG_WIDTH = `REG_WIDTH;
@@ -49,6 +48,8 @@ module decoder(
         reg [4:0] opp_code;
         reg [REG_WIDTH - 1 : 0] instruction;
         reg [ADDR_WIDTH - 1 : 0] addr_reg;
+
+        
 
         reg [REG_WIDTH - 1 : 0] decode_counter;
 
@@ -80,7 +81,6 @@ module decoder(
             jump_pc = 0;
 
             if (!reset_n) begin
-                opp = 0;
                 we = 0;
                 decode_counter = 0;
                 instruction_done = 1'b0;

@@ -7,12 +7,12 @@
 
 module fetcher(
         input instruction_done,
-        input phi1, phi2, reset_n, get_next,  
+        input phi1, phi2, reset_n,
         input [ADDR_WIDTH - 1 : 0] pc,
         input [REG_WIDTH - 1 : 0] sp,
         input [REG_WIDTH - 1 : 0] data_in,
 
-        output reg instruction_ready, pc_wait,
+        output reg instruction_ready,
         output reg [ADDR_WIDTH - 1: 0] addr, pc_next,
         output reg [REG_WIDTH - 1 : 0] imm,
         output reg [`REG_WIDTH - 1 : 0] instruction_out, reg_out,
@@ -29,6 +29,7 @@ module fetcher(
         reg [2:0] add_mode;
         reg [ADDR_WIDTH - 1: 0] addr_reg;
 
+        reg pc_wait;
         reg [2:0] fetch_counter; 
 
         always @(posedge instruction_done) begin
@@ -52,13 +53,14 @@ module fetcher(
       //This logic is a mess, try again          
 
 
-                if (get_next) begin                     //FIXME: This is TB specific and should be removed
-                    fetch_counter = 1'b0;
-                    instruction_ready = 1'b0;
-                    fetch_selector = `SELECTOR_MEM;
-                    addr = pc;
-                    pc_wait = 1'b0;
-                end
+//FIXME: Removing this probably broke things, will repair once new top level TB is setup
+//                if (get_next) begin                     
+//                    fetch_counter = 1'b0;
+//                    instruction_ready = 1'b0;
+//                    fetch_selector = `SELECTOR_MEM;
+//                    addr = pc;
+//                    pc_wait = 1'b0;
+//                end
                 if (!instruction_ready) begin
                     fetch_selector = 0;
                     addr = pc;

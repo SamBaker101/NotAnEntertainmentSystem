@@ -9,6 +9,7 @@ TBOUT = Out/tb.vvp
 SIMOUT = Out/iflow.vcd
 LOGOUT = Out/log.txt
 
+#Note: design has changed since creating lower level tbs, they may no longer function
 ifndef TB
 	TB = DV/tb_6502_top.sv
 endif
