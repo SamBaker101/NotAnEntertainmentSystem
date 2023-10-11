@@ -11,6 +11,7 @@ module mem(
         ,input [ADDR_WIDTH - 1 : 0] addr
         ,output [WIDTH - 1 : 0] dout
 		
+        //Only in test environments
         `ifdef TEST_RUN
             ,input override_mem
             ,input [`REG_WIDTH - 1 : 0] mem_override_in [`MEM_DEPTH - 1 : 0]
@@ -29,6 +30,7 @@ module mem(
     assign local_addr = addr - BASE;
     assign dout = !we ? bank[local_addr] : {WIDTH{1'bz}}; 
 
+    //This will only be included in test environments to allow override and monitor of mem
     `ifdef TEST_RUN
         assign mem_monitor = bank;
 
@@ -45,7 +47,6 @@ module mem(
 	always @(posedge clk) begin
         if (we) begin
             bank[local_addr] = din;
-            //$display("WE addr: %h local_addr: %h, din %h, bank: %h", addr, local_addr, din, bank[local_addr]);
         end
     end
 endmodule
