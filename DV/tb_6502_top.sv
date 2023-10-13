@@ -115,7 +115,7 @@ module tb_6502_top;
     task dump_mem(int start = 0, int finish = `MEM_DEPTH);
         int i;
         for (i = start; i < finish; i++) begin
-            $write("| %h:%h = %h | ", i, real_mem_monitor[i], mem_model[i]);
+            $write("| %h:%h = %h | ", i, mem_override_if.real_mem[i], mem_model[i]);
             if (i % 8 == 0) $display("");
         end
     endtask : dump_mem
