@@ -60,7 +60,7 @@ module tb_6502_top;
         //Only exist for tbs
         .override_mem(mem_override_if.mem_override),
         .mem_override_in(mem_override_if.test_mem),
-        .mem_monitor(mem_override_if.real_mem)
+        .mem_monitor(mem_override_if.flat_mem)
         );
 
     //LOGIC

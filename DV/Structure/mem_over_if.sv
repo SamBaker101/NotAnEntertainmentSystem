@@ -11,6 +11,10 @@ interface mem_over_if (input clk, reset_n);
     wire [`REG_WIDTH - 1 : 0] real_mem [`MEM_DEPTH - 1 : 0];
     logic mem_override;
 
+    genvar j;
+    for (j = 0; j < `MEM_DEPTH; j++)
+        assign real_mem[j] = flat_mem[((j + 1) * `REG_WIDTH - 1) : (j*`REG_WIDTH)];
+
     task override_real_mem();
         if (reset_n) $display("ERROR: cannot overwrite mem while not in reset");
         else begin

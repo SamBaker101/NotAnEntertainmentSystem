@@ -45,11 +45,7 @@ module mem(
                 end
             end
 
-            for (int i = 0; i < 8; i++) begin
-                $write("|%h: %h = %h | ", i, mem_override_in[i], bank[i]);
-            end
             $display("\n");
-
         end
     `endif
 
