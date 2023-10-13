@@ -15,7 +15,7 @@ module mem(
         `ifdef TEST_RUN
             ,input override_mem
             ,input [`REG_WIDTH - 1 : 0] mem_override_in [`MEM_DEPTH - 1 : 0]
-            ,output reg [`REG_WIDTH - 1 : 0] bank [`MEM_DEPTH - 1 : 0]
+            ,output wire [`REG_WIDTH * `MEM_DEPTH -1: 0] mem_monitor
         `endif
         );
 	
@@ -24,10 +24,8 @@ module mem(
     parameter DEPTH = 16;
     parameter BASE  = 0;
 
-    `ifndef TEST_RUN
-        reg [WIDTH - 1 : 0] bank [DEPTH - 1 : 0];
-    `endif
-    
+    reg [WIDTH - 1 : 0] bank [DEPTH - 1 : 0];
+
     wire [ADDR_WIDTH - 1 : 0] local_addr;
 
     assign local_addr = addr - BASE;
@@ -35,8 +33,12 @@ module mem(
 
     //This will only be included in test environments to allow override and monitor of mem
     `ifdef TEST_RUN
+        genvar j;
+        for (j = 0; j < DEPTH; j++)
+            assign mem_monitor[((j + 1) * `REG_WIDTH - 1) : (j*`REG_WIDTH)] = bank[j];
+
         //Override bank
-        always @(posedge override_mem) begin
+        always @(posedge override_mem) begin 
             if (!reset_n) begin 
                 for (int i = 0; i < DEPTH; i++) begin
                     bank[i] = mem_override_in[i];
@@ -50,7 +52,6 @@ module mem(
 
         end
     `endif
-
 
 	always @(posedge clk) begin
         if (we) begin

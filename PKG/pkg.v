@@ -109,7 +109,7 @@
 `include "Design/data_bus.v"
 `include "Design/decoder.v"
 `include "Design/fetcher.v"
-`include "Design/mem.v"
+`include "Design/mem.sv"
 `include "Design/mux831.v"
 `include "Design/fan138.v"
 `include "Design/register.v"

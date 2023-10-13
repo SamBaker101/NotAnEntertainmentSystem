@@ -6,7 +6,7 @@ SHELL = /bin/sh
 ####### FILES #######
 SRC = PKG/test_program_macros.v PKG/pkg.v Design/* DV/Structure/*
 TBOUT = Out/tb.vvp
-SIMOUT = Out/iflow.vcd
+SIMOUT = Out/6502_test_out.vcd
 LOGOUT = Out/log.txt
 
 #Note: design has changed since creating lower level tbs, they may no longer function

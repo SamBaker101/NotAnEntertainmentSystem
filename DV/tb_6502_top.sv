@@ -10,11 +10,9 @@
 
 `include "PKG/pkg.v"
 
-typedef bit [`REG_WIDTH - 1 : 0] tb_register; 
+typedef logic [`REG_WIDTH - 1 : 0] tb_register; 
 
 tb_register mem_model [`MEM_DEPTH - 1 : 0];
-
-
 
 module tb_6502_top;
 
@@ -27,8 +25,6 @@ module tb_6502_top;
     wire [`REG_WIDTH - 1 : 0] D;                             //INOUT
     
     //MEMORY_MANAGEMENT
-    wire [`REG_WIDTH - 1 : 0] real_mem_monitor [`MEM_DEPTH - 1 : 0];
-
     wire [`REG_WIDTH - 1 : 0] d_to_mem, d_from_mem;
 
     //ASSIGNS
@@ -64,7 +60,7 @@ module tb_6502_top;
         //Only exist for tbs
         .override_mem(mem_override_if.mem_override),
         .mem_override_in(mem_override_if.test_mem),
-        .bank(mem_override_if.real_mem)
+        .mem_monitor(mem_override_if.real_mem)
         );
 
     //LOGIC
@@ -92,7 +88,7 @@ module tb_6502_top;
         reset_n = 1'b1;
         #500;
         
-        dump_mem(0, 64);
+        mem_override_if.dump_mem(0, 64);
 
     end
 
@@ -111,14 +107,6 @@ module tb_6502_top;
             mem_model[i] = $urandom(); 
         end
     endtask : randomize_mem_model
-
-    task dump_mem(int start = 0, int finish = `MEM_DEPTH);
-        int i;
-        for (i = start; i < finish; i++) begin
-            $write("| %h:%h = %h | ", i, mem_override_if.real_mem[i], mem_model[i]);
-            if (i % 8 == 0) $display("");
-        end
-    endtask : dump_mem
 
 endmodule
 `endif

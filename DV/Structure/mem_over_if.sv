@@ -7,9 +7,9 @@
 
 interface mem_over_if (input clk, reset_n); 
     logic [`REG_WIDTH - 1 : 0] test_mem [`MEM_DEPTH - 1 : 0];
-    logic [`REG_WIDTH - 1 : 0] real_mem [`MEM_DEPTH - 1 : 0];
+    logic [`REG_WIDTH * `MEM_DEPTH - 1 : 0] flat_mem;
+    wire [`REG_WIDTH - 1 : 0] real_mem [`MEM_DEPTH - 1 : 0];
     logic mem_override;
-
 
     task override_real_mem();
         if (reset_n) $display("ERROR: cannot overwrite mem while not in reset");
@@ -20,18 +20,19 @@ interface mem_over_if (input clk, reset_n);
 
             #10;
             mem_override <= 1'b1;
-            #50;
-
-            //TODO: This is just for troubleshooting
-            for (int i = 0; i < 8; i++) begin
-                $write("|%h: %h = %h | ", i, test_mem[i], real_mem[i]);
-            end
-            $display("\n");
-
             #20;
             mem_override <= 1'b0;
         end
     endtask : override_real_mem
+
+    task dump_mem(int start = 0, int finish = `MEM_DEPTH);
+        int i;
+        for (i = start; i < finish; i++) begin
+            $write("| %h:%h = %h | ", i, real_mem[i], mem_model[i]);
+            if (i % 8 == 0) $display("");
+        end
+    endtask : dump_mem
+
 endinterface
 
 `endif
