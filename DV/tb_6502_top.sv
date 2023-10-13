@@ -9,10 +9,10 @@
 `define TEST_RUN
 
 `include "PKG/pkg.v"
-
+        
 typedef logic [`REG_WIDTH - 1 : 0] tb_register; 
 
-tb_register mem_model [`MEM_DEPTH - 1 : 0];
+tb_register mem_model [`MEM_DEPTH - 1 : 0];            //TODO: This could probably be part of the mem_if
 
 module tb_6502_top;
 
@@ -73,9 +73,9 @@ module tb_6502_top;
 
     //RUN TEST
 	initial begin
-		$dumpfile("Out/6502_test_out.vcd");
+        $dumpfile("Out/6502_test_out.vcd");
 		$dumpvars(0, tb_6502_top);
-	
+        
         $display("Starting tb_6502_top \t");
 
         phi0 = 1'b1;
@@ -83,12 +83,27 @@ module tb_6502_top;
         #50;
         zero_mem_model();
         randomize_mem_model(0, `INSTRUCTION_BASE);
+
+        //LOAD PROGRAM
+        begin
+            //TODO: This will be moved into its own container (class?) once I've got the logic sorted
+            string test_name, fname;
+            int fw_file;
+            tb_register fw [$];
+            test_name = "load_store_test"; //TODO: generalize this in makefile
+            fname = $sformatf("DV/test_firmware/%s.txt", test_name); 
+            $display("%s : %s", test_name, fname);
+            fw_file = $fopen(fname, "r");
+            if (!fw_file) $display("ERROR opening file");
+        end
+
+
         mem_override_if.override_real_mem();
 
         reset_n = 1'b1;
         #500;
         
-        mem_override_if.dump_mem(0, 64);
+        mem_override_if.dump_mem(`INSTRUCTION_BASE, `INSTRUCTION_BASE + 8);
 
     end
 
