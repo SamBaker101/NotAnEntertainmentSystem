@@ -74,9 +74,11 @@ module tb_6502_top;
     //RUN TEST
 	initial begin
         string test_name, fname;
-        int fw_file;
+        int fw_file, t;
+        bit break_out;
+        tb_register temp;
         tb_register fw [$];
-        tb_register [128] fline;
+        tb_register [`MEM_DEPTH - `INSTRUCTION_BASE] fline;
 
         $dumpfile("Out/6502_test_out.vcd");
 		$dumpvars(0, tb_6502_top);
@@ -99,12 +101,28 @@ module tb_6502_top;
         fw_file = $fopen(fname, "r");
         if (!fw_file) $display("ERROR opening file");
 
+        //Would you believe this version of iverilog doesnt support break or continue...
         while ($fgets(fline, fw_file)) begin
-            if ((fline[0] == "#") || (fline[0] == "\n")) 
-                $write("Skipped: %s", fline);
-            else
-                $write("Not Skipped: %s", fline);
-        end 
+            break_out = 0;
+            $write("PARSING: %s", fline);
+
+            for (int i = 0; i < `MEM_DEPTH - `INSTRUCTION_BASE; i ++) begin
+                if (break_out == 0) begin;
+                    if ((fline[i] == "#") || (fline[i] == "\n")) begin
+                        break_out = 1;
+                    end else if (fline[i] == " ") begin
+                    end else begin
+                        convert_instruction(fline[i], fline[i+1], temp);
+                        fw.push_back(temp);
+                        i++;                  
+                    end
+                end
+            end
+        end
+            
+        foreach(fw[i]) begin
+            $display("%0d : %h", i, fw[i]);
+        end
 
         mem_override_if.override_real_mem();
 
@@ -114,6 +132,21 @@ module tb_6502_top;
         mem_override_if.dump_mem(`INSTRUCTION_BASE, `INSTRUCTION_BASE + 8);
 
     end
+
+    task convert_instruction(input high_in, low_in, output [7:0] instruction_byte);
+        bit [3:0] high_nib; 
+        bit [3:0] low_nib;
+
+        high_nib =  (high_in < 58) ? high_in - 48 : 
+                    (high_in < 71) ? high_in - 55 :
+                    high_in - 87;
+
+        low_nib =   (high_in < 58) ? high_in - 48 : 
+                    (high_in < 71) ? high_in - 55 :
+                    high_in - 87;
+
+        instruction_byte = (high_nib << 4) + low_nib;
+    endtask
 
     //TASKS:
     task zero_mem_model(bit zero_model = 1, bit zero_real = 0);
