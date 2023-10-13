@@ -26,7 +26,7 @@ interface mem_over_if (input clk, reset_n);
             for (int i = 0; i < 8; i++) begin
                 $write("|%h: %h = %h | ", i, test_mem[i], real_mem[i]);
             end
-            $display("\n\n");
+            $display("\n");
 
             #20;
             mem_override <= 1'b0;

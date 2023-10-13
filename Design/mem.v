@@ -15,7 +15,7 @@ module mem(
         `ifdef TEST_RUN
             ,input override_mem
             ,input [`REG_WIDTH - 1 : 0] mem_override_in [`MEM_DEPTH - 1 : 0]
-            ,output reg [`REG_WIDTH - 1 : 0] mem_monitor [`MEM_DEPTH - 1 : 0]
+            ,output reg [`REG_WIDTH - 1 : 0] bank [`MEM_DEPTH - 1 : 0]
         `endif
         );
 	
@@ -24,7 +24,10 @@ module mem(
     parameter DEPTH = 16;
     parameter BASE  = 0;
 
-    reg [WIDTH - 1 : 0] bank [DEPTH - 1 : 0];
+    `ifndef TEST_RUN
+        reg [WIDTH - 1 : 0] bank [DEPTH - 1 : 0];
+    `endif
+    
     wire [ADDR_WIDTH - 1 : 0] local_addr;
 
     assign local_addr = addr - BASE;
@@ -32,26 +35,18 @@ module mem(
 
     //This will only be included in test environments to allow override and monitor of mem
     `ifdef TEST_RUN
-        //Update monitor after write (this should be handled different probably)
-        always @(negedge we) begin
-            for (int i = 0; i < DEPTH; i++) begin
-                mem_monitor[i] = bank[i];
-            end
-        end
-
-        //Override bank and update monitor
+        //Override bank
         always @(posedge override_mem) begin
             if (!reset_n) begin 
                 for (int i = 0; i < DEPTH; i++) begin
                     bank[i] = mem_override_in[i];
-                    mem_monitor[i] = bank[i];
                 end
             end
 
             for (int i = 0; i < 8; i++) begin
-                $write("|%h: %h: %h = %h | ", i, mem_override_in[i], bank[i], mem_monitor[i]);
+                $write("|%h: %h = %h | ", i, mem_override_in[i], bank[i]);
             end
-            $display("\n\n");
+            $display("\n");
 
         end
     `endif
