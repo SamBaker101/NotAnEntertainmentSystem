@@ -1,9 +1,6 @@
 `ifndef PKG
 `define PKG
 	
-
-
-	
 	//Operations
 	`define OPP_WIDTH 8
 	
@@ -108,6 +105,7 @@
 	`define AM3_ABS_Y	3'b110  //TSX
 	`define AM3_ABS_X	3'b111
 
+`include "DV/Structure/mem_over_if.sv"
 `include "Design/data_bus.v"
 `include "Design/decoder.v"
 `include "Design/fetcher.v"

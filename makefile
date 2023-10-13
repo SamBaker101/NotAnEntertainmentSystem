@@ -4,7 +4,7 @@
 SHELL = /bin/sh
 
 ####### FILES #######
-SRC = PKG/test_program_macros.v PKG/pkg.v Design/*
+SRC = PKG/test_program_macros.v PKG/pkg.v Design/* DV/Structure/*
 TBOUT = Out/tb.vvp
 SIMOUT = Out/iflow.vcd
 LOGOUT = Out/log.txt

@@ -14,27 +14,6 @@ typedef bit [`REG_WIDTH - 1 : 0] tb_register;
 
 tb_register mem_model [`MEM_DEPTH - 1 : 0];
 
-interface mem_over_if (input clk, reset_n); 
-    logic [`REG_WIDTH - 1 : 0] test_mem [`MEM_DEPTH - 1 : 0];
-    logic [`REG_WIDTH - 1 : 0] real_mem [`MEM_DEPTH - 1 : 0];
-    logic mem_override;
-
-    modport TB (input  real_mem, clk, reset_n, output test_mem, mem_override);
-    modport DUT(output real_mem,               input  test_mem, mem_override, clk, reset_n);
-
-    task override_real_mem();
-        if (reset_n) $display("ERROR: cannot overwrite mem while not in reset");
-        else begin
-            for (int i = 0; i < `MEM_DEPTH; i++) begin
-                test_mem[i] <= mem_model[i];
-            end
-            mem_override <= 1'b1;
-            #20;
-            mem_override <= 1'b0;
-        end
-    endtask : override_real_mem
-endinterface
-
 
 
 module tb_6502_top;
@@ -83,9 +62,9 @@ module tb_6502_top;
         .dout(d_from_mem),
 
         //Only exist for tbs
-        .override_mem(override_mem),
-        .mem_override_in(mem_model),
-        .mem_monitor(real_mem_monitor)
+        .override_mem(mem_override_if.mem_override),
+        .mem_override_in(mem_override_if.test_mem),
+        .mem_monitor(mem_override_if.real_mem)
         );
 
     //LOGIC
