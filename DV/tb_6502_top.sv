@@ -73,6 +73,11 @@ module tb_6502_top;
 
     //RUN TEST
 	initial begin
+        string test_name, fname;
+        int fw_file;
+        tb_register fw [$];
+        tb_register [128] fline;
+
         $dumpfile("Out/6502_test_out.vcd");
 		$dumpvars(0, tb_6502_top);
         
@@ -85,18 +90,21 @@ module tb_6502_top;
         randomize_mem_model(0, `INSTRUCTION_BASE);
 
         //LOAD PROGRAM
-        begin
-            //TODO: This will be moved into its own container (class?) once I've got the logic sorted
-            string test_name, fname;
-            int fw_file;
-            tb_register fw [$];
-            test_name = "load_store_test"; //TODO: generalize this in makefile
-            fname = $sformatf("DV/test_firmware/%s.txt", test_name); 
-            $display("%s : %s", test_name, fname);
-            fw_file = $fopen(fname, "r");
-            if (!fw_file) $display("ERROR opening file");
-        end
+        //TODO: This will be moved into its own container (class?) once I've got the logic sorted
+        test_name = "load_store_test"; //TODO: generalize this in makefile
+        fname = $sformatf("DV/test_firmware/%s.txt", test_name); 
 
+        $display("%s : %s", test_name, fname);
+
+        fw_file = $fopen(fname, "r");
+        if (!fw_file) $display("ERROR opening file");
+
+        while ($fgets(fline, fw_file)) begin
+            if ((fline[0] == "#") || (fline[0] == "\n")) 
+                $write("Skipped: %s", fline);
+            else
+                $write("Not Skipped: %s", fline);
+        end 
 
         mem_override_if.override_real_mem();
 
