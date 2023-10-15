@@ -106,11 +106,11 @@ module tb_6502_top;
             break_out = 0;
             $write("PARSING: %s", fline);
 
-            for (int i = 0; i < `MEM_DEPTH - `INSTRUCTION_BASE; i ++) begin
+            for (int i = 0; i < 1024; i ++) begin
                 if (break_out == 0) begin;
                     if ((fline[i] == "#") || (fline[i] == "\n")) begin
                         break_out = 1;
-                    end else if (fline[i] == " ") begin
+                    end else if ((fline[i] == " ") || (fline[i] == 0)) begin
                     end else begin
                         convert_instruction(fline[i], fline[i+1], temp);
                         fw.push_back(temp);
@@ -119,10 +119,13 @@ module tb_6502_top;
                 end
             end
         end
-            
+        
+        $display(" ");
         foreach(fw[i]) begin
             $display("%0d : %h", i, fw[i]);
         end
+        ///END LOAD
+
 
         mem_override_if.override_real_mem();
 
