@@ -28,7 +28,7 @@ ASSEMBLER_PATH = Z_6502Asm/
 #FW_PATH = DC/test_firmware/
 #just for testing the assembler
 FW_SOURCE_PATH = Z_6502Asm/
-FW_OUT_PATH = test_firmware/
+FW_OUT_PATH = Out/
 
 #### DEFINES ####
 ifndef TEST
@@ -36,7 +36,7 @@ ifndef TEST
 endif
 
 FW_SOURCE = $(FW_SOURCE_PATH)$(TEST).asm
-FW_OUT = TEST_SOURCE = $(FW_OUT_PATH)$(TEST).hex
+FW_OUT = $(FW_OUT_PATH)$(TEST).hex
 
 TEST_LIST = NOOPP \
 			LDAZPG 
@@ -72,8 +72,10 @@ sim:
 view:
 	$(VIEWER) $(SIMOUT)
 
-compile: 
-	$(ASSEMBLER_COMMAND) $(ASSEMBLER_PATH)$(ASSEMBLER) $(FW_SOURCE) $(FW_OUT_PATH)
+assemble: 
+	$(ASSEMBLER_COMMAND) $(ASSEMBLER_PATH)$(ASSEMBLER) $(FW_SOURCE); \
+	mv $(FW_SOURCE_PATH)$(TEST).hex $(FW_OUT)
+
 ### DERIVED DIRECTIVES ###
 run: clean build sim
 
