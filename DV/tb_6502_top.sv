@@ -93,6 +93,7 @@ module tb_6502_top;
 
         //LOAD PROGRAM
         //TODO: This will be moved into its own container (class?) once I've got the logic sorted
+        //FIXME: This currently returns nothing, lines are captured but are parsed incorrectly
         test_name = "load_store_test"; //TODO: generalize this in makefile
         fname = $sformatf("DV/test_firmware/%s.txt", test_name); 
 
