@@ -20,29 +20,26 @@ GEN = 2012
 SIMULATOR = vvp
 VIEWER = gtkwave
 
+#I'm using the ASM6502 Assembler from: https://github.com/SYSPROG-JLS/6502Asm
+#Other Assembler Options: http://6502.org/tools/asm/
+ASSEMBLER_COMMAND = python
+ASSEMBLER = asm6502.py
+ASSEMBLER_PATH = Z_6502Asm/
+#FW_PATH = DC/test_firmware/
+#just for testing the assembler
+FW_SOURCE_PATH = Z_6502Asm/
+FW_OUT_PATH = test_firmware/
+
 #### DEFINES ####
 ifndef TEST
-	TEST = NOOPP
+	TEST = test1
 endif
 
-TEST_STRING = "SELECT_TEST=\`TEST_$(TEST)"
+FW_SOURCE = $(FW_SOURCE_PATH)$(TEST).asm
+FW_OUT = TEST_SOURCE = $(FW_OUT_PATH)$(TEST).hex
 
 TEST_LIST = NOOPP \
-			LDAZPG \
-			LDAABS \
-			LDYSTY \
-			INDXY \
-			ADC \
-			ALU_LOG \
-			ALU_ASL \
-			ALU_LSR \
-			ALU_INC \
-			ALU_DEC \
-			ALU_ROT \
-			ALU_SBC \
-			CMP 	\
-			CPX		\
-			CPY
+			LDAZPG 
  
 ifndef DEPTH
 	DEPTH = 	"MEM_DEPTH='h00FF" 
@@ -60,11 +57,11 @@ ifndef SEED
 	SEED = SEED=58585
 endif
 
-BUILD_DEFINES = -g $(GEN) -D $(DEPTH) -D $(INST_BASE) -D $(STACK_BASE) -D "SELECT_TEST=\`TEST_$(TEST)" -D $(SEED) -D MEM_DUMP 
+BUILD_DEFINES = -g $(GEN) -D $(DEPTH) -D $(INST_BASE) -D $(STACK_BASE) -D $(SEED) -D MEM_DUMP 
 
 ### BASE DIRECTIVES #####
 make :  $(TB) $(SRC)
-	$(COMPILER) -g $(GEN) -D $(DEPTH) -D $(INST_BASE) -D $(STACK_BASE) -D "SELECT_TEST=\`TEST_$(TEST)" -D $(SEED) -o  Out/$(TEST).vvp $(TB) $(SRC) 
+	$(COMPILER) -g $(GEN) -D $(DEPTH) -D $(INST_BASE) -D $(STACK_BASE) -D $(SEED) -o  Out/$(TEST).vvp $(TB) $(SRC) 
 
 build : $(TB) $(SRC)
 	$(COMPILER) $(BUILD_DEFINES) -o Out/$(TEST).vvp $(TB) $(SRC) 
@@ -75,6 +72,8 @@ sim:
 view:
 	$(VIEWER) $(SIMOUT)
 
+compile: 
+	$(ASSEMBLER_COMMAND) $(ASSEMBLER_PATH)$(ASSEMBLER) $(FW_SOURCE) $(FW_OUT_PATH)
 ### DERIVED DIRECTIVES ###
 run: clean build sim
 
@@ -83,7 +82,7 @@ clean :
 
 runall : clean $(TB) $(SRC)																																		
 	$(foreach test, $(TEST_LIST), 																				\
-		$(COMPILER) -g $(GEN) -D $(DEPTH) -D $(INST_BASE) -D $(STACK_BASE) -D "SELECT_TEST=\`TEST_$(test)" -D $(SEED) -o  Out/$(test).vvp $(TB) $(SRC);)   \
+		$(COMPILER) -g $(GEN) -D $(DEPTH) -D $(INST_BASE) -D $(STACK_BASE) -D $(SEED) -o  Out/$(test).vvp $(TB) $(SRC);)   \
 	$(foreach test, $(TEST_LIST), 																				\
 		$(SIMULATOR) Out/$(test).vvp;)																			\
 

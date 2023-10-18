@@ -123,7 +123,7 @@ module tb_6502_top;
         
         $display(" ");
         foreach(fw[i]) begin
-            $display("%0d : %h", i, fw[i]);
+            //$display("%0d : %h", i, fw[i]);
         end
         ///END LOAD
 
@@ -133,6 +133,9 @@ module tb_6502_top;
         reset_n = 1'b1;
         #500;
         
+        $display("MEM_SAMPLE");
+        mem_override_if.dump_mem(0, 16);
+        $display("INSTRUCTION_SAMPLE");
         mem_override_if.dump_mem(`INSTRUCTION_BASE, `INSTRUCTION_BASE + 8);
 
     end

@@ -35,6 +35,7 @@ interface mem_over_if (input clk, reset_n);
             if (i % 8 == 0) $display("");
             $write("| %h:%h = %h | ", i, real_mem[i], mem_model[i]);
         end
+        $display("");
     endtask : dump_mem
 
 endinterface
