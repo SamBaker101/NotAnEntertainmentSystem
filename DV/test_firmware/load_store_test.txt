@@ -1,9 +1,0 @@
-#This is temporary to test file load/interpretation before setting up assembler
-#Program: 
-#LDA #04      (imm)
-#STA $02      (zeropage)
-
-A9
-04
-85
-02 

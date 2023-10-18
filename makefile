@@ -27,16 +27,16 @@ ASSEMBLER = asm6502.py
 ASSEMBLER_PATH = Z_6502Asm/
 #FW_PATH = DC/test_firmware/
 #just for testing the assembler
-FW_SOURCE_PATH = Z_6502Asm/
-FW_OUT_PATH = Out/
+FW_SOURCE_PATH =DV/test_firmware/
+FW_OUT_PATH =Out/
 
 #### DEFINES ####
 ifndef TEST
-	TEST = test1
+	TEST = load_store_test
 endif
 
-FW_SOURCE = $(FW_SOURCE_PATH)$(TEST).asm
-FW_OUT = $(FW_OUT_PATH)$(TEST).hex
+FW_SOURCE =$(FW_SOURCE_PATH)$(TEST).asm
+FW_OUT =$(FW_OUT_PATH)$(TEST).hex
 
 TEST_LIST = NOOPP \
 			LDAZPG 
@@ -74,7 +74,8 @@ view:
 
 assemble: 
 	$(ASSEMBLER_COMMAND) $(ASSEMBLER_PATH)$(ASSEMBLER) $(FW_SOURCE); \
-	mv $(FW_SOURCE_PATH)$(TEST).hex $(FW_OUT)
+	mv $(FW_SOURCE_PATH)$(TEST).hex $(FW_OUT); \
+	mv $(FW_SOURCE_PATH)$(TEST).lst $(FW_OUT_PATH)$(TEST).lst;
 
 ### DERIVED DIRECTIVES ###
 run: clean build sim
