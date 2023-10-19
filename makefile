@@ -46,7 +46,7 @@ ifndef DEPTH
 endif
 
 ifndef INST_BASE
-	INST_BASE = "INSTRUCTION_BASE='h050"
+	INST_BASE = "INSTRUCTION_BASE='h0A0"
 endif
 
 ifndef STACK_BASE
@@ -78,12 +78,12 @@ assemble:
 	mv $(FW_SOURCE_PATH)$(TEST).lst $(FW_OUT_PATH)$(TEST).lst;
 
 ### DERIVED DIRECTIVES ###
-run: clean build sim
+run: clean assemble build sim
 
 clean : 
 	rm -f Out/*.vvp Out/*.vcd 
 
-runall : clean $(TB) $(SRC)																																		
+runall : clean assemble $(TB) $(SRC)																																		
 	$(foreach test, $(TEST_LIST), 																				\
 		$(COMPILER) -g $(GEN) -D $(DEPTH) -D $(INST_BASE) -D $(STACK_BASE) -D $(SEED) -o  Out/$(test).vvp $(TB) $(SRC);)   \
 	$(foreach test, $(TEST_LIST), 																				\

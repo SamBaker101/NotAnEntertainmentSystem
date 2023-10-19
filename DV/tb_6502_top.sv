@@ -78,7 +78,7 @@ module tb_6502_top;
         bit break_out;
         tb_register temp;
         tb_register fw [$];
-        tb_register [`MEM_DEPTH - `INSTRUCTION_BASE] fline;
+        tb_register [`MAX_FW_SIZE] fline;
 
         $dumpfile("Out/6502_test_out.vcd");
 		$dumpvars(0, tb_6502_top);
@@ -95,7 +95,7 @@ module tb_6502_top;
         //TODO: This will be moved into its own container (class?) once I've got the logic sorted
         //FIXME: This currently returns nothing, lines are captured but are parsed incorrectly
         test_name = "load_store_test"; //TODO: generalize this in makefile
-        fname = $sformatf("DV/test_firmware/%s.txt", test_name); 
+        fname = $sformatf("Out/%s.hex", test_name); 
 
         $display("%s : %s", test_name, fname);
 
@@ -105,17 +105,16 @@ module tb_6502_top;
         //Would you believe this version of iverilog doesnt support break or continue...
         while ($fgets(fline, fw_file)) begin
             break_out = 0;
-            $write("PARSING: %s", fline);
+            $display("PARSING: %s", fline);
 
-            for (int i = 0; i < 1024; i ++) begin
+            for (int i = 1; i < `MAX_FW_SIZE; i ++) begin
                 if (break_out == 0) begin;
-                    if ((fline[i] == "#") || (fline[i] == "\n")) begin
-                        break_out = 1;
-                    end else if ((fline[i] == " ") || (fline[i] == 0)) begin
-                    end else begin
-                        convert_instruction(fline[i], fline[i+1], temp);
-                        fw.push_back(temp);
-                        i++;                  
+                    $write(" %c%c", fline[i], fline[i+1]);
+                    i++;
+                    if (fline[i+1] == ":") break_out = 1;
+                    else begin
+                        convert_instruction(fline[i - 1], fline[i], temp);
+                        //fw.push_front(temp);
                     end
                 end
             end
@@ -123,7 +122,7 @@ module tb_6502_top;
         
         $display(" ");
         foreach(fw[i]) begin
-            //$display("%0d : %h", i, fw[i]);
+            $display("%0d : %h", i, fw[i]);
         end
         ///END LOAD
 
@@ -140,7 +139,7 @@ module tb_6502_top;
 
     end
 
-    task convert_instruction(input high_in, low_in, output [7:0] instruction_byte);
+    task convert_instruction(input [7:0] high_in, [7:0] low_in, output [7:0] instruction_byte);
         bit [3:0] high_nib; 
         bit [3:0] low_nib;
 
@@ -152,7 +151,7 @@ module tb_6502_top;
                     (high_in < 71) ? high_in - 55 :
                     high_in - 87;
 
-        instruction_byte = (high_nib << 4) + low_nib;
+        instruction_byte = (high_nib << 4) + low_nib; 
     endtask
 
     //TASKS:

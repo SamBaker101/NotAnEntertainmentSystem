@@ -1,11 +1,10 @@
-;   This is temporary to test file load/interpretation before setting up assembler
+;   This is temporary to test file load/interpretation
 ;   Program: 
-;   LDA #04      (imm)
-;   STA $02      (zeropage)
-
 
 begin   LDA #$04    ; load accum 
         STA $02     ; store
-
-        .end
+        LDA #$06    ; load accum 
+        STA $03     ; store
         
+        .end
+

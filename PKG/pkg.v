@@ -1,6 +1,8 @@
 `ifndef PKG
 `define PKG
 	
+	`define MAX_FW_SIZE `MEM_DEPTH - `INSTRUCTION_BASE
+
 	//Operations
 	`define OPP_WIDTH 8
 	
