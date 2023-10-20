@@ -10,15 +10,16 @@
 typedef logic [`REG_WIDTH - 1 : 0] fw_byte; 
 
 class firmware;
-    string test_name, fname;
+    string fname;
+    int fw_length;
     int fw_file, t;
     bit break_out;
-    fw_byte temp;
-    fw_byte [`MAX_FW_SIZE] fw;
-    fw_byte [`MAX_FW_SIZE] fline;
+    byte temp;
+    byte fw[`MAX_FW_SIZE];
+    
 
     function new(string test_name);
-        this.fname = $sformatf("Out/%s.hex", this.test_name);
+        this.fname = $sformatf("Out/%s.hex", test_name);
     endfunction
 
     function void open_file();
@@ -27,18 +28,21 @@ class firmware;
     endfunction
 
     function void load_fw();
-        while ($fgets(this.fline, this.fw_file)) begin
+        fw_byte [`MAX_FW_SIZE] fline;
+        byte temp;
+        while ($fgets(fline, this.fw_file)) begin
             this.break_out = 0;
-            $display("PARSING: %s", this.fline);
+            $display("PARSING: %s", fline);
 
             for (int i = 1; i < `MAX_FW_SIZE; i ++) begin
                 if (this.break_out == 0) begin;
-                    if ((this.fline[i] == ":") || (this.fline[i+1] == ":")) 
+                    if ((fline[i] == ":") || (fline[i+1] == ":")) begin
                         this.break_out = 1;
-                    else begin
-                        $display(" %c%c", this.fline[i], this.fline[i+1]);
-                        this.convert_instruction(this.fline[i+1], this.fline[i], this.temp);
-                        this.fw_push_front(this.temp);
+                        this.fw_length = i;
+                    end else begin
+                        //$display(" %c%c", fline[i], fline[i+1]);
+                        this.convert_instruction(fline[i+1], fline[i], temp);
+                        this.fw_push_front(temp);
                         i++;
                     end
                 end
@@ -46,19 +50,19 @@ class firmware;
         end
     endfunction
 
-    function void fw_push_front(bit [7:0] input_byte); 
+    function void fw_push_front(byte input_byte); 
         //Workaround as queues in classes arent supported
+        $display("Pushing Byte: %h", input_byte);
         for (int i = 1; i < `MAX_FW_SIZE; i ++) begin
             fw[`MAX_FW_SIZE - i] = fw[`MAX_FW_SIZE - i - 1];
         end 
         fw[0] = input_byte;
     endfunction
 
-    //FIXME: This needs fixing
     function void print_fw();
-        int i;
-        i = 4;
+        for (int i = 0; i <= (this.fw_length/2) - 1; i++) begin
             $display("%0d : %h", i, this.fw[i]);
+        end
     endfunction
 
     task convert_instruction(input [7:0] high_in, [7:0] low_in, output [7:0] instruction_byte);
@@ -78,7 +82,7 @@ class firmware;
         //$display("high_nib %h, low nib %h", high_nib, low_nib);
 
         instruction_byte = (high_nib << 4) + low_nib; 
-        //$display("Instruction %h", instruction_byte);
+        //$display("Converted Instruction %h", instruction_byte);
     endtask
 
 endclass

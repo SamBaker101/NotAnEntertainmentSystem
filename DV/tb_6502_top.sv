@@ -88,10 +88,10 @@ module tb_6502_top;
 
         ///LOAD PROGRAM
         test_fw = new("load_store_test");    //FIXME: Test name should not be hardcoded
-        //test_fw.open_file();
-        //test_fw.load_fw();
-        //$display(" ");
-        //test_fw.print_fw();
+        test_fw.open_file();
+        test_fw.load_fw();
+        $display(" ");
+        test_fw.print_fw();
 
         mem_override_if.override_real_mem();
 
