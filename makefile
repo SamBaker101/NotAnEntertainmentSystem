@@ -35,11 +35,12 @@ ifndef TEST
 	TEST = load_store_test
 endif
 
+TEST_DEFINE = 'TEST_NAME="$(TEST)"'
 FW_SOURCE =$(FW_SOURCE_PATH)$(TEST).asm
 FW_OUT =$(FW_OUT_PATH)$(TEST).hex
 
-TEST_LIST = NOOPP \
-			LDAZPG 
+TEST_LIST = load_store_test \
+			
  
 ifndef DEPTH
 	DEPTH = 	"MEM_DEPTH='h00FF" 
@@ -57,7 +58,8 @@ ifndef SEED
 	SEED = SEED=58585
 endif
 
-BUILD_DEFINES = -g $(GEN) -D $(DEPTH) -D $(INST_BASE) -D $(STACK_BASE) -D $(SEED) -D MEM_DUMP 
+BUILD_DEFINES = -g $(GEN) -D $(DEPTH) -D $(INST_BASE) -D $(STACK_BASE) -D $(SEED) -D $(TEST_DEFINE) -D MEM_DUMP 
+COMMANDS = assemble build sim
 
 ### BASE DIRECTIVES #####
 make :  $(TB) $(SRC)
@@ -78,15 +80,13 @@ assemble:
 	mv $(FW_SOURCE_PATH)$(TEST).lst $(FW_OUT_PATH)$(TEST).lst;
 
 ### DERIVED DIRECTIVES ###
-run: clean assemble build sim
+run: clean $(COMMANDS)
 
 clean : 
 	rm -f Out/*.vvp Out/*.vcd 
 
-runall : clean assemble $(TB) $(SRC)																																		
-	$(foreach test, $(TEST_LIST), 																				\
-		$(COMPILER) -g $(GEN) -D $(DEPTH) -D $(INST_BASE) -D $(STACK_BASE) -D $(SEED) -o  Out/$(test).vvp $(TB) $(SRC);)   \
-	$(foreach test, $(TEST_LIST), 																				\
-		$(SIMULATOR) Out/$(test).vvp;)																			\
+##FIXME: This is not currently functional
+runall : clean $(TB) $(SRC)																																		
+	$(foreach test, $(TEST_LIST), $(COMMANDS))
 
 

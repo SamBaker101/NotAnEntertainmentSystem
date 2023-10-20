@@ -89,7 +89,7 @@ module tb_6502_top;
         randomize_mem_model(0, `INSTRUCTION_BASE);
 
         ///LOAD PROGRAM
-        test_fw = new("load_store_test");    //FIXME: Test name should not be hardcoded
+        test_fw = new(`TEST_NAME);   
         test_fw.open_file();
         test_fw.read_fw();
         $display(" ");
