@@ -109,12 +109,12 @@ module tb_6502_top;
 
             for (int i = 1; i < `MAX_FW_SIZE; i ++) begin
                 if (break_out == 0) begin;
-                    $write(" %c%c", fline[i], fline[i+1]);
-                    i++;
-                    if (fline[i+1] == ":") break_out = 1;
+                    if ((fline[i] == ":") || (fline[i+1] == ":")) break_out = 1;
                     else begin
-                        convert_instruction(fline[i - 1], fline[i], temp);
-                        //fw.push_front(temp);
+                        $display(" %c%c", fline[i], fline[i+1]);
+                        convert_instruction(fline[i+1], fline[i], temp);
+                        fw.push_front(temp);
+                        i++;
                     end
                 end
             end
@@ -142,16 +142,21 @@ module tb_6502_top;
     task convert_instruction(input [7:0] high_in, [7:0] low_in, output [7:0] instruction_byte);
         bit [3:0] high_nib; 
         bit [3:0] low_nib;
+        
+        //$display("high_in %c, low in %c", high_in, low_in);
 
         high_nib =  (high_in < 58) ? high_in - 48 : 
                     (high_in < 71) ? high_in - 55 :
                     high_in - 87;
 
-        low_nib =   (high_in < 58) ? high_in - 48 : 
-                    (high_in < 71) ? high_in - 55 :
-                    high_in - 87;
+        low_nib =   (low_in < 58) ? low_in - 48 : 
+                    (low_in < 71) ? low_in - 54 :
+                    low_in - 86;
+
+        //$display("high_nib %h, low nib %h", high_nib, low_nib);
 
         instruction_byte = (high_nib << 4) + low_nib; 
+        //$display("Instruction %h", instruction_byte);
     endtask
 
     //TASKS:
