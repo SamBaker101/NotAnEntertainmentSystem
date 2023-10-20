@@ -15,9 +15,7 @@ class firmware;
     int fw_file, t;
     bit break_out;
     byte temp;
-    byte fw[`MAX_FW_SIZE];
     
-
     function new(string test_name);
         this.fname = $sformatf("Out/%s.hex", test_name);
     endfunction
@@ -30,6 +28,8 @@ class firmware;
     function void load_fw();
         fw_byte [`MAX_FW_SIZE] fline;
         byte temp;
+        this.fw_length = 0;
+
         while ($fgets(fline, this.fw_file)) begin
             this.break_out = 0;
             $display("PARSING: %s", fline);
@@ -38,9 +38,9 @@ class firmware;
                 if (this.break_out == 0) begin;
                     if ((fline[i] == ":") || (fline[i+1] == ":")) begin
                         this.break_out = 1;
-                        this.fw_length = i;
                     end else begin
                         //$display(" %c%c", fline[i], fline[i+1]);
+                        this.fw_length = this.fw_length + 1;
                         this.convert_instruction(fline[i+1], fline[i], temp);
                         this.fw_push_front(temp);
                         i++;
@@ -50,18 +50,21 @@ class firmware;
         end
     endfunction
 
-    function void fw_push_front(byte input_byte); 
+    task fw_push_front(input byte input_byte); 
         //Workaround as queues in classes arent supported
-        $display("Pushing Byte: %h", input_byte);
-        for (int i = 1; i < `MAX_FW_SIZE; i ++) begin
-            fw[`MAX_FW_SIZE - i] = fw[`MAX_FW_SIZE - i - 1];
+        byte local_fw[`MAX_FW_SIZE];
+        for (int i = 1; i < this.fw_length; i ++) begin
+            fw[this.fw_length - i] = fw[this.fw_length - i - 1];
         end 
         fw[0] = input_byte;
-    endfunction
+        //this.fw = local_fw;
+
+        $display("Pushing Byte: %h, fw[0] = %h, fw[1] = %h", input_byte, fw[0], fw[1]);
+    endtask
 
     function void print_fw();
-        for (int i = 0; i <= (this.fw_length/2) - 1; i++) begin
-            $display("%0d : %h", i, this.fw[i]);
+        for (int i = 0; i <= this.fw_length - 1; i++) begin
+            $display("%0d : %h", i, fw[i]);
         end
     endfunction
 
