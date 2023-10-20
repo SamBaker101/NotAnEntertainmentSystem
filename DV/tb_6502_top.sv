@@ -91,8 +91,9 @@ module tb_6502_top;
         ///LOAD PROGRAM
         test_fw = new("load_store_test");    //FIXME: Test name should not be hardcoded
         test_fw.open_file();
-        test_fw.load_fw();
+        test_fw.read_fw();
         $display(" ");
+        test_fw.load_fw();
         test_fw.print_fw();
 
         mem_override_if.override_real_mem();
@@ -103,7 +104,7 @@ module tb_6502_top;
         $display("MEM_SAMPLE");
         mem_override_if.dump_mem(0, 16);
         $display("INSTRUCTION_SAMPLE");
-        mem_override_if.dump_mem(`INSTRUCTION_BASE, `INSTRUCTION_BASE + 8);
+        mem_override_if.dump_mem(`INSTRUCTION_BASE, `INSTRUCTION_BASE + 32);
 
     end : main_test
 

@@ -25,7 +25,7 @@ class firmware;
         if (!this.fw_file) $display("ERROR opening file");    
     endfunction
 
-    function void load_fw();
+    function void read_fw();
         //If you use a different assembler this may need modification
         fw_byte [`MAX_FW_SIZE] fline;
         byte temp;
@@ -54,6 +54,15 @@ class firmware;
         for (int i = 0; i < 4; i++)
             this.remove_front();
         this.remove_back();
+    endfunction
+
+    function void load_fw();
+        for (int i = 0; i < `MAX_FW_SIZE; i++) begin
+            if (i < this.fw_length)
+                mem_model[i + `INSTRUCTION_BASE] = fw[i];
+            else
+                mem_model[i + `INSTRUCTION_BASE] = 8'h00;
+        end
     endfunction
 
     function void fw_push_front(input byte input_byte); 
