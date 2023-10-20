@@ -40,6 +40,7 @@ FW_SOURCE =$(FW_SOURCE_PATH)$(TEST).asm
 FW_OUT =$(FW_OUT_PATH)$(TEST).hex
 
 TEST_LIST = load_store_test \
+			some_other_thing
 			
  
 ifndef DEPTH
@@ -83,10 +84,20 @@ assemble:
 run: clean $(COMMANDS)
 
 clean : 
-	rm -f Out/*.vvp Out/*.vcd 
+	rm -f Out/* 
+
+TEST_DEFINE = 'TEST_NAME="$(TEST)"'
+FW_SOURCE =$(FW_SOURCE_PATH)$(TEST).asm
+FW_OUT =$(FW_OUT_PATH)$(TEST).hex
 
 ##FIXME: This is not currently functional
 runall : clean $(TB) $(SRC)																																		
-	$(foreach test, $(TEST_LIST), $(COMMANDS))
+	$(foreach test, $(TEST_LIST), 															\
+		$(ASSEMBLER_COMMAND) $(ASSEMBLER_PATH)$(ASSEMBLER) $(FW_SOURCE_PATH)$(test).asm; 	\
+		mv $(FW_SOURCE_PATH)$(test).hex $(FW_OUT_PATH)$(test).hex; 							\
+		mv $(FW_SOURCE_PATH)$(test).lst $(FW_OUT_PATH)$(test).lst;							\
+		$(COMPILER) -g $(GEN) -D $(DEPTH) -D $(INST_BASE) -D $(STACK_BASE) -D $(SEED) -D 'TEST_NAME="$(test)"' -o Out/$(test).vvp $(TB) $(SRC)  \
+		$(SIMULATOR) Out/$(test).vvp														\
+	)						
 
 
