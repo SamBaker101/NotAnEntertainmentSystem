@@ -5,24 +5,28 @@
 `ifndef FW
 `define FW
 
+`include "PKG/pkg.v"
+
+typedef logic [`REG_WIDTH - 1 : 0] fw_byte; 
+
 class firmware;
     string test_name, fname;
     int fw_file, t;
     bit break_out;
-    tb_register temp;
-    tb_register fw [$];
-    tb_register [`MAX_FW_SIZE] fline;
+    fw_byte temp;
+    fw_byte [`MAX_FW_SIZE] fw;
+    fw_byte [`MAX_FW_SIZE] fline;
 
     function new(string test_name);
         this.fname = $sformatf("Out/%s.hex", this.test_name);
     endfunction
 
-    function open_file();
+    function void open_file();
         this.fw_file = $fopen(this.fname, "r");
         if (!this.fw_file) $display("ERROR opening file");    
     endfunction
 
-    function load_fw();
+    function void load_fw();
         while ($fgets(this.fline, this.fw_file)) begin
             this.break_out = 0;
             $display("PARSING: %s", this.fline);
@@ -34,12 +38,27 @@ class firmware;
                     else begin
                         $display(" %c%c", this.fline[i], this.fline[i+1]);
                         this.convert_instruction(this.fline[i+1], this.fline[i], this.temp);
-                        fw.push_front(this.temp);
+                        this.fw_push_front(this.temp);
                         i++;
                     end
                 end
             end
         end
+    endfunction
+
+    function void fw_push_front(bit [7:0] input_byte); 
+        //Workaround as queues in classes arent supported
+        for (int i = 1; i < `MAX_FW_SIZE; i ++) begin
+            fw[`MAX_FW_SIZE - i] = fw[`MAX_FW_SIZE - i - 1];
+        end 
+        fw[0] = input_byte;
+    endfunction
+
+    //FIXME: This needs fixing
+    function void print_fw();
+        int i;
+        i = 4;
+            $display("%0d : %h", i, this.fw[i]);
     endfunction
 
     task convert_instruction(input [7:0] high_in, [7:0] low_in, output [7:0] instruction_byte);
@@ -61,12 +80,6 @@ class firmware;
         instruction_byte = (high_nib << 4) + low_nib; 
         //$display("Instruction %h", instruction_byte);
     endtask
-
-    function print_fw();
-        foreach(this.fw[i]) begin
-            $display("%0d : %h", i, this.fw[i]);
-        end
-    endfunction
 
 endclass
 

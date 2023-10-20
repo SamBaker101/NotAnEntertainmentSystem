@@ -72,7 +72,7 @@ module tb_6502_top;
     mem_over_if mem_override_if(phi0, reset_n);
 
     //RUN TEST
-	initial begin
+	initial begin : main_test
         firmware test_fw;
 
         $dumpfile("Out/6502_test_out.vcd");
@@ -87,11 +87,11 @@ module tb_6502_top;
         randomize_mem_model(0, `INSTRUCTION_BASE);
 
         ///LOAD PROGRAM
-        test_fw.new("load_store_test");    //FIXME: Test name should not be hardcoded
-        test_fw.open_file();
-        test_fw.load_fw();
-        $display(" ");
-        test_fw.print_fw();
+        test_fw = new("load_store_test");    //FIXME: Test name should not be hardcoded
+        //test_fw.open_file();
+        //test_fw.load_fw();
+        //$display(" ");
+        //test_fw.print_fw();
 
         mem_override_if.override_real_mem();
 
@@ -103,7 +103,7 @@ module tb_6502_top;
         $display("INSTRUCTION_SAMPLE");
         mem_override_if.dump_mem(`INSTRUCTION_BASE, `INSTRUCTION_BASE + 8);
 
-    end
+    end : main_test
 
     //TASKS:
     task zero_mem_model(bit zero_model = 1, bit zero_real = 0);
