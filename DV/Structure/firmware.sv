@@ -26,6 +26,7 @@ class firmware;
     endfunction
 
     function void load_fw();
+        //If you use a different assembler this may need modification
         fw_byte [`MAX_FW_SIZE] fline;
         byte temp;
         this.fw_length = 0;
@@ -48,19 +49,34 @@ class firmware;
                 end
             end
         end
+
+        //clean header and footer
+        for (int i = 0; i < 4; i++)
+            this.remove_front();
+        this.remove_back();
     endfunction
 
-    task fw_push_front(input byte input_byte); 
+    function void fw_push_front(input byte input_byte); 
         //Workaround as queues in classes arent supported
-        byte local_fw[`MAX_FW_SIZE];
         for (int i = 1; i < this.fw_length; i ++) begin
             fw[this.fw_length - i] = fw[this.fw_length - i - 1];
         end 
         fw[0] = input_byte;
-        //this.fw = local_fw;
+    endfunction
 
-        $display("Pushing Byte: %h, fw[0] = %h, fw[1] = %h", input_byte, fw[0], fw[1]);
-    endtask
+    function void remove_front(); 
+        //Workaround as queues in classes arent supported
+        for (int i = 0; i < this.fw_length - 1; i ++) begin
+            fw[i] = fw[i+1];
+        end 
+        this.fw_length = this.fw_length - 1;  
+    endfunction
+
+    function void remove_back(); 
+        //Workaround as queues in classes arent supported
+        fw[this.fw_length - 1] = 8'h00;
+        this.fw_length = this.fw_length - 1;
+    endfunction
 
     function void print_fw();
         for (int i = 0; i <= this.fw_length - 1; i++) begin
