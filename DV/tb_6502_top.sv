@@ -95,9 +95,8 @@ module tb_6502_top;
         test_fw = new(`TEST_NAME);   
         test_fw.open_file();
         test_fw.read_fw();
-        $display(" ");
         test_fw.load_fw();
-        test_fw.print_fw();
+        //test_fw.print_fw();
 
         mem_override_if.override_real_mem();
 

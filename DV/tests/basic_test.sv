@@ -10,8 +10,9 @@
 class basic_test;
     string test_name;
 
-    function new(test_name);
-        this.test_name = test_name;
+    function new(string test);
+        this.test_name = test;
+        $display("Basic_Test new called: %s : %s", test, this.test_name);
     endfunction
 
     function void modify_mem_model();
