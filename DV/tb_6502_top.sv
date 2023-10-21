@@ -9,7 +9,7 @@
 `define TEST_RUN
 
 `include "PKG/pkg.v"
-        
+
 typedef logic [`REG_WIDTH - 1 : 0] tb_register; 
 
 //FIXME: These are globals as a work around due to limited SystemVerilog support in iVerilog
@@ -76,6 +76,7 @@ module tb_6502_top;
     //RUN TEST
 	initial begin : main_test
         firmware test_fw;
+        basic_test this_test;
 
         $dumpfile("Out/6502_test_out.vcd");
 		$dumpvars(0, tb_6502_top);
@@ -88,6 +89,8 @@ module tb_6502_top;
         zero_mem_model();
         randomize_mem_model(0, `INSTRUCTION_BASE);
 
+        this_test = new(`TEST_NAME);
+        
         ///LOAD PROGRAM
         test_fw = new(`TEST_NAME);   
         test_fw.open_file();
@@ -97,6 +100,8 @@ module tb_6502_top;
         test_fw.print_fw();
 
         mem_override_if.override_real_mem();
+
+        this_test.modify_mem_model();
 
         reset_n = 1'b1;
         #500;
