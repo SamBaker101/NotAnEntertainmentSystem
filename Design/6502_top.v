@@ -85,8 +85,6 @@ module cpu_top(
 
 	//Pin assignments
 	assign A = addr_from_bus;
-	assign D = d_to_mem;
-	assign d_from_mem = D;
 	assign R_W_n = !we[6];
 
 	//Others
@@ -102,6 +100,9 @@ module cpu_top(
 	assign iPC =   (jump_pc) ? jump_pc : pc_next;
     assign iSTATUS = update_status ? status_from_alu : status_from_bus;
     
+    
+	assign d_from_mem = D;
+    assign D        = (R_W_n) ? 8'hZZ  : d_to_mem;
     assign sp_to_abus = oSP + `STACK_BASE;
 
     ////////////////////////

@@ -71,9 +71,9 @@ module tb_6502_top;
     initial begin : clock
         forever begin
             phi0 = 0;
-            #5;
+            #1;
             phi0 = ~phi0;
-            #5;
+            #1;
         end
     end : clock
 
