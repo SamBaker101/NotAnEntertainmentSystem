@@ -1,4 +1,8 @@
-;   This is temporary to test file load/interpretation
+;   Sam Baker
+;   10/2023
+;   Tests load and store instructions with various addressing modes
+;   Written for use with asm6502 assembler
+
 
 ; Test:             LDA, LDX, LDY, STA, STX, STY
 ; Addr Modes:       Imm, ZPG, ZPGX, ABS, ABSX, ABSY, INDX, INDY
@@ -21,5 +25,10 @@ loady   LDY #$1F
         STY $04     
         LDY $06,X
         STY $000C
+
+loadx   LDY #$FF   
+        STY $06     
+        LDY $06
+        STY $0070
 
         .end

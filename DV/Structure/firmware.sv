@@ -38,7 +38,6 @@ class firmware;
             $display("PARSING: %s", fline);
             temp_length = 0;
 
-
             for (int i = 1; i < `MAX_FW_SIZE; i ++) begin
                 if (this.break_out == 0) begin;
                     if ((fline[i] == ":") || (fline[i+1] == ":")) begin
@@ -58,7 +57,7 @@ class firmware;
                 end
             end 
             for (int i = 4;  i < temp_length - 1; i++) begin
-                $display("ADDING: %h", temp_fw[i]);
+                //$display("ADDING: %h", temp_fw[i]);
                 fw[this.fw_length] = temp_fw[i];
                 this.fw_length = this.fw_length + 1;
             end
@@ -121,7 +120,7 @@ class firmware;
                     low_in - 86;
 
         instruction_byte = (high_nib << 4) + low_nib; 
-        $display("High_nib %h, Low nib %h, Converted Instruction %h", high_nib, low_nib, instruction_byte);
+        //$display("High_nib %h, Low nib %h, Converted Instruction %h", high_nib, low_nib, instruction_byte);
 
     endtask
 
