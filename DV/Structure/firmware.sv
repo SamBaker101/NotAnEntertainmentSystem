@@ -27,13 +27,17 @@ class firmware;
 
     function void read_fw();
         //If you use a different assembler this may need modification
-        fw_byte [`MAX_FW_SIZE] fline;
+        fw_byte [`MAX_FW_SIZE] fline, temp_fw;
         byte temp;
+        int temp_length;
+
         this.fw_length = 0;
 
         while ($fgets(fline, this.fw_file)) begin
             this.break_out = 0;
             $display("PARSING: %s", fline);
+            temp_length = 0;
+
 
             for (int i = 1; i < `MAX_FW_SIZE; i ++) begin
                 if (this.break_out == 0) begin;
@@ -41,19 +45,27 @@ class firmware;
                         this.break_out = 1;
                     end else begin
                         //$display(" %c%c", fline[i], fline[i+1]);
-                        this.fw_length = this.fw_length + 1;
+                        temp_length ++;
                         this.convert_instruction(fline[i+1], fline[i], temp);
-                        this.fw_push_front(temp);
+
+                        for (int i = 1; i < temp_length; i ++) begin
+                            temp_fw[temp_length - i] = temp_fw[temp_length - i - 1];
+                        end 
+                        
+                        temp_fw[0] = temp;
                         i++;
                     end
                 end
+            end 
+            for (int i = 4;  i < temp_length - 1; i++) begin
+                fw[this.fw_length] = temp_fw[i];
+                this.fw_length = this.fw_length + 1;
             end
+
         end
 
         //clean header and footer
-        for (int i = 0; i < 4; i++)
-            this.remove_front();
-        this.remove_back();
+
     endfunction
 
     function void load_fw();

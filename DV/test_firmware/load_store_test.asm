@@ -14,5 +14,7 @@ loada   LDA #$04
         STA $0002,Y
         LDA ($02),y
         STA $01
+        LDA #$05
+        STA ($01,X)
 
         .end
