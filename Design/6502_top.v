@@ -234,7 +234,7 @@ module cpu_top(
 
         .opp(opp_to_alu),
 
-        .imm_out(imm_to_decoder),
+        .imm_out(imm_to_bus),
         .alu_update_status(update_status), 
 		.invert_alu_b(invert_alu_b)
         );

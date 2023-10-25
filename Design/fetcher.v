@@ -25,6 +25,7 @@ module fetcher(
         parameter OPP_WIDTH = `OPP_WIDTH;
 
         /////////////////////////////
+        reg reset_n_d;
 
         reg [2:0] add_mode;
         reg [ADDR_WIDTH - 1: 0] addr_reg;
@@ -50,17 +51,6 @@ module fetcher(
                 pc_next = `INSTRUCTION_BASE;            
                 pc_wait = 1'b1;
             end else begin 
-      //This logic is a mess, try again          
-
-
-//FIXME: Removing this probably broke things, will repair once new top level TB is setup
-//                if (get_next) begin                     
-//                    fetch_counter = 1'b0;
-//                    instruction_ready = 1'b0;
-//                    fetch_selector = `SELECTOR_MEM;
-//                    addr = pc;
-//                    pc_wait = 1'b0;
-//                end
                 if (!instruction_ready) begin
                     fetch_selector = 0;
                     addr = pc;
@@ -292,11 +282,14 @@ module fetcher(
                             end
                         end
                     endcase
-                fetch_counter++; 
+                if (reset_n == reset_n_d)
+                    fetch_counter++; 
                 if (!pc_wait && !instruction_ready)
                     pc_next = pc + 1;
                 end
             end
+
+            reset_n_d = reset_n;
         end 
 
     endmodule

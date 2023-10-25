@@ -88,6 +88,8 @@ module decoder(
             end else begin
                 if (instruction_ready) begin 
                     
+
+
                     //UNIMPLEMENTED INSTRUCTIONS:
                     //  BRK: 00             - 000 000 00
 
