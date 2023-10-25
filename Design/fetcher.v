@@ -64,7 +64,8 @@ module fetcher(
                     //This logic is a big mess, many of these need to be rewritten
                     case(add_mode) //These are the basic addr mode, may need to be overwritten in some cases
                         `AM3_X_IND  : begin
-                            if (instruction_out[1:0] == 2'b01) begin
+                            if (instruction_out == 8'h00) begin
+                            end else if (instruction_out[1:0] == 2'b01) begin
                                 if (fetch_counter == 0) begin 
                                     fetch_selector = `SELECTOR_MEM;
                                 end 

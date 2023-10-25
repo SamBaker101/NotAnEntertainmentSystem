@@ -114,6 +114,8 @@ module tb_6502_top;
         $display("INSTRUCTION_SAMPLE");
         mem_override_if.dump_mem(`INSTRUCTION_BASE, `INSTRUCTION_BASE + 32);
 
+        mem_override_if.check_mem();
+
         $finish;
     end : main_test
 
