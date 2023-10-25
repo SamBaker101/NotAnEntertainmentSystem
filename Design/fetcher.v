@@ -73,17 +73,12 @@ module fetcher(
                                     fetch_selector = `SELECTOR_X;
                                     pc_wait = 1'b1;
                                 end
-                                if (fetch_counter == 3) begin
+                                if (fetch_counter == 2) begin
                                     addr_reg += data_in;
-                                    addr = addr_reg;
-                                    fetch_selector = `SELECTOR_MEM;
-                                end  
-                                if (fetch_counter == 4) begin
-                                    addr_reg = {8'h00, data_in};
                                     addr = addr_reg;
                                     instruction_ready = 1'b1;
                                     pc_wait = 1'b0;
-                                end
+                                end  
                             end else begin  //Imm for LDX LDY and CPX CPY
                                 if (fetch_counter == 0) begin 
                                     fetch_selector = `SELECTOR_MEM;
