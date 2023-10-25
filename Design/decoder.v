@@ -5,7 +5,9 @@
 `ifndef DECODE
 `define DECODE
 
-`define ADDR_MODE_SELECTOR  (add_mode == `AM3_ADD) ? ((instruction_in[0] == 1) ? `SELECTOR_IMM: `SELECTOR_ADD): `SELECTOR_MEM;
+`define ADDR_MODE_SELECTOR  (add_mode == `AM3_ADD)   ? ((instruction_in[0] == 1) ? `SELECTOR_IMM: `SELECTOR_ADD) :  \
+                            (add_mode == `AM3_IND_Y) ? `SELECTOR_IMM :                                              \ 
+                            `SELECTOR_MEM;          
 
 
 module decoder(

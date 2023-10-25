@@ -177,28 +177,17 @@ module fetcher(
                                     fetch_selector = `SELECTOR_MEM;
                                 end 
                                 if (fetch_counter == 1) begin
-                                    addr_reg[7:0] = data_in;
-                                    fetch_selector = `SELECTOR_MEM;
-                                end
-                                if (fetch_counter == 2) begin 
-                                    addr_reg[15:8] = data_in;
-                                    fetch_selector = `SELECTOR_MEM;
+                                    addr_reg = {8'h00, data_in};
                                     addr = addr_reg;
+                                    fetch_selector = `SELECTOR_MEM;
                                     pc_wait = 1'b1;
                                 end
-                                if (fetch_counter == 3) begin
-                                    addr = addr_reg + 1;
-                                    addr_reg[7:0] = data_in;
-                                    fetch_selector = `SELECTOR_MEM;
-                                end
-                                if (fetch_counter == 4) begin 
-                                    addr_reg[15:8] = data_in;
-                                    addr = addr_reg;
+                                if (fetch_counter == 2) begin 
+                                    addr_reg = {8'h00, data_in};
                                     fetch_selector = `SELECTOR_Y;
                                 end
-                                if (fetch_counter == 5) begin
-                                    addr_reg += data_in;
-                                    addr = addr_reg;
+                                if (fetch_counter == 3) begin
+                                    imm = addr_reg + data_in;
                                     instruction_ready = 1'b1;
                                     pc_wait = 1'b0;
                                 end  
