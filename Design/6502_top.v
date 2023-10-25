@@ -88,7 +88,7 @@ module cpu_top(
 	assign R_W_n = !we[6];
 
 	//Others
-    assign we_pc 	= we[`WE_PC];
+    assign we_pc 	= we[`WE_PC] || (pc != pc_next);
 	assign we_sp 	= we[`WE_SP];
 	assign we_add 	= we[`WE_ADD];
 	assign we_x 	= we[`WE_X];
@@ -96,11 +96,10 @@ module cpu_top(
 	assign we_stat 	= we[`WE_STAT];
 
 	assign pc = oPC;
-	assign we[0] = (pc != pc_next) ? 1'b1 : 0;
 	assign iPC =   (jump_pc) ? jump_pc : pc_next;
     assign iSTATUS = update_status ? status_from_alu : status_from_bus;
     
-    
+
 	assign d_from_mem = D;
     assign D        = (R_W_n) ? 8'hZZ  : d_to_mem;
     assign sp_to_abus = oSP + `STACK_BASE;
