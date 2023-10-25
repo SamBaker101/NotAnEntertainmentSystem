@@ -17,4 +17,9 @@ loada   LDA #$04
         LDA #$05
         STA ($01,X)
 
+loady   LDY #$1F   
+        STY $04     
+        LDY $06,X
+        STY $000C
+
         .end

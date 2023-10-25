@@ -21,6 +21,9 @@ class basic_test;
             mem_model[5] = mem_model[4]; 
             mem_model[1] = mem_model[2] + 3; 
             mem_model[3] = 8'h05;
+            
+            mem_model[4] = 8'h1F;
+            mem_model[12] = mem_model[8];
 
         end else begin
             $display("ERROR: Test %s not found in modify_mem_model", this.test_name);

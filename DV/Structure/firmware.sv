@@ -58,6 +58,7 @@ class firmware;
                 end
             end 
             for (int i = 4;  i < temp_length - 1; i++) begin
+                $display("ADDING: %h", temp_fw[i]);
                 fw[this.fw_length] = temp_fw[i];
                 this.fw_length = this.fw_length + 1;
             end
@@ -116,13 +117,12 @@ class firmware;
                     high_in - 87;
 
         low_nib =   (low_in < 58) ? low_in - 48 : 
-                    (low_in < 71) ? low_in - 54 :
+                    (low_in < 71) ? low_in - 55 :
                     low_in - 86;
 
-        //$display("high_nib %h, low nib %h", high_nib, low_nib);
-
         instruction_byte = (high_nib << 4) + low_nib; 
-        //$display("Converted Instruction %h", instruction_byte);
+        $display("High_nib %h, Low nib %h, Converted Instruction %h", high_nib, low_nib, instruction_byte);
+
     endtask
 
 endclass
