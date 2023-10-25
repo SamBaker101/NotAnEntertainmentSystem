@@ -32,7 +32,7 @@ interface mem_over_if (input clk, reset_n);
     task dump_mem(int start = 0, int finish = `MEM_DEPTH);
         int i;
         for (i = start; i < finish; i++) begin
-            if ((i % 8 == 0) && (i != 0)) $display(" ");
+            if (((i - start) % 8 == 0) && (i - start != 0)) $display(" ");
             $write("| %h:%h = %h | ", i, real_mem[i], mem_model[i]);
         end
         $display(" ");

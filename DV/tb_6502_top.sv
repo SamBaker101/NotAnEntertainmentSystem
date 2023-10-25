@@ -66,12 +66,16 @@ module tb_6502_top;
         );
 
     //LOGIC
-    always @(*) begin
-        #5;
-        phi0 = ~phi0;
-    end
-
     mem_over_if mem_override_if(phi0, reset_n);
+
+    initial begin : clock
+        forever begin
+            phi0 = 0;
+            #5;
+            phi0 = ~phi0;
+            #5;
+        end
+    end : clock
 
     //RUN TEST
 	initial begin : main_test
@@ -83,7 +87,6 @@ module tb_6502_top;
         
         $display("Starting tb_6502_top \t");
 
-        phi0 = 1'b1;
         reset_n = 1'b0;
         #50;
         zero_mem_model();
@@ -106,10 +109,12 @@ module tb_6502_top;
         #500;
         
         $display("MEM_SAMPLE");
-        mem_override_if.dump_mem(0, 16);
+        mem_override_if.dump_mem(0, 32);
+        $display(" ");
         $display("INSTRUCTION_SAMPLE");
         mem_override_if.dump_mem(`INSTRUCTION_BASE, `INSTRUCTION_BASE + 32);
 
+        $finish;
     end : main_test
 
     //TASKS:
