@@ -27,7 +27,8 @@ class basic_test;
 
             mem_model[6] = 8'hFF;
             mem_model['h70] = mem_model[6];
-
+        end else if (this.test_name == "alu_test") begin
+            
         end else begin
             $display("ERROR: Test %s not found in modify_mem_model", this.test_name);
         end

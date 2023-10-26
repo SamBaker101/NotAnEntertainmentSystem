@@ -15,6 +15,7 @@ typedef logic [`REG_WIDTH - 1 : 0] tb_register;
 //FIXME: These are globals as a work around due to limited SystemVerilog support in iVerilog
 tb_register mem_model [`MEM_DEPTH - 1 : 0];         //Belongs to mem_over_if.sv            
 byte fw [`MAX_FW_SIZE];                             //Belongs to firmware.sv
+byte stat_check;
 
 module tb_6502_top;
 

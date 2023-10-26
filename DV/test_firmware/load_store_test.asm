@@ -26,9 +26,9 @@ loady   LDY #$1F
         LDY $06,X
         STY $000C
 
-loadx   LDY #$FF   
-        STY $06     
-        LDY $06
-        STY $0070
+loadx   LDX #$FF   
+        STX $06     
+        LDX $06
+        STX $0070
 
         .end
