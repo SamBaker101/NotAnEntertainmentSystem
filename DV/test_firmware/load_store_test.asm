@@ -24,11 +24,31 @@ loada   LDA #$04
 loady   LDY #$1F   
         STY $04     
         LDY $06,X
-        STY $000C
+        STY $0007
 
 loadx   LDX #$FF   
         STX $06     
         LDX $06
         STX $0070
+
+_tax    LDX #$FF
+        LDA #$AA
+        TAX        
+        STX $08
+
+_tay    LDY #$FF
+        LDA #$AA
+        TAY        
+        STY $09
+
+_txa    LDX #$AA
+        LDA #$FF
+        TXA        
+        STA $0A
+
+_tya    LDY #$AA
+        LDA #$FF
+        TYA        
+        STA $0B
 
         .end

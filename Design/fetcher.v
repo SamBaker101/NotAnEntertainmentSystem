@@ -197,23 +197,27 @@ module fetcher(
                             end      
                         end
                         `AM3_ABS_Y  : begin    
-                            if (fetch_counter == 0) begin 
-                                fetch_selector = `SELECTOR_MEM;
-                            end 
-                            if (fetch_counter == 1) begin
-                                addr_reg[7:0] = data_in;
-                                fetch_selector = `SELECTOR_MEM;
-                            end
-                            if (fetch_counter == 2) begin 
-                                addr_reg[15:8] = data_in;
-                                fetch_selector = `SELECTOR_Y;
-                                pc_wait = 1'b1;
-                            end
-                            if (fetch_counter == 3) begin
-                                addr_reg += data_in;
-                                addr = addr_reg;
+                            if (instruction_out == 8'h98) begin //TYA
                                 instruction_ready = 1'b1;
-                                pc_wait = 1'b0;
+                            end else begin
+                                if (fetch_counter == 0) begin 
+                                    fetch_selector = `SELECTOR_MEM;
+                                end 
+                                if (fetch_counter == 1) begin
+                                    addr_reg[7:0] = data_in;
+                                    fetch_selector = `SELECTOR_MEM;
+                                end
+                                if (fetch_counter == 2) begin 
+                                    addr_reg[15:8] = data_in;
+                                    fetch_selector = `SELECTOR_Y;
+                                    pc_wait = 1'b1;
+                                end
+                                if (fetch_counter == 3) begin
+                                    addr_reg += data_in;
+                                    addr = addr_reg;
+                                    instruction_ready = 1'b1;
+                                    pc_wait = 1'b0;
+                                end
                             end  
                         end
                         `AM3_ABS_X  : begin  

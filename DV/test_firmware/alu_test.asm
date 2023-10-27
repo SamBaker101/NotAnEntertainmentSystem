@@ -4,7 +4,6 @@
 ;   Written for use with asm6502 assembler
 
 ; Test: ADC, SBC, AND, EOR, ORA, ASL, LSR, ROL, ROR             
-; ASL, LSR, ROL, ROR
 
 ;   Program: 
 

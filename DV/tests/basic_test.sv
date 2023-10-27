@@ -24,10 +24,17 @@ class basic_test;
             mem_model[3] = 8'h05;
             
             mem_model[4] = 8'h1F;
-            mem_model[12] = mem_model[8];
+            mem_model[7] = mem_model[8];
 
             mem_model[6] = 8'hFF;
             mem_model['h70] = mem_model[6];
+
+            //Transfers
+            mem_model[8] = 8'hAA;
+            mem_model[9] = 8'hAA;
+            mem_model['h0A] = 8'hAA;
+            mem_model['h0B] = 8'hAA;
+
         end else if (this.test_name == "alu_test") begin
             mem_model[2] = 8'h14;
             mem_model[3] = 8'h0F;
