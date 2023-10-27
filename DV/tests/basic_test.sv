@@ -37,7 +37,10 @@ class basic_test;
             mem_model[5] = 8'hF2;
             stat_model = (stat_model || (8'h01 << `CARRY));
 
-            //TODO: Need a checker for stat reg
+            mem_model[6] = 8'hA0;
+            mem_model[7] = 8'h5A;
+
+
         end else begin
             $display("ERROR: Test %s not found in modify_mem_model", this.test_name);
         end

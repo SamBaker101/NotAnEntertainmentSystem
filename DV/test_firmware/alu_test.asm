@@ -17,11 +17,18 @@ add     ADC #$10
         ADC #$10
         STA $03      
 
-add     LDA #$12
+sub     LDA #$12
         SBC #$10
         STA $04 
         SBC #$10
-        STA $05      
+        STA $05   
 
+_and    LDA #$F0
+        AND #$AA
+        STA $06
+
+_eor    LDA #$F0
+        EOR #$AA
+        STA $07
               
         .end
