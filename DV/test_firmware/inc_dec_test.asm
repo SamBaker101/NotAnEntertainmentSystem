@@ -23,3 +23,19 @@ _dec    DEC $01
         DEX
         DEX
         STX $04
+
+preld2  LDA #$03    
+        LDX #$04
+        LDY #$05
+        STA $05
+
+_dec    INC $05
+        INX
+        INY
+        STX $06
+        STY $07
+
+        LDX #$FF
+        INX
+        INX
+        STX $08

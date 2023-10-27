@@ -723,10 +723,9 @@ module decoder(
                                     carry_in = 1'b1;
                                     opp = `SUM;
                                 end else if (alu_done == 1) begin
-                                    add_selector = `SELECTOR_ALU_0;
-                                    we[`WE_ADD] = 1'b1;
-                                    we[`WE_STAT] = 1'b1;
-                                    alu_update_status = 1'b1;
+                                    x_selector = `SELECTOR_ALU_0;
+                                    we[`WE_X] = 1'b1;
+                                    alu_update_status = 1'b0;
                                     instruction_done = 1'b1;
                                 end
                             end else if (instruction == 8'hF8) begin //SED
@@ -776,9 +775,8 @@ module decoder(
                                     carry_in = 1'b1;
                                     opp = `SUM;
                                 end else if (alu_done == 1) begin
-                                    add_selector = `SELECTOR_ALU_0;
-                                    we[`WE_ADD] = 1'b1;
-                                    we[`WE_STAT] = 1'b1;
+                                    y_selector = `SELECTOR_ALU_0;
+                                    we[`WE_Y] = 1'b1;
                                     alu_update_status = 1'b1;
                                     instruction_done = 1'b1;
                                 end
