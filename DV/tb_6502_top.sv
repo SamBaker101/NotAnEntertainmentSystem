@@ -119,7 +119,7 @@ module tb_6502_top;
 
         //CHECKS
         mem_override_if.check_mem();
-        this_test.check_stat(stat_tap, `CARRY);
+        this_test.check_stat(stat_tap, `CARRY);  //TODO: Should be checking oother stats too
 
         $finish;
     end : main_test

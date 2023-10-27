@@ -546,8 +546,8 @@ module decoder(
                                     alu_update_status = 1'b0;
                                     opp = `SUM;
                                 end else if (decode_counter == 1) begin
-                                    add_selector = `SELECTOR_ALU_0;
-                                    we[`WE_ADD] = 1'b1;
+                                    y_selector = `SELECTOR_ALU_0;
+                                    we[`WE_Y] = 1'b1;
                                     instruction_done = 1'b1;
                                 end
                             end else begin
@@ -667,8 +667,8 @@ module decoder(
                                     alu_update_status = 1'b0;
                                     opp = `SUM;
                                 end else if (decode_counter == 1) begin
-                                    add_selector = `SELECTOR_ALU_0;
-                                    we[`WE_ADD] = 1'b1;
+                                    x_selector = `SELECTOR_ALU_0;
+                                    we[`WE_X] = 1'b1;
                                     instruction_done = 1'b1;
                                 end    
                             end else begin
@@ -830,7 +830,6 @@ module decoder(
                       end
                   endcase
                   decode_counter ++;
-                  we[`WE_PC] = 1'b1;
                 end
             end
         end
