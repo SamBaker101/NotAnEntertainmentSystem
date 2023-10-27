@@ -39,6 +39,7 @@ class basic_test;
 
             mem_model[6] = 8'hA0;
             mem_model[7] = 8'h5A;
+            mem_model[8] = 8'hFA;
 
 
         end else begin

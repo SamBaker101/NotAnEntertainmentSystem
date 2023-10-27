@@ -4,6 +4,7 @@
 ;   Written for use with asm6502 assembler
 
 ; Test: ADC, SBC, AND, EOR, ORA, ASL, LSR, ROL, ROR             
+; ORA, ASL, LSR, ROL, ROR
 
 ;   Program: 
 
@@ -30,5 +31,9 @@ _and    LDA #$F0
 _eor    LDA #$F0
         EOR #$AA
         STA $07
+
+_ora    LDA #$F0
+        ORA #$AA
+        STA $08
               
         .end
