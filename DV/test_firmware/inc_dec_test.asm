@@ -18,3 +18,8 @@ _dec    DEC $01
         DEY
         STX $02
         STY $03
+
+        LDX #$01
+        DEX
+        DEX
+        STX $04
