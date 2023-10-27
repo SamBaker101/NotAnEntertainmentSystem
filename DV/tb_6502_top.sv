@@ -111,9 +111,15 @@ module tb_6502_top;
         reset_n = 1'b1;
         #500;
         
+        $display("### MEM_DUMP: %s ###", `TEST_NAME);
         $display("MEM_SAMPLE");
         mem_override_if.dump_mem(0, 32);
-        $display(" ");
+
+        if (`TEST_NAME == "stack_test") begin    
+            $display("STACK_SAMPLE");
+            mem_override_if.dump_mem(`STACK_BASE, `STACK_BASE + 16);
+        end
+
         $display("INSTRUCTION_SAMPLE");
         mem_override_if.dump_mem(`INSTRUCTION_BASE, `INSTRUCTION_BASE + 32);
 
