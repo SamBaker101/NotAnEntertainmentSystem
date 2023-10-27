@@ -15,12 +15,12 @@ typedef logic [`REG_WIDTH - 1 : 0] tb_register;
 //FIXME: These are globals as a work around due to limited SystemVerilog support in iVerilog
 tb_register mem_model [`MEM_DEPTH - 1 : 0];         //Belongs to mem_over_if.sv            
 byte fw [`MAX_FW_SIZE];                             //Belongs to firmware.sv
-
+reg [7:0] stat_model;
 
 module tb_6502_top;
 
     int seed = `SEED;
-    byte stat_tap; 
+    wire [7:0] stat_tap; 
 
     //6502 Pinouts
     reg phi0, rdy, irq_n, NMI_n, overflow_set_n, reset_n;  //IN

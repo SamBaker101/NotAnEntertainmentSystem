@@ -41,7 +41,8 @@ FW_OUT =$(FW_OUT_PATH)$(TEST).hex
 
 TEST_LIST = load_store_test \
 			alu_test \
-			inc_dec_test
+			inc_dec_test \
+			stack_test 
 			
  
 ifndef DEPTH
@@ -86,10 +87,6 @@ run: clean $(COMMANDS)
 
 clean : 
 	rm -f Out/* 
-
-TEST_DEFINE = 'TEST_NAME="$(TEST)"'
-FW_SOURCE =$(FW_SOURCE_PATH)$(TEST).asm
-FW_OUT =$(FW_OUT_PATH)$(TEST).hex
 
 runall : clean $(TB) $(SRC)																																		
 	$(foreach test, $(TEST_LIST), 															\
