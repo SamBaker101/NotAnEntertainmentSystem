@@ -9,6 +9,7 @@
 
 class basic_test;
     string test_name;
+    byte stat_model;
 
     function new(string test);
         this.test_name = test;
@@ -28,10 +29,19 @@ class basic_test;
             mem_model[6] = 8'hFF;
             mem_model['h70] = mem_model[6];
         end else if (this.test_name == "alu_test") begin
-            
+            mem_model[2] = 8'h14;
+            mem_model[3] = 8'h0F;
+            stat_check = 1'b1;
+
+            //TODO: Need a checker for stat reg
         end else begin
             $display("ERROR: Test %s not found in modify_mem_model", this.test_name);
         end
+    endfunction
+
+    function check_stat(byte stat_tap, int bit_to_check);
+        if (stat_tap[bit_to_check] != stat_model[bit_to_check])
+            $display("ERROR: Stat bit %d: stat_tap = %b, stat_model = %b", bit_to_check, stat_tap[bit_to_check], stat_model[bit_to_check]);
     endfunction
 endclass
 

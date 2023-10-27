@@ -9,5 +9,11 @@
 
 preld   LDX #$02    
         LDY #$03
+        LDA #$04
 
+add     ADC #$10
+        STA $02 
+        LDA #$FF
+        ADC #$10
+        STA $03      
         .end
