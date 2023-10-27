@@ -29,7 +29,7 @@ preld2  LDA #$03
         LDY #$05
         STA $05
 
-_dec    INC $05
+_inc    INC $05
         INX
         INY
         STX $06

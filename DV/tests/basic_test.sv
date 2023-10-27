@@ -44,6 +44,7 @@ class basic_test;
             mem_model[4] = 8'h02;
             mem_model[5] = 8'hF2;
             stat_model = (stat_model || (8'h01 << `CARRY));
+            stat_model = (stat_model || (8'h01 << `NEG));
 
             mem_model[6] = 8'hA0;
             mem_model[7] = 8'h5A;
