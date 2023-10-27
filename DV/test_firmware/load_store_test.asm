@@ -51,4 +51,10 @@ _tya    LDY #$AA
         TYA        
         STA $0B
 
+_txstsx LDX #$AA
+        TXS
+        LDX #$FF
+        TSX   
+        STA $0C
+
         .end

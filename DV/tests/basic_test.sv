@@ -34,6 +34,7 @@ class basic_test;
             mem_model[9] = 8'hAA;
             mem_model['h0A] = 8'hAA;
             mem_model['h0B] = 8'hAA;
+            mem_model['h0C] = 8'hAA;
 
         end else if (this.test_name == "alu_test") begin
             mem_model[2] = 8'h14;

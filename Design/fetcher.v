@@ -197,7 +197,9 @@ module fetcher(
                             end      
                         end
                         `AM3_ABS_Y  : begin    
-                            if (instruction_out == 8'h98) begin //TYA
+                            if ((instruction_out == 8'h98) ||       //TYA
+                                (instruction_out == 8'h9A) ||       //TXS
+                                (instruction_out == 8'hBA)) begin   //TSX
                                 instruction_ready = 1'b1;
                             end else begin
                                 if (fetch_counter == 0) begin 
