@@ -16,4 +16,12 @@ add     ADC #$10
         LDA #$FF
         ADC #$10
         STA $03      
+
+add     LDA #$12
+        SBC #$10
+        STA $04 
+        SBC #$10
+        STA $05      
+
+              
         .end
