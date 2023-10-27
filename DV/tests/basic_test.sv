@@ -43,6 +43,9 @@ class basic_test;
             mem_model[9] = 8'h3C;
             stat_model = (stat_model & (8'hFF ^ (8'h01 << `CARRY)));
             mem_model[8'h0A] = 8'h3C;
+            mem_model[8'h0B] = 8'hE0;
+            mem_model[8'h0C] = 8'h87;
+            stat_model = (stat_model || (8'h01 << `CARRY));
 
         end else begin
             $display("ERROR: Test %s not found in modify_mem_model", this.test_name);

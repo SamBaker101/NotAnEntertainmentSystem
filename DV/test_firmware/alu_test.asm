@@ -50,5 +50,15 @@ _lsr    LDA #$F0
         STA $0A
         LSR $0A
         STA $0A
-              
+
+_rol    LDA #$F0
+        STA $0B
+        ROL $0B
+        STA $0B
+
+_ror    LDA #$0F
+        STA $0C
+        ROR $0C
+        STA $0C
+
         .end
