@@ -20,6 +20,7 @@ byte stat_check;
 module tb_6502_top;
 
     int seed = `SEED;
+    byte stat_tap; 
 
     //6502 Pinouts
     reg phi0, rdy, irq_n, NMI_n, overflow_set_n, reset_n;  //IN
@@ -33,6 +34,7 @@ module tb_6502_top;
     //ASSIGNS
     assign D        = (R_W_n) ? d_from_mem  : 8'hZZ;
     assign d_to_mem = (R_W_n) ? 8'hZZ       : D;
+    assign stat_tap = cpu.oSTATUS;
 
     //MODULES
     cpu_top cpu(
