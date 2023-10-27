@@ -42,7 +42,7 @@ interface mem_over_if (input clk, reset_n);
         int i;
         for (i = start; i < finish; i++) begin
             if (mem_model[i] != real_mem[i]) begin
-            $display("ERROR: data mismatch at i = %h - MODEL: %h - REAL: %h", i, mem_model[i], real_mem[i]);
+            $display("ERROR: data mismatch at i = %0h - MODEL: %h - REAL: %h", i, mem_model[i], real_mem[i]);
             end
         end
         $display(" ");

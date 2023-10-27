@@ -40,7 +40,9 @@ class basic_test;
             mem_model[6] = 8'hA0;
             mem_model[7] = 8'h5A;
             mem_model[8] = 8'hFA;
-
+            mem_model[9] = 8'h3C;
+            stat_model = (stat_model & (8'hFF ^ (8'h01 << `CARRY)));
+            mem_model[8'h0A] = 8'h3C;
 
         end else begin
             $display("ERROR: Test %s not found in modify_mem_model", this.test_name);
@@ -49,7 +51,7 @@ class basic_test;
 
     function void check_stat(byte stat_tap, int bit_to_check);
         if (stat_tap[bit_to_check] != stat_model[bit_to_check])
-            $display("ERROR: Stat bit %d: stat_tap = %b, stat_model = %b", bit_to_check, stat_tap[bit_to_check], stat_model[bit_to_check]);
+            $display("ERROR: Stat bit %0d: stat_tap = %b, stat_model = %b", bit_to_check, stat_tap[bit_to_check], stat_model[bit_to_check]);
     endfunction
 endclass
 
