@@ -31,7 +31,7 @@ class basic_test;
         end else if (this.test_name == "alu_test") begin
             mem_model[2] = 8'h14;
             mem_model[3] = 8'h0F;
-            stat_check = 1'b1;
+            stat_model = 1'b1;
 
             //TODO: Need a checker for stat reg
         end else begin
@@ -39,7 +39,7 @@ class basic_test;
         end
     endfunction
 
-    function check_stat(byte stat_tap, int bit_to_check);
+    function void check_stat(byte stat_tap, int bit_to_check);
         if (stat_tap[bit_to_check] != stat_model[bit_to_check])
             $display("ERROR: Stat bit %d: stat_tap = %b, stat_model = %b", bit_to_check, stat_tap[bit_to_check], stat_model[bit_to_check]);
     endfunction
