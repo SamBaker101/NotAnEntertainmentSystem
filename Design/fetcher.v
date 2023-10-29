@@ -198,6 +198,8 @@ module fetcher(
                         end
                         `AM3_ABS_Y  : begin    
                             if ((instruction_out == 8'h98) ||       //TYA
+                                (instruction_out == 8'h38) ||       //SEC
+                                (instruction_out == 8'h18) ||       //CLC
                                 (instruction_out == 8'h9A) ||       //TXS
                                 (instruction_out == 8'hBA)) begin   //TSX
                                 instruction_ready = 1'b1;

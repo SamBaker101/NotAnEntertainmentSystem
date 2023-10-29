@@ -127,7 +127,7 @@ module decoder(
                                 if (decode_counter == 0) begin
                                     we[`WE_STAT] = 1'b1;
                                     stat_selector =  `SELECTOR_IMM;
-                                    imm_out = status_in && (8'hFF ^ (8'h01 << `CARRY));
+                                    imm_out = status_in & (8'hFF ^ (8'h01 << `CARRY));
                                 end else if (decode_counter == 1) begin
                                     we = 0;
                                     opp_code = 0;

@@ -73,11 +73,17 @@ class basic_test;
 
             mem_model[1] = 2;
 
-            mem_model[`STACK_BASE] = 8'h01;
+            mem_model[`STACK_BASE] = 8'h05;
             mem_model[`STACK_BASE + 1] = 8'h02;
 
             mem_model[2] = 8'h02;
-            mem_model[3] = 8'h01;
+            mem_model[3] = 8'h05;
+
+            stat_model[`CARRY] = 1'b1;
+            stat_model[`ZERO] = 1'b0;
+            stat_model[`NEG] = 1'b0;
+
+            mem_model[`STACK_BASE] = 8'h01;
 
         end else begin
             $display("ERROR: Test %s not found in modify_mem_model", this.test_name);

@@ -5,11 +5,11 @@
 
 
 ; Test:       TSX, TXS, PHA, PHP, PLA, PLP
-
+;Also Uses    SEC, CLC
 
 ;   Program: 
 
-preld   LDA #$01
+preld   LDA #$05
         LDX #$02    
         LDY #$03
 
@@ -28,5 +28,9 @@ _acc    PHA
         STA $02
         PLA
         STA $03
+
+_stat   SEC
+        PHP
+        CLC
 
         .end

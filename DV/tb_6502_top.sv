@@ -112,6 +112,7 @@ module tb_6502_top;
         #500;
         
         $display("### MEM_DUMP: %s ###", `TEST_NAME);
+        $display("STATUS: Real - %h : Model - %h", stat_tap, stat_model);
         $display("MEM_SAMPLE");
         mem_override_if.dump_mem(0, 32);
 
