@@ -32,5 +32,6 @@ _acc    PHA
 _stat   SEC
         PHP
         CLC
+        PLP
 
         .end

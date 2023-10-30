@@ -244,18 +244,18 @@ module decoder(
                                 end  
                             end else if (instruction == 8'h28) begin   //PLP
                                 if (decode_counter == 0) begin
-                                    we[`WE_STAT] = 1'b1;
-                                    add_selector =  `ADDR_MODE_SELECTOR
-                                    addr_in_selector = `SELECTOR_SP;
-                                end else if (decode_counter == 1) begin
-                                    we[`WE_STAT] = 1'b0;
                                     alu0_selector = `SELECTOR_SP;
                                     alu1_selector = `SELECTOR_FF;
                                     carry_in = 1'b0;
                                     opp = `SUM;
-                                end else if (decode_counter == 2) begin
+                                end else if (decode_counter == 1) begin
                                     sp_selector = `SELECTOR_ALU_0;
                                     we[`WE_SP] = 1'b1;
+                                end else if (decode_counter == 2) begin
+                                    we[`WE_SP] = 1'b0;
+                                    we[`WE_STAT] = 1'b1;
+                                    stat_selector =  `SELECTOR_MEM;
+                                    addr_in_selector = `SELECTOR_SP;
                                 end else if (decode_counter == 3) begin
                                     we = 0;
                                     opp_code = 0;
