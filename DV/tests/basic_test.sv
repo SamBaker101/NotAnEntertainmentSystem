@@ -153,7 +153,8 @@ class basic_test;
         
         end else if (this.test_name == "branch_test") begin
 
-
+            mem_model[0]            = 8'h00;
+            mem_model[2]            = 8'h02;
 
         end else begin
             $display("ERROR: Test %s not found in modify_mem_model", this.test_name);

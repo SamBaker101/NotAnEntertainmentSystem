@@ -519,16 +519,14 @@ module decoder(
                         end
                         `OPP_STY: begin // BCC, BPL, TYA, DEY   
                             if (instruction == 8'h90) begin   //BCC
-                                if (decode_counter == 0) begin
-                                    if (status_in[`CARRY] == 1'b0) begin
-                                        jump_pc = pc_in + imm_in;
-                                    end
+                                if ((decode_counter == 0) && (status_in[`CARRY] == 1'b0)) begin
+                                    jump_pc = pc_in + imm_in;
                                 end else begin
                                     we = 0;
                                     opp_code = 0;
                                     instruction_done = 1'b1;
                                 end  
-                            end if (instruction == 8'h10) begin   //BPL
+                            end else if (instruction == 8'h10) begin   //BPL
                                 if (decode_counter == 0) begin
                                     if (status_in[`NEG] == 1'b0) begin
                                         jump_pc = pc_in + imm_in;
@@ -538,7 +536,7 @@ module decoder(
                                     opp_code = 0;
                                     instruction_done = 1'b1;
                                 end  
-                            end if (instruction[4:2] == `AM3_ADD) begin   //DEY
+                            end else if (instruction[4:2] == `AM3_ADD) begin   //DEY
                                 if (decode_counter == 0) begin
                                     alu0_selector = `SELECTOR_Y;
                                     alu1_selector = `SELECTOR_FF;

@@ -8,6 +8,16 @@
 
 ;   Program: 
 
-
+_bcc    SEC
+        BCC tag
+        LDA #$00
+        STA $00
+        CLC
+        BCC tag
+        LDA #$01
+        STA $01
+  tag   LDA #$02
+        STA $02
+        CLC
 
         .end
