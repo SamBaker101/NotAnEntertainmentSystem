@@ -95,6 +95,14 @@ class basic_test;
             mem_model[`STACK_BASE]  = (8'h01 << `DEC);
             mem_model[2]            = (8'h01 << `DEC);
 
+            mem_model[`STACK_BASE]  = (8'h01 << `V_OVERFLOW) | (8'h01 << `NEG);
+            mem_model[3]            = (8'h01 << `V_OVERFLOW) | (8'h01 << `NEG);
+
+            mem_model[`STACK_BASE]  = (8'h01 << `NEG);
+            mem_model[4]            = (8'h01 << `NEG);
+            
+            stat_model[`NEG] = 1'b1;
+        
         end else begin
             $display("ERROR: Test %s not found in modify_mem_model", this.test_name);
         end

@@ -197,13 +197,7 @@ module fetcher(
                             end      
                         end
                         `AM3_ABS_Y  : begin    
-                            if ((instruction_out == 8'h98) ||       //TYA
-                                (instruction_out == 8'h38) ||       //SEC
-                                (instruction_out == 8'h78) ||       //SEI
-                                (instruction_out == 8'hF8) ||       //SED
-                                (instruction_out == 8'h18) ||       //CLC
-                                (instruction_out == 8'h58) ||       //CLC
-                                (instruction_out == 8'h9A) ||       //TXS
+                            if ((instruction_out[3:0] == 4'h8) ||   //This covers mostly set/clear commands
                                 (instruction_out == 8'hBA)) begin   //TSX
                                 instruction_ready = 1'b1;
                             end else begin

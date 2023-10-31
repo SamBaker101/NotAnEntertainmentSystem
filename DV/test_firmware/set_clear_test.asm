@@ -21,8 +21,18 @@ _intdis SEI
         STA $01
         CLI
 
-_intdis SED
+_dec    SED
         PHP
         PLA
         STA $02
         CLD
+
+_over   LDA #$7F
+        ADC $00
+        PHP
+        PLA
+        STA $03
+        CLV
+        PHP
+        PLA
+        STA $04

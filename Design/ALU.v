@@ -36,7 +36,15 @@ module ALU(
 	assign b = (invert) ? (b_in ^ {`REG_WIDTH{1'b1}}) : b_in;
 	assign a = a_in;
 
+	//FIXME: Theres a bug in how I handle status
+	// Z and N should be updated by any transfer to reg (including inc, dec)
+	// Since Im setting the status within the ALU and the we on stat from the decoder this isnt happening
 	always @(wout) begin
+		if ((a[`REG_WIDTH-1] === b[`REG_WIDTH-1]) && (a[`REG_WIDTH-1] !== dout[`REG_WIDTH-1]))
+			overflow_out = 1'b1;
+		else 
+			overflow_out = 1'b0; 
+			
 		status_out = status_in;
 
 		status_out[`CARRY] 		= (invert)? !(carry_out === 1'b1) : (carry_out === 1'b1);
@@ -49,7 +57,6 @@ module ALU(
 		status_out[`NEG] 		= (dout[`REG_WIDTH - 1] === 1'b1); 
 	end
 
-	//In the 6502 most of this logic is implemented with NANDs and NORs but Im not pressed about it
 	always @(posedge phi1) begin
 		if (opp_reg !== func) begin
 			wout = 1'b0;
