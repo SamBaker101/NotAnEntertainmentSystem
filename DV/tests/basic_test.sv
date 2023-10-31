@@ -40,22 +40,36 @@ class basic_test;
             mem_model[2] = 8'h14;
             mem_model[3] = 8'h0F;
             stat_model[`CARRY] = 1'b1;
+            mem_model[8'h0E] = stat_model;
+
 
             mem_model[4] = 8'h02;
             mem_model[5] = 8'hF2;
             stat_model[`NEG] = 1'b1;
             stat_model[`CARRY] = 1'b1;
+            mem_model[8'h0F] = stat_model;
 
             mem_model[6] = 8'hA0;
             mem_model[7] = 8'h5A;
             mem_model[8] = 8'hFA;
             mem_model[9] = 8'h3C;
-            stat_model[`CARRY] = 1'b0;
+            stat_model = 8'h00;
+            
+            mem_model[8'h10] = stat_model;
+
             mem_model[8'h0A] = 8'h3C;
             mem_model[8'h0B] = 8'hE0;
             mem_model[8'h0C] = 8'h87;
-            stat_model[`CARRY] = 1'b1;
-            
+            stat_model[`CARRY]      = 1'b1;
+            stat_model[`V_OVERFLOW] = 1'b1;
+            stat_model[`NEG]        = 1'b1;
+            mem_model[8'h11] = stat_model;
+            mem_model[`STACK_BASE] = mem_model[8'h11];
+
+            //Compare tests
+            //stat_model[`CARRY]  = 1'b0;
+            //mem_model[8'h0D]    = (8'h01 << `ZERO) | (8'h01 << `CARRY);
+
 
         end else if (this.test_name == "inc_dec_test") begin
             mem_model[1] = 8'h00;

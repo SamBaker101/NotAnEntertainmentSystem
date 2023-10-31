@@ -47,11 +47,11 @@ TEST_LIST = load_store_test \
 			
  
 ifndef DEPTH
-	DEPTH = 	"MEM_DEPTH='h00FF" 
+	DEPTH = 	"MEM_DEPTH='h0160" 
 endif
 
 ifndef INST_BASE
-	INST_BASE = "INSTRUCTION_BASE='h0A0"
+	INST_BASE = "INSTRUCTION_BASE='h00A0"
 endif
 
 ifndef STACK_BASE
