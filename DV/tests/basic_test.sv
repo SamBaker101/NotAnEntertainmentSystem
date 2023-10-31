@@ -105,7 +105,6 @@ class basic_test;
 
             mem_model[`STACK_BASE] = stat_model;
 
-
         end else if (this.test_name == "inc_dec_test") begin
             mem_model[1] = 8'h00;
             mem_model[2] = 8'h01;
@@ -152,6 +151,10 @@ class basic_test;
             
             stat_model[`NEG] = 1'b1;
         
+        end else if (this.test_name == "branch_test") begin
+
+
+
         end else begin
             $display("ERROR: Test %s not found in modify_mem_model", this.test_name);
         end

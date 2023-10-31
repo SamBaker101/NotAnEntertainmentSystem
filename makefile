@@ -43,7 +43,8 @@ TEST_LIST = load_store_test \
 			alu_test \
 			inc_dec_test \
 			stack_test	\
-			set_clear_test 
+			set_clear_test \
+			branch_test
 			
  
 ifndef DEPTH
