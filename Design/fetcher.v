@@ -102,7 +102,7 @@ module fetcher(
                         end	
                         `AM3_ADD	: begin        
                             if (fetch_counter == 0) begin 
-                                if ((instruction_out[0] == 1)  ||    //TODO: Simplify this
+                                if ((instruction_out[0] == 1)  ||    
                                     (instruction_out == 8'hA0) ||
                                     (instruction_out == 8'hA2)) begin
                                         fetch_selector = `SELECTOR_MEM;
@@ -199,7 +199,10 @@ module fetcher(
                         `AM3_ABS_Y  : begin    
                             if ((instruction_out == 8'h98) ||       //TYA
                                 (instruction_out == 8'h38) ||       //SEC
+                                (instruction_out == 8'h78) ||       //SEI
+                                (instruction_out == 8'hF8) ||       //SED
                                 (instruction_out == 8'h18) ||       //CLC
+                                (instruction_out == 8'h58) ||       //CLC
                                 (instruction_out == 8'h9A) ||       //TXS
                                 (instruction_out == 8'hBA)) begin   //TSX
                                 instruction_ready = 1'b1;

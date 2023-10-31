@@ -14,5 +14,15 @@ _carry  SEC
         PLA
         STA $00
         CLC
-        
 
+_intdis SEI
+        PHP
+        PLA
+        STA $01
+        CLI
+
+_intdis SED
+        PHP
+        PLA
+        STA $02
+        CLD

@@ -265,7 +265,7 @@ module decoder(
                                 if (decode_counter == 0) begin
                                     we[`WE_STAT] = 1'b1;
                                     stat_selector =  `SELECTOR_IMM;
-                                    imm_out = status_in || (8'h01 << `CARRY);
+                                    imm_out = status_in | (8'h01 << `CARRY);
                                 end else if (decode_counter == 1) begin
                                     we = 0;
                                     opp_code = 0;
@@ -284,9 +284,9 @@ module decoder(
                                 we[`WE_STAT] = 1'b1;
                                 stat_selector =  `SELECTOR_IMM;
                                 if (status_in[`NEG] && status_in[`V_OVERFLOW]) begin                         
-                                    imm_out = status_in || (8'h01 << `ZERO);
+                                    imm_out = status_in | (8'h01 << `ZERO);
                                 end else begin
-                                    imm_out = status_in && (8'hFF ^ (8'h01 << `ZERO));
+                                    imm_out = status_in & (8'hFF ^ (8'h01 << `ZERO));
                                 end 
                             end else if (decode_counter == 1) begin
                                 we = 0;
@@ -326,7 +326,7 @@ module decoder(
                                 if (decode_counter == 0) begin
                                     we[`WE_STAT] = 1'b1;
                                     stat_selector =  `SELECTOR_IMM;
-                                    imm_out = status_in && (8'hFF ^ (8'h01 << `INT_DIS));
+                                    imm_out = status_in & (8'hFF ^ (8'h01 << `INT_DIS));
                                 end else if (decode_counter == 1) begin
                                     we = 0;
                                     opp_code = 0;
@@ -499,7 +499,7 @@ module decoder(
                                 if (decode_counter == 0) begin
                                     we[`WE_STAT] = 1'b1;
                                     stat_selector =  `SELECTOR_IMM;
-                                    imm_out = status_in || (8'h01 << `INT_DIS);
+                                    imm_out = status_in | (8'h01 << `INT_DIS);
                                 end else if (decode_counter == 1) begin
                                     we = 0;
                                     opp_code = 0;
@@ -731,7 +731,7 @@ module decoder(
                                 if (decode_counter == 0) begin
                                     we[`WE_STAT] = 1'b1;
                                     stat_selector =  `SELECTOR_IMM;
-                                    imm_out = status_in || (8'h01 << `DEC);
+                                    imm_out = status_in | (8'h01 << `DEC);
                                 end else if (decode_counter == 1) begin
                                     we = 0;
                                     opp_code = 0;
@@ -793,7 +793,7 @@ module decoder(
                                 if (decode_counter == 0) begin
                                     we[`WE_STAT] = 1'b1;
                                     stat_selector =  `SELECTOR_IMM;
-                                    imm_out = status_in && (8'hFF ^ (8'h01 << `DEC));
+                                    imm_out = status_in & (8'hFF ^ (8'h01 << `DEC));
                                 end else if (decode_counter == 1) begin
                                     we = 0;
                                     opp_code = 0;

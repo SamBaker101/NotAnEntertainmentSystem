@@ -41,7 +41,7 @@ interface mem_over_if (input clk, reset_n);
     task check_mem(int start = 0, int finish = `MEM_DEPTH);
         int i;
         for (i = start; i < finish; i++) begin
-            if (mem_model[i] != real_mem[i]) begin
+            if (mem_model[i] !== real_mem[i]) begin
             $display("ERROR: data mismatch at i = %0h - MODEL: %h - REAL: %h", i, mem_model[i], real_mem[i]);
             end
         end

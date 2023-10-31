@@ -116,7 +116,7 @@ module tb_6502_top;
         $display("MEM_SAMPLE");
         mem_override_if.dump_mem(0, 32);
 
-        if (`TEST_NAME == "stack_test") begin    
+        if ((`TEST_NAME == "stack_test") || (`TEST_NAME == "set_clear_test")) begin    
             $display("STACK_SAMPLE");
             mem_override_if.dump_mem(`STACK_BASE, `STACK_BASE + 16);
         end

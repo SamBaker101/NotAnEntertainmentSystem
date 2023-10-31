@@ -89,6 +89,12 @@ class basic_test;
             mem_model[`STACK_BASE]  = (8'h01 << `CARRY);
             mem_model[0]            = (8'h01 << `CARRY);
 
+            mem_model[`STACK_BASE]  = (8'h01 << `INT_DIS);
+            mem_model[1]            = (8'h01 << `INT_DIS);
+
+            mem_model[`STACK_BASE]  = (8'h01 << `DEC);
+            mem_model[2]            = (8'h01 << `DEC);
+
         end else begin
             $display("ERROR: Test %s not found in modify_mem_model", this.test_name);
         end
