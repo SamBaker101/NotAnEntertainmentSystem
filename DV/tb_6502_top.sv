@@ -109,7 +109,7 @@ module tb_6502_top;
         this_test.modify_mem_model();
 
         reset_n = 1'b1;
-        #500;
+        #1000;
 
         $display("### MEM_DUMP: %s ###", `TEST_NAME);
         $display("STATUS: Real - %h : Model - %h", stat_tap, stat_model);

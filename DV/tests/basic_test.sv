@@ -67,8 +67,43 @@ class basic_test;
             mem_model[`STACK_BASE] = mem_model[8'h11];
 
             //Compare tests
-            //stat_model[`CARRY]  = 1'b0;
-            //mem_model[8'h0D]    = (8'h01 << `ZERO) | (8'h01 << `CARRY);
+            stat_model = 8'h00;
+            stat_model[`ZERO]  = 1'b1;
+            mem_model[8'h0D] = stat_model;
+
+            stat_model = 8'h00;
+            mem_model[8'h12] = stat_model;
+
+            stat_model = 8'h00;
+            stat_model[`CARRY]  = 1'b1;
+            stat_model[`NEG]  = 1'b1;
+            mem_model[8'h13] = stat_model;
+
+            stat_model = 8'h00;
+            stat_model[`ZERO]  = 1'b1;
+            mem_model[8'h14] = stat_model;
+
+            stat_model = 8'h00;
+            mem_model[8'h15] = stat_model;
+
+            stat_model = 8'h00;
+            stat_model[`CARRY]  = 1'b1;
+            stat_model[`NEG]  = 1'b1;
+            mem_model[8'h16] = stat_model;
+
+            stat_model = 8'h00;
+            stat_model[`ZERO]  = 1'b1;
+            mem_model[8'h17] = stat_model;
+
+            stat_model = 8'h00;
+            mem_model[8'h18] = stat_model;
+
+            stat_model = 8'h00;
+            stat_model[`CARRY]  = 1'b1;
+            stat_model[`NEG]  = 1'b1;
+            mem_model[8'h19] = stat_model;
+
+            mem_model[`STACK_BASE] = stat_model;
 
 
         end else if (this.test_name == "inc_dec_test") begin

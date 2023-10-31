@@ -55,6 +55,7 @@ module ALU(
 		//--//
 		status_out[`V_OVERFLOW] = (overflow_out 		=== 1'b1);
 		status_out[`NEG] 		= (dout[`REG_WIDTH - 1] === 1'b1); 
+
 	end
 
 	always @(posedge phi1) begin
@@ -74,7 +75,7 @@ module ALU(
 
 		end else if (wout == 0) begin
 			if (func == `SUM) begin
-				if (carry_in != invert)						//I know it's wierd, don't ask
+				if (carry_in != invert)	
 					{carry_out, dout} = a + b + 1;	
 				else
 					{carry_out, dout} = a + b;
