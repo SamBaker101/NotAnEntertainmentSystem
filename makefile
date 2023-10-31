@@ -42,7 +42,8 @@ FW_OUT =$(FW_OUT_PATH)$(TEST).hex
 TEST_LIST = load_store_test \
 			alu_test \
 			inc_dec_test \
-			stack_test 
+			stack_test	\
+			set_clear_test 
 			
  
 ifndef DEPTH
