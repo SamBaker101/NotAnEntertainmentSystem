@@ -9,6 +9,7 @@
 
 ;   Program: 
 
+        .org $0000
 _carry  SEC
         PHP
         PLA

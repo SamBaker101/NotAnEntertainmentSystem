@@ -8,6 +8,7 @@
 
 ;   Program: 
 
+        .org $0000
 preld   LDX #$02    
         LDY #$03
         LDA #$04

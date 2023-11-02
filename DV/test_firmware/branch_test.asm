@@ -2,21 +2,22 @@
 ;   10/2023
 ;   Tests stack operations
 ;   Written for use with asm6502 assembler
-
-
+;
+;
 ; Test:       BCC, BCS, BEQ, BMI, BNE, BPL, BVC, BVS
-
+;
 ;   Program: 
 
-_bcc    SEC
-        BCC tag
+        .org $0000
+begin   SEC
+        BCC LABEL
         LDA #$00
         STA $00
         CLC
-        BCC tag
+        BCC LABEL
         LDA #$01
         STA $01
-  tag   LDA #$02
+LABEL   LDA #$02
         STA $02
         CLC
 
