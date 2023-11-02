@@ -80,16 +80,17 @@ module decoder(
             addr_in_selector =  `SELECTOR_FETCH;  
             alu_update_status = 1'b0;
             imm_out = imm_in;
-            jump_pc = 0;
+            
 
             if (!reset_n) begin
                 we = 0;
                 decode_counter = 0;
                 instruction_done = 1'b0;
+                jump_pc = 0;
 
             end else begin
                 if (instruction_ready) begin 
-                    
+                    jump_pc = 0;    
 
 
                     //UNIMPLEMENTED INSTRUCTIONS:
@@ -519,8 +520,13 @@ module decoder(
                         end
                         `OPP_STY: begin // BCC, BPL, TYA, DEY   
                             if (instruction == 8'h90) begin   //BCC
-                                if ((decode_counter == 0) && (status_in[`CARRY] == 1'b0)) begin
+                                if ((decode_counter == 0) && (status_in[`CARRY] === 1'b0)) begin
                                     jump_pc = pc_in + imm_in;
+                                end else if (status_in[`CARRY] === 1'b0) begin
+                                    jump_pc = pc_in + imm_in;
+                                    we = 0;
+                                    opp_code = 0;
+                                    instruction_done = 1'b1;
                                 end else begin
                                     we = 0;
                                     opp_code = 0;
