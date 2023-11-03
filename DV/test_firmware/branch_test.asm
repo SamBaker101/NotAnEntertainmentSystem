@@ -1,6 +1,6 @@
 ;   Sam Baker
 ;   10/2023
-;   Tests stack operations
+;   Tests branch instructions
 ;   Written for use with asm6502 assembler
 ;
 ;

@@ -399,15 +399,10 @@ module decoder(
                                     opp_code = 0;
                                     instruction_done = 1'b1;
                                 end
-                            end else if (instruction == 8'h4C) begin   //JMP (Abs) 
-                                if (decode_counter == 0) begin
-                                    addr_in_selector = `SELECTOR_FETCH;
-                                end else begin
-                                    jump_pc = addr_in;
+                            end else if (instruction == 8'h4C) begin   //JMP (Abs) Handled by fetcher
                                     we = 0;
                                     opp_code = 0;
                                     instruction_done = 1'b1;
-                                end  
                             end
                         end
 	                    `OPP_ADC: begin  

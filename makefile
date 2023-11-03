@@ -44,7 +44,8 @@ TEST_LIST = load_store_test \
 			inc_dec_test \
 			stack_test	\
 			set_clear_test \
-			branch_test
+			branch_test	\
+			jump_test
 			
  
 ifndef DEPTH

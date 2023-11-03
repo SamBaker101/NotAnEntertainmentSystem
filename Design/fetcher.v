@@ -121,7 +121,8 @@ module fetcher(
                             end
                         end
                         `AM3_ABS	: begin
-                            if (instruction_out == 8'h6C) begin
+                            if ((instruction_out == 8'h4C) || 
+                                (instruction_out == 8'h6C)) begin
                                 if (fetch_counter == 0) begin 
                                     fetch_selector = `SELECTOR_MEM;
                                 end 
@@ -134,7 +135,8 @@ module fetcher(
                                     fetch_selector = `SELECTOR_MEM;
                                     addr = addr_reg;
                                     pc_wait = 1'b1;
-                                
+                                    pc_next = addr_reg;
+                                    instruction_ready = 1'b1;
                                 end
                             end else begin
                                 if (fetch_counter == 0) begin 
