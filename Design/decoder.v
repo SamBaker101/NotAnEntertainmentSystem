@@ -520,13 +520,8 @@ module decoder(
                         end
                         `OPP_STY: begin // BCC, BPL, TYA, DEY   
                             if (instruction == 8'h90) begin   //BCC
-                                if ((decode_counter == 0) && (status_in[`CARRY] === 1'b0)) begin
+                                if ((decode_counter == 0) && (status_in[`CARRY] == 1'b0)) begin
                                     jump_pc = pc_in + imm_in;
-                                end else if (status_in[`CARRY] === 1'b0) begin
-                                    jump_pc = pc_in + imm_in;
-                                    we = 0;
-                                    opp_code = 0;
-                                    instruction_done = 1'b1;
                                 end else begin
                                     we = 0;
                                     opp_code = 0;

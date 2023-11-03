@@ -88,7 +88,7 @@ module cpu_top(
 	assign R_W_n = !we[6];
 
 	//Others
-    assign we_pc 	= we[`WE_PC] || (pc != pc_next);
+    assign we_pc 	= we[`WE_PC] || (pc != pc_next) || (jump_pc && (pc != jump_pc));
 	assign we_sp 	= we[`WE_SP];
 	assign we_add 	= we[`WE_ADD];
 	assign we_x 	= we[`WE_X];
