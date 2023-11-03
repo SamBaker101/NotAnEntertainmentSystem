@@ -79,57 +79,57 @@ _ror    LDA #$0F
         STA $11
 
 _cmp    CLC
-        LDA #04
+        LDA #$04
         CMP #$04
         PHP
         PLA
         STA $0D
 
-        LDA #06
+        LDA #$06
         CMP #$04
         PHP
         PLA
         STA $12
 
-        LDA #04
+        LDA #$04
         CMP #$06
         PHP
         PLA
         STA $13
 
 _cpx    CLC
-        LDX #04
+        LDX #$04
         CPX #$04
         PHP
         PLA
         STA $14
 
-        LDX #06
+        LDX #$06
         CPX #$04
         PHP
         PLA
         STA $15
 
-        LDX #04
+        LDX #$04
         CPX #$06
         PHP
         PLA
         STA $16
 
 _cpy    CLC
-        LDY #04
+        LDY #$04
         CPY #$04
         PHP
         PLA
         STA $17
 
-        LDY #06
+        LDY #$06
         CPY #$04
         PHP
         PLA
         STA $18
 
-        LDY #04
+        LDY #$04
         CPY #$06
         PHP
         PLA
