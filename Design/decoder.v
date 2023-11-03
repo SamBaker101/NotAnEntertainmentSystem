@@ -124,6 +124,16 @@ module decoder(
                                     opp_code = 0;
                                     instruction_done = 1'b1;
                                 end  
+                            end else if (instruction == 8'h10) begin   //BPL
+                                if (decode_counter == 0) begin
+                                    if (status_in[`NEG] == 1'b0) begin
+                                        jump_pc = pc_in + imm_in;
+                                    end
+                                end else begin
+                                    we = 0;
+                                    opp_code = 0;
+                                    instruction_done = 1'b1;
+                                end  
                             end else if (instruction == 8'h18) begin    //CLC
                                 if (decode_counter == 0) begin
                                     we[`WE_STAT] = 1'b1;
@@ -334,10 +344,8 @@ module decoder(
                                     instruction_done = 1'b1;
                                 end
                             end else if (instruction == 8'h50) begin   //BVC
-                                if (decode_counter == 0) begin
-                                    if (status_in[`V_OVERFLOW] == 1'b0) begin
+                                if ((decode_counter == 0) && (status_in[`V_OVERFLOW] == 1'b0)) begin
                                         jump_pc = pc_in + imm_in;
-                                    end
                                 end else begin
                                     we = 0;
                                     opp_code = 0;
@@ -522,16 +530,6 @@ module decoder(
                             if (instruction == 8'h90) begin   //BCC
                                 if ((decode_counter == 0) && (status_in[`CARRY] == 1'b0)) begin
                                     jump_pc = pc_in + imm_in;
-                                end else begin
-                                    we = 0;
-                                    opp_code = 0;
-                                    instruction_done = 1'b1;
-                                end  
-                            end else if (instruction == 8'h10) begin   //BPL
-                                if (decode_counter == 0) begin
-                                    if (status_in[`NEG] == 1'b0) begin
-                                        jump_pc = pc_in + imm_in;
-                                    end
                                 end else begin
                                     we = 0;
                                     opp_code = 0;

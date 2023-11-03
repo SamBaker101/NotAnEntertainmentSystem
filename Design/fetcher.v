@@ -152,14 +152,7 @@ module fetcher(
                             end
                         end
                         `AM3_IND_Y  : begin
-                            if ((instruction_out == 8'hF0) ||       //BEQ
-                                (instruction_out == 8'hB0) ||       //BCS
-                                (instruction_out == 8'hD0) ||       //BNE
-                                (instruction_out == 8'h10) ||       //BPL
-                                (instruction_out == 8'h50) ||       //BVC
-                                (instruction_out == 8'h70) ||       //BVS
-                                (instruction_out == 8'h90))         //BCC 
-                                begin 
+                            if (instruction_out[1:0] == 2'b00) begin //BRANCHES 
                                 if (fetch_counter == 0) begin 
                                     fetch_selector = `SELECTOR_MEM;
                                 end else if (fetch_counter == 1) begin

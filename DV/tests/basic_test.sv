@@ -162,6 +162,21 @@ class basic_test;
             mem_model[6]            = 8'h06;
             mem_model[8]            = 8'h08;
 
+            mem_model[9]            = 8'h09;
+            mem_model[8'h0B]        = 8'h0B;
+
+            mem_model[8'h0C]        = 8'h0C;
+            mem_model[8'h0E]        = 8'h0E;
+
+            mem_model[8'h0F]        = 8'h0F;
+            mem_model[8'h11]        = 8'h11;
+
+            mem_model[8'h12]        = 8'h12;
+            mem_model[8'h14]        = 8'h14;
+
+            mem_model[8'h15]        = 8'h15;
+            mem_model[8'h17]        = 8'h17;
+
         end else begin
             $display("ERROR: Test %s not found in modify_mem_model", this.test_name);
         end

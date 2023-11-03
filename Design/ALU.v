@@ -39,12 +39,7 @@ module ALU(
 	//FIXME: Theres a bug in how I handle status
 	// Z and N should be updated by any transfer to reg (including inc, dec)
 	// Since Im setting the status within the ALU and the we on stat from the decoder this isnt happening
-	always @(wout) begin
-		if ((a[`REG_WIDTH-1] === b[`REG_WIDTH-1]) && (a[`REG_WIDTH-1] !== dout[`REG_WIDTH-1]))
-			overflow_out = 1'b1;
-		else 
-			overflow_out = 1'b0; 
-			
+	always @(wout) begin		
 		status_out = status_in;
 
 		status_out[`CARRY] 		= (invert)? !(carry_out === 1'b1) : (carry_out === 1'b1);
@@ -53,9 +48,9 @@ module ALU(
 		status_out[`DEC] 		= (decimal_out 			=== 1'b1);
 		status_out[`BREAK] 		= (break_out 			=== 1'b1);
 		//--//
-		status_out[`V_OVERFLOW] = (overflow_out 		=== 1'b1);
+		status_out[`V_OVERFLOW] = ((a[`REG_WIDTH-1] === b[`REG_WIDTH-1]) && (a[`REG_WIDTH-1] !== dout[`REG_WIDTH-1]));
 		status_out[`NEG] 		= (dout[`REG_WIDTH - 1] === 1'b1); 
-
+		
 	end
 
 	always @(posedge phi1) begin
@@ -75,7 +70,7 @@ module ALU(
 
 		end else if (wout == 0) begin
 			if (func == `SUM) begin
-				if (carry_in != invert)	
+				if (carry_in != invert)						
 					{carry_out, dout} = a + b + 1;	
 				else
 					{carry_out, dout} = a + b;

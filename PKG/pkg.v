@@ -50,9 +50,6 @@
 	`define SELECTOR_ALU_1	4'd12
 	`define SELECTOR_FF 	4'd13
 
-	// IMM vs IMP/ADD
-	// impl/A   08 0A      	000 010 00 | 000 010 10 
-	// Imm      09  	   	000 010 01
 
 	//STATUS REG Bit Definitions
 	`define CARRY       0
