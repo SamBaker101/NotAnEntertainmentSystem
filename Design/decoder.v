@@ -231,6 +231,11 @@ module decoder(
                                     instruction_done = 1'b1;
                                 end  
                             end else if (instruction == 8'h20) begin   //JSR 
+                                /*
+                                    push pc+2
+                                    load pcl+1
+                                    load pch+2   
+                                */
                                 if (decode_counter == 0) begin
                                     we[`WE_DOUT] = 1'b1;
                                     mem_selector = `SELECTOR_PC;

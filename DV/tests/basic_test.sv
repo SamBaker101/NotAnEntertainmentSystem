@@ -180,6 +180,7 @@ class basic_test;
         end else if (this.test_name == "jump_test") begin
 
             mem_model[1]            = 8'h01;
+            mem_model[3]            = 8'h03;
 
         end else begin
             $display("ERROR: Test %s not found in modify_mem_model", this.test_name);

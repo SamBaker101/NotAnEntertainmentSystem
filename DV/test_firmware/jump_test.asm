@@ -9,11 +9,16 @@
 ;   Program: 
 
         .org $00A0
-        JMP jmplab
-        CLC               ;This is just to kill a cycle
+_jmp    JMP jmplab
         LDA #$00
         STA $00
 jmplab  LDA #$01
         STA $01
 
+_jsr    JSR jmprtn
+        LDA #$02
+        STA $02
+jmprtn  LDA #$03
+        STA $03
+        
         .end
