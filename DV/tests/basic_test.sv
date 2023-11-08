@@ -185,6 +185,12 @@ class basic_test;
             mem_model[3]                = 8'h03;
             mem_model[4]                = 8'h04;
 
+            stat_model[`ZERO] = 1'b1;
+
+        end else if (this.test_name == "interrupt_test") begin
+
+
+
         end else begin
             $display("ERROR: Test %s not found in modify_mem_model", this.test_name);
         end

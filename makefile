@@ -46,7 +46,8 @@ SANITY_LIST = 	load_store_test \
 				stack_test	\
 				set_clear_test \
 				branch_test	\
-				jump_test
+				jump_test \
+				interrupt_test
 
 #Currently only runs sanities but allows for more complex tests		
 TEST_LIST = $(SANITY_LIST) \
