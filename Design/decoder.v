@@ -237,23 +237,38 @@ module decoder(
                                     load pch+2   
                                 */
                                 if (decode_counter == 0) begin
-                                    we[`WE_DOUT] = 1'b1;
-                                    mem_selector = `SELECTOR_PC;
-                                    addr_in_selector = `SELECTOR_SP;
+                                    addr_in_selector = `SELECTOR_FETCH;
                                 end else if (decode_counter == 1) begin
+                                    addr_reg = addr_in;
                                     we[`WE_DOUT] = 1'b1;
+                                    mem_selector = `SELECTOR_IMM;
+                                    addr_in_selector = `SELECTOR_SP;
+                                    imm_out = addr_reg[7:0];
+                                end else if (decode_counter == 2) begin
+                                    we[`WE_DOUT] = 1'b0;
                                     alu0_selector = `SELECTOR_SP;
                                     alu1_selector = `SELECTOR_ZERO;
                                     carry_in = 1'b1;
                                     opp = `SUM;
-                                end else if (decode_counter == 2) begin
+                                end else if (decode_counter == 3) begin
                                     sp_selector = `SELECTOR_ALU_0;
                                     we[`WE_SP] = 1'b1;    
-                                end else if (decode_counter == 3) begin
+                                end else if (decode_counter == 4) begin
                                     we[`WE_SP] = 1'b0;
-                                    addr_in_selector = `SELECTOR_FETCH;
+                                    we[`WE_DOUT] = 1'b1;
+                                    imm_out = addr_reg[15:8];
+                                    mem_selector = `SELECTOR_IMM;
+                                    addr_in_selector = `SELECTOR_SP;
+                                end else if (decode_counter == 5) begin
+                                    we[`WE_DOUT] = 1'b0;
+                                    alu0_selector = `SELECTOR_SP;
+                                    alu1_selector = `SELECTOR_ZERO;
+                                    carry_in = 1'b1;
+                                    opp = `SUM;
+                                end else if (decode_counter == 6) begin
+                                    sp_selector = `SELECTOR_ALU_0;
+                                    we[`WE_SP] = 1'b1;   
                                 end else begin
-                                    jump_pc = addr_in;
                                     we = 0;
                                     opp_code = 0;
                                     instruction_done = 1'b1;

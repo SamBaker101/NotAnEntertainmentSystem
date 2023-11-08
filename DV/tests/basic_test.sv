@@ -179,8 +179,10 @@ class basic_test;
 
         end else if (this.test_name == "jump_test") begin
 
-            mem_model[1]            = 8'h01;
-            mem_model[3]            = 8'h03;
+            mem_model[1]                = 8'h01;
+            mem_model[`STACK_BASE]      = 8'hB2; 
+            mem_model[`STACK_BASE + 1]  = 8'h00; 
+            mem_model[3]                = 8'h03;
 
         end else begin
             $display("ERROR: Test %s not found in modify_mem_model", this.test_name);
