@@ -219,7 +219,7 @@ module decoder(
                                 instruction_done = 1'b1;
                             end
                         end	
-                        `OPP_BIT: begin
+                        `OPP_BIT: begin     //BMI, JSR
                             if (instruction == 8'h30) begin   //BMI
                                 if (decode_counter == 0) begin
                                     if (status_in[`NEG] == 1'b1) begin
