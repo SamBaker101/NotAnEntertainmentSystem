@@ -231,11 +231,6 @@ module decoder(
                                     instruction_done = 1'b1;
                                 end  
                             end else if (instruction == 8'h20) begin   //JSR 
-                                /*
-                                    push pc+2
-                                    load pcl+1
-                                    load pch+2   
-                                */
                                 if (decode_counter == 0) begin
                                     addr_in_selector = `SELECTOR_FETCH;
                                 end else if (decode_counter == 1) begin
@@ -491,30 +486,32 @@ module decoder(
                                 end
                             end if (instruction == 8'h60) begin   //RTS
                                 if (decode_counter == 0) begin
+                                    alu0_selector = `SELECTOR_SP;
+                                    alu1_selector = `SELECTOR_FF;
+                                    alu_update_status = 1'b0;
+                                    opp = `SUM;
+                                end else if (decode_counter == 1) begin
+                                    sp_selector = `SELECTOR_ALU_0;
                                     addr_in_selector = `SELECTOR_SP;
                                     decode_selector = `SELECTOR_MEM;
-                                end else if (decode_counter == 1) begin
-                                    addr_reg[7:0] = data_in;
-                                    alu0_selector = `SELECTOR_SP;
-                                    alu1_selector = `SELECTOR_FF;
-                                    alu_update_status = 1'b0;
-                                    opp = `SUM;
+                                    we[`WE_SP] = 1'b1;
                                 end else if (decode_counter == 2) begin
-                                    sp_selector = `SELECTOR_ALU_0;
-                                    we[`WE_SP] = 1'b1;
-                                end else if (decode_counter == 3) begin
-                                    addr_reg[15:8] = data_in;
-                                    jump_pc = addr_reg;
                                     we[`WE_SP] = 1'b0;
-                                end else if (decode_counter == 4) begin
+                                    addr_reg[15:8] = data_in;
                                     alu0_selector = `SELECTOR_SP;
                                     alu1_selector = `SELECTOR_FF;
                                     alu_update_status = 1'b0;
                                     opp = `SUM;
-                                end else if (decode_counter == 5) begin
+                                end else if (decode_counter == 3) begin
                                     sp_selector = `SELECTOR_ALU_0;
+                                    addr_in_selector = `SELECTOR_SP;
+                                    decode_selector = `SELECTOR_MEM;
                                     we[`WE_SP] = 1'b1;
-                                end else if (decode_counter == 6) begin
+                                end else if (decode_counter == 4) begin
+                                    addr_reg[7:0] = data_in;
+                                    we[`WE_SP] = 1'b0;
+                                    jump_pc = addr_reg;
+                                end else begin
                                     we = 0;
                                     opp_code = 0;
                                     instruction_done = 1'b1;

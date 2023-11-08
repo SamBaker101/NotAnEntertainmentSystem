@@ -16,9 +16,18 @@ jmplab  LDA #$01
         STA $01
 
 _jsr    JSR jmprtn
-        LDA #$02
-        STA $02
+        CMP $03
+        BEQ beqlab
+
+        JMP endlab
+
 jmprtn  LDA #$03
         STA $03
-        
+        RTS
+
+beqlab  LDA #$04
+        STA $04
+
+endlab  CLC
+
         .end

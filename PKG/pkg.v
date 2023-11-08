@@ -67,26 +67,26 @@
 	`define	OPP_ORA 	5'b000_01
 	`define OPP_ASL		5'b000_10 
 	`define OPP_AND		5'b001_01
-	`define OPP_ROL		5'b001_10 //0010 1010
-	`define OPP_BIT		5'b001_00
+	`define OPP_ROL		5'b001_10 
+	`define OPP_BIT		5'b001_00		//BMI, JSR
 	`define OPP_EOR		5'b010_01
 	`define OPP_LSR		5'b010_10
-	`define OPP_CLI		5'b010_00
+	`define OPP_CLI		5'b010_00		//BVC, PHA, RTI, JMP(Abs)
 	`define OPP_ADC		5'b011_01
 	`define OPP_ROR		5'b011_10
-	`define OPP_RTS		5'b011_00 // 0100
+	`define OPP_RTS		5'b011_00 		//BVS, JMP(Ind), PLA, SEI
 	`define OPP_STA		5'b100_01
-	`define OPP_STY		5'b100_00
+	`define OPP_STY		5'b100_00		//DCC, BPL, TYA, DEY
 	`define OPP_STX		5'b100_10    
 	`define OPP_LDA		5'b101_01    
-	`define OPP_LDY		5'b101_00 
+	`define OPP_LDY		5'b101_00 		// BCS, CLV
 	`define OPP_LDX		5'b101_10
-	`define OPP_INY     5'b110_00   
+	`define OPP_INY     5'b110_00   	// CPY, BNE, CLD
 	`define OPP_CMP		5'b110_01
 	`define OPP_DEC		5'b110_10   
 	`define OPP_SBC		5'b111_01
 	`define OPP_INC		5'b111_10
-	`define OPP_INX  	5'b111_00
+	`define OPP_INX  	5'b111_00		// CPX, SED, BEQ
 
 	//Spec Opp Codes 6 bits (instruction [7:2])
 	//There is probably a cleaner way to encode these
