@@ -39,15 +39,19 @@ TEST_DEFINE = 'TEST_NAME="$(TEST)"'
 FW_SOURCE =$(FW_SOURCE_PATH)$(TEST).asm
 FW_OUT =$(FW_OUT_PATH)$(TEST).hex
 
-TEST_LIST = load_store_test \
-			alu_test \
-			inc_dec_test \
-			stack_test	\
-			set_clear_test \
-			branch_test	\
-			jump_test
-			
- 
+#Basic tests to confirm instruction function
+SANITY_LIST = 	load_store_test \
+				alu_test \
+				inc_dec_test \
+				stack_test	\
+				set_clear_test \
+				branch_test	\
+				jump_test
+
+#Currently only runs sanities but allows for more complex tests		
+TEST_LIST = $(SANITY_LIST) \
+
+
 ifndef DEPTH
 	DEPTH = 	"MEM_DEPTH='h0180" 
 endif
@@ -90,6 +94,15 @@ run: clean $(COMMANDS)
 
 clean : 
 	rm -f Out/* 
+
+sanity : clean $(TB) $(SRC)																																		
+	$(foreach test, $(SANITY_LIST), 															\
+		$(ASSEMBLER_COMMAND) $(ASSEMBLER_PATH)$(ASSEMBLER) $(FW_SOURCE_PATH)$(test).asm; 	\
+		mv $(FW_SOURCE_PATH)$(test).hex $(FW_OUT_PATH)$(test).hex; 							\
+		mv $(FW_SOURCE_PATH)$(test).lst $(FW_OUT_PATH)$(test).lst;							\
+		$(COMPILER) -g $(GEN) -D $(DEPTH) -D $(INST_BASE) -D $(STACK_BASE) -D $(SEED) -D 'TEST_NAME="$(test)"' -o Out/$(test).vvp $(TB) $(SRC);  \
+		$(SIMULATOR) Out/$(test).vvp;														\
+	)	
 
 runall : clean $(TB) $(SRC)																																		
 	$(foreach test, $(TEST_LIST), 															\
